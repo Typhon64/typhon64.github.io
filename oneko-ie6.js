@@ -85,7 +85,7 @@ function neko() {
     nekoEl.style.height = "32px";
     nekoEl.style.position = "absolute";
     nekoEl.style.pointerEvents = "none";
-    nekoEl.style.backgroundImage = "url('./Typhon64_files/oneko.gif')";
+    nekoEl.style.backgroundImage = "url('./oneko.gif')";
     nekoEl.style.imageRendering = "pixelated";
     nekoEl.style.left = nekoPosX - 16 + "px";
     nekoEl.style.top = nekoPosY - 16 + "px";
