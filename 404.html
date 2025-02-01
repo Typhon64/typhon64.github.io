@@ -80,5 +80,15 @@
         </ul>
         <p>Press any key to continue...<span class="blink">█</span></p>
     </div>
+    
+    <script>
+       
+        document.addEventListener("keydown", function(event) {
+            // Eğer basılan tuş Enter ise
+            if (event.key === "Enter") {
+                window.location.href = "index.html"; // index.html'e yönlendir
+            }
+        });
+    </script>
 </body>
 </html>
