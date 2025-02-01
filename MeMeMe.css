@@ -17,7 +17,7 @@ body.dark {
 /* (Night Mode Button) */
 .button {
   position: fixed;
-  top: 30px; /* Button is slightly lower, moved under the titlebar */
+  top: 40px; /* Button is slightly lower, moved under the titlebar */
   right: 10px;
   background: none;
   border: none;
