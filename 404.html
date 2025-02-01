@@ -82,12 +82,9 @@
     </div>
     
     <script>
-       
-        document.addEventListener("keydown", function(event) {
-            // Eğer basılan tuş Enter ise
-            if (event.key === "Enter") {
-                window.location.href = "index.html"; // index.html'e yönlendir
-            }
+        // Herhangi bir tuşa basıldığında index.html'e yönlendir.
+        document.addEventListener("keydown", function() {
+            window.location.href = "index.html";
         });
     </script>
 </body>
