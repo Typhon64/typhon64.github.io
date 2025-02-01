@@ -35,12 +35,11 @@ body.dark {
 /* Profile Section */
 .profile-container {
   user-select: none; /* Prevents text selection */
-  position: absolute;
   top: 50px; /* Distance from the top of the profile */
   right: 100px; /* Distance from the right of the profile */
   background-color: rgba(42, 43, 43, 1); /* Profile background color */
   border-radius: 15px; /* Rounded corners for the profile box */
-  width: 400px; /* Updated width */
+  width: 100%; /* Updated width */
   padding: 28px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for profile box */
   text-align: center; /* Centers the profile text */
@@ -447,6 +446,7 @@ body .titlebar {
   border-radius: 50%;
   position: absolute;
   left: 40px; /* Moves profile image slightly to the left */
+  margin: 40px auto;
 }
 
 .profile-info {
@@ -477,9 +477,10 @@ body .titlebar {
 
 
 
-/*
+
 .profile-container {
   position: static;
 
 
-} */
+} 
+
