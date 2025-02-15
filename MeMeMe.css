@@ -16,16 +16,16 @@ body.dark {
 
 /* (Night Mode Button) */
 .button {
-  position: fixed;
-  top: 40px; /* Button is slightly lower, moved under the titlebar */
+  position: absolute;
+  top: 40px; 
   right: 10px;
   background: none;
   border: none;
-  font-size: 2rem; /* Button text size */
+  font-size: 2rem;
   cursor: pointer;
   outline: none;
-  color: inherit; /* Inherit button color */
-  transition: transform 0.3s ease; /* Button growth transition effect */
+  color: inherit; 
+  transition: transform 0.3s ease; 
 }
 
 .button:hover {
