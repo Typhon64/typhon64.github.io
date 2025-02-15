@@ -82,9 +82,10 @@
     </div>
     
     <script>
-        // Herhangi bir tuşa basıldığında index.html'e yönlendir.
-        document.addEventListener("keydown", function() {
-            window.location.href = "index.html";
+        document.addEventListener("keydown", function(event) {
+            if (event.key !== "F11") {
+                window.location.href = "index.html";
+            }
         });
     </script>
 </body>
