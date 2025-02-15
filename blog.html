@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Post - Typhon64</title>
+  <link rel="stylesheet" href="blog.css">
+</head>
+<body>
+  <!-- Profile Image (Windows 98 gif) -->
+  <img src="./windows98.gif" alt="Profile" class="profile-image">
+  
+  <!-- Day/Night Mode Button -->
+  <button class="theme-toggle" onclick="toggleTheme()">🌘</button>
+  
+  <!-- Content: Natural flow, aligned to the left -->
+  <main>
+        <!-- Go Home link -->
+        <a href="./index.html" class="go-home">&larr; Go Home</a><br>
+        
+    <!-- Main Title -->
+    <h1 class="post-title">Opsec.</h1>
+    <!-- Description -->
+    <p class="post-description">opsec.</p>
+    <!-- Date and Categories -->
+    <div class="post-meta">
+      <span class="date" id="post-date">~0m · 00/00/0000</span>
+      <!-- Buttons -->
+      <button class="meta-button"><span>software</span></button>
+      <button class="meta-button"><span>misc</span></button>
+    </div>
+  </main>
+
+  <script>
+    // Day/Night Mode Toggle Function
+    function toggleTheme() {
+      const body = document.body;
+      const themeToggleButton = document.querySelector('.theme-toggle');
+      
+      // Toggle night mode class
+      body.classList.toggle('dark');
+      
+      // Change icon
+      if (body.classList.contains('dark')) {
+        themeToggleButton.textContent = '🌖';  // Day mode icon
+      } else {
+        themeToggleButton.textContent = '🌘';  // Night mode icon
+      }
+    }
+
+    // Set publication date (MM/DD/YYYY format)
+    const postDate = new Date('01/23/2023');
+    const now = new Date();
+
+    // Calculate the time difference between publication date and now
+    const timeDiff = now - postDate;
+
+    // Calculate difference in days, months, and years
+    const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+    const months = Math.floor(days / 30);
+    const years = Math.floor(months / 12);
+
+    // Create a formatted time difference
+    let timeAgo = '';
+    if (years > 0) {
+      timeAgo = `${years}y`;
+    } else if (months > 0) {
+      timeAgo = `${months}m`;
+    } else {
+      timeAgo = `${days}d`;
+    }
+
+    // Update the date info
+    document.getElementById('post-date').textContent = `~${timeAgo} · ${postDate.toLocaleDateString()}`;
+  </script>
+</body>
+</html>
