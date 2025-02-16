@@ -53,14 +53,15 @@
 </head>
 
 
- <style>
+  
+  <style>
     /* Temel stiller */
     body, html {
       margin: 0;
       padding: 0;
-      overflow: hidden; /* Animasyon sırasında kaydırma engellenir */
+      /* Artık overflow: hidden kullanılmıyor, böylece sayfa kaydırılabilir */
     }
-    /* Splash ekranı kapsayan container */
+    /* Splash ekranını kapsayan container */
     #splash {
       position: fixed;
       top: 0; left: 0;
@@ -70,9 +71,9 @@
       justify-content: center;
       align-items: center;
       z-index: 9999;
-      /* Animasyon: 2 saniyede yavaşça kaybolma, 2 saniyelik gecikme ile */
-      animation: fadeOut 2s ease-in-out forwards;
-      animation-delay: 2s;
+      /* Animasyon: 1 saniyede yavaşça kaybolma, 1 saniyelik gecikme ile */
+      animation: fadeOut 1s ease-in-out forwards;
+      animation-delay: 1s;
     }
     /* Açılış animasyonu için keyframes */
     @keyframes fadeOut {
@@ -84,24 +85,22 @@
       display: none;
     }
   </style>
-</head>
+
 <body>
   <!-- Açılış animasyon ekranı -->
   <div id="splash">
     <h1 style="color: #fff;">Welcome</h1>
   </div>
-
-
+  
+  
   <script>
-    // Sayfa tamamen yüklendiğinde açılış ekranını kaldırıp içeriği gösterme
+    // Sayfa tamamen yüklendiğinde splash ekranını kaldırıp içeriği gösterme
     window.addEventListener("load", function() {
-      // Toplamda (animasyon süresi + delay) 4 saniye sonra splash ekranını gizler
+      // Toplamda (animasyon süresi + delay) 2 saniye sonra splash ekranı kaldırılıyor
       setTimeout(function() {
         document.getElementById("splash").style.display = "none";
         document.getElementById("content").style.display = "block";
-        // Eğer sayfanın kaydırılabilir olması isteniyorsa:
-        document.body.style.overflow = "auto";
-      }, 4000);
+      }, 2000);
     });
   </script>
 
