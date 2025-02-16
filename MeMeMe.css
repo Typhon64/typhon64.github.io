@@ -542,15 +542,39 @@ body .titlebar {
 
 
 
+/* Navigation Buttons */
+.nav-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  justify-content: center;
+  padding: 20px;
+}
+
+.nav-button {
+  background-color: #4a3f56;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  text-decoration: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.nav-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 8px 4px rgba(106, 13, 173, 0.5);
+}
+
 /* Responsive Button Layout */
 @media (max-width: 768px) {
   .nav-buttons {
-    grid-template-columns: repeat(2, 1fr); /* 2 sütun */
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 480px) {
   .nav-buttons {
-    grid-template-columns: repeat(2, 1fr); /* Küçük ekranlarda da 2 sütun */
+    grid-template-columns: repeat(2, 1fr);
   }
 }
