@@ -54,46 +54,16 @@
 
 
   
-  <style>
-    /* Temel stiller */
-    body, html {
-      margin: 0;
-      padding: 0;
-      /* Artık overflow: hidden kullanılmıyor, böylece sayfa kaydırılabilir */
-    }
-    /* Splash ekranını kapsayan container */
-    #splash {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: #000; /* Arka plan rengi veya arka plan resmi ekleyebilirsiniz */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      /* Animasyon: 1 saniyede yavaşça kaybolma, 1 saniyelik gecikme ile */
-      animation: fadeOut 1s ease-in-out forwards;
-      animation-delay: 1s;
-    }
-    /* Açılış animasyonu için keyframes */
-    @keyframes fadeOut {
-      0% { opacity: 1; }
-      100% { opacity: 0; visibility: hidden; }
-    }
-    /* Asıl içerik başlangıçta gizli */
-    #content {
-      display: none;
-    }
-  </style>
+  
 
 <body>
-  <!-- Açılış animasyon ekranı -->
+  <!--  -->
   <div id="splash">
     <h1 style="color: #fff;">Welcome</h1>
   </div>
   
   
-  <script>
+   <script>
     // Sayfa tamamen yüklendiğinde splash ekranını kaldırıp içeriği gösterme
     window.addEventListener("load", function() {
       // Toplamda (animasyon süresi + delay) 2 saniye sonra splash ekranı kaldırılıyor
@@ -103,7 +73,6 @@
       }, 2000);
     });
   </script>
-
 
   
 <body>
