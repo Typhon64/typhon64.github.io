@@ -542,10 +542,15 @@ body .titlebar {
 
 
 
+/* Responsive Button Layout */
 @media (max-width: 768px) {
-  .profile-buttons {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+  .nav-buttons {
+    grid-template-columns: repeat(2, 1fr); /* 2 sütun */
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-buttons {
+    grid-template-columns: repeat(2, 1fr); /* Küçük ekranlarda da 2 sütun */
   }
 }
