@@ -539,3 +539,13 @@ body .titlebar {
   width: 100%;
   animation: borderPulse 1.5s infinite;
 }
+
+
+
+@media (max-width: 768px) {
+  .profile-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+}
