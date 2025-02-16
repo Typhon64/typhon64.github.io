@@ -52,6 +52,27 @@
   <link rel="modulepreload" as="script" crossorigin="" href="./start.4462aa35.js">
 </head>
 
+              <script>
+        // Sayfa yüklendiğinde 'loaded' sınıfını ekle
+        window.addEventListener('load', function() {
+            document.body.classList.add('loaded');
+        });
+
+        // Sayfa geçişlerinde animasyon ekle
+        document.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                // Eğer bağlantı harici bir URL'ye gidiyorsa işlemi durdur
+                if (link.hostname !== window.location.hostname) return;
+
+                e.preventDefault();
+                const url = this.getAttribute('href');
+                document.body.classList.remove('loaded');
+                setTimeout(() => {
+                    window.location.href = url;
+                }, 500); // CSS'teki transition süresiyle uyumlu olmalı
+            });
+        });
+</script>
   
 <body>
   <!--[if IE]>
