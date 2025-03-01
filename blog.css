@@ -71,6 +71,7 @@ p.post-description {
     font-size: 2rem;
     cursor: pointer;
     color: inherit;
+    z-index: 9999; /* Butonun diğer içeriklerin üstünde kalmasını sağlar */
 }
 
 /* Day/Night Mode color adjustments */
@@ -159,7 +160,3 @@ body.dark {
         font-size: 0.9rem;
     }
 }
-
-
-
-
