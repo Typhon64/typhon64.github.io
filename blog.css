@@ -61,16 +61,22 @@ p.post-description {
     margin-top: 10px;
 }
 
-/* Day/Night Mode */
-.theme-toggle {
-    position: fixed;
-    top: 10px;
+/* (Night Mode Button) */
+.button {
+    position: absolute;
+    top: 40px; 
     right: 10px;
     background: none;
     border: none;
     font-size: 2rem;
     cursor: pointer;
-    color: inherit;
+    outline: none;
+    color: inherit; 
+    transition: transform 0.3s ease; 
+}
+
+.button:hover {
+    transform: scale(1.2); /* Enlarges the button on hover */
 }
 
 /* Day/Night Mode color adjustments */
@@ -126,7 +132,7 @@ body.dark {
         font-size: 1rem;
     }
 
-    .theme-toggle {
+    .button {
         font-size: 1.5rem;
     }
 
@@ -159,7 +165,3 @@ body.dark {
         font-size: 0.9rem;
     }
 }
-
-
-
-
