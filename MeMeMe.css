@@ -324,11 +324,22 @@ body.dark .blog-box::after {
   background-color: rgba(106, 13, 173, 0.6);
 }
 
+/* Oneko Cat */
+#oneko {
+  z-index: 9999 !important;
+  position: fixed !important;
+  pointer-events: none !important;
+  image-rendering: pixelated;
+  width: 32px;
+  height: 32px;
+}
+
 /* Mobile Responsive Design */
 @media (max-width: 768px) {
   body {
     overflow-x: hidden;
     width: 100%;
+    background-color: #2e2c3e; /* Ensure consistent background */
   }
 
   .content-container {
@@ -337,57 +348,72 @@ body.dark .blog-box::after {
     margin: 0;
     width: 100%;
     max-width: 100%;
+    box-sizing: border-box;
   }
 
   .main-content {
-    margin-left: 0; /* Reset for mobile */
+    margin-left: 0; /* Reset negative margin */
+    width: 100%;
+    padding: 0 5px; /* Small padding for text */
   }
 
   .profile-container {
     flex: 0 0 100%;
     max-width: 100%;
+    width: 100%; /* Match blog post width */
     margin: 10px 0;
     margin-top: 0;
-    margin-right: 0; /* Reset for mobile */
-    padding: 20px;
+    margin-right: 0;
+    padding: 15px; /* Reduced padding */
     box-sizing: border-box;
+    align-self: center;
   }
 
   .profile-headers {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center; /* Center buttons */
     padding: 10px;
+    width: 100%;
   }
 
   .profile-buttons {
     flex-direction: column;
     align-items: center;
     width: 100%;
+    gap: 8px; /* Tighter spacing */
   }
 
   .custom-button {
     width: 100%;
-    max-width: 300px;
-    text-align: center;
+    max-width: 200px; /* Smaller buttons */
+    height: 36px; /* Slightly shorter */
+    line-height: 24px;
+    font-size: 13px; /* Slightly smaller text */
+    padding: 5px 10px;
+    box-sizing: border-box;
   }
 
   #blog {
     margin-top: 20px;
-    padding: 15px;
+    padding: 10px;
     width: 100%;
     box-sizing: border-box;
   }
 
   .blog-grid {
     grid-template-columns: 1fr;
-    gap: 15px;
+    gap: 10px;
+    width: 100%;
   }
 
   .blog-box {
     width: 100%;
+    padding: 10px;
     box-sizing: border-box;
   }
 
+  /* Ensure consistent colors */
+  body.dark,
   body.dark .profile-container,
   body.dark #blog,
   body.dark .blog-box {
@@ -395,13 +421,26 @@ body.dark .blog-box::after {
     color: #c0c7d1;
   }
 
+  .main-content,
+  .main-content h1,
+  .main-content h2,
+  .main-content h3,
   .profile-info h2,
   .interest-section h3,
   .title,
   .tag,
   .social-button,
   .custom-button {
-    color: #e0e0e0;
+    color: #e0e0e0 !important; /* Override unexpected colors */
+  }
+
+  .content {
+    color: #c0c7d1 !important;
+  }
+
+  a, a:hover, a:visited, a:active {
+    color: #e0e0e0 !important; /* Prevent blue links */
+    text-decoration: none;
   }
 
   .button {
@@ -419,7 +458,7 @@ body.dark .blog-box::after {
   .profile-image {
     width: 60px;
     height: 60px;
-    margin: 0 auto 10px;
+    margin: 0 auto 8px;
   }
 
   .profile-info h2 {
@@ -438,23 +477,30 @@ body.dark .blog-box::after {
   .social-links {
     flex-direction: column;
     align-items: center;
+    gap: 8px;
   }
 
   .social-button {
     width: 100%;
-    max-width: 300px;
-    text-align: center;
+    max-width: 200px; /* Match custom-button */
+    font-size: 13px;
+    padding: 6px 10px;
   }
 
   .blog-box {
-    padding: 10px;
+    padding: 8px;
   }
 
   .title {
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .content {
     font-size: 14px;
+  }
+
+  .tag {
+    font-size: 13px;
+    padding: 4px 10px;
   }
 }
