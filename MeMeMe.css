@@ -10,22 +10,22 @@ body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
-  transition: background-color 0.3s, color 0.3s;
+  transition: background-color 0.5s ease, color 0.5s ease;
   overflow-x: hidden;
   user-select: text;
 }
 
 body.dark {
-  background-color: #2a2838;
-  color: #abb2bf;
-  background: linear-gradient(135deg, #2a2838, #2a2838);
+  background-color: #2e2c3e;
+  color: #c0c7d1;
+  background: linear-gradient(135deg, #2e2c3e, #2e2c3e);
 }
 
 /* (Night Mode Button) */
 .button {
   position: fixed;
   top: 10px;
-  right: 10px;
+  right: 15px;
   background: none;
   border: none;
   font-size: 2rem;
@@ -38,7 +38,7 @@ body.dark {
 }
 
 .button:hover {
-  transform: scale(1.2);
+  transform: scale(1.1);
 }
 
 /* Profile Header */
@@ -69,7 +69,7 @@ body.dark {
 .custom-button {
   text-decoration: none;
   background-color: #4a3f56;
-  color: white;
+  color: #e0e0e0;
   padding: 6px 12px;
   font-size: 14px;
   font-weight: bold;
@@ -82,13 +82,13 @@ body.dark {
 
 /* Hover Effect */
 .custom-button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 8px 4px rgba(106, 13, 173, 0.5);
+  transform: scale(1.05);
+  box-shadow: 0 0 6px 2px rgba(106, 13, 173, 0.3);
 }
 
 /* Click Effect */
 .custom-button:active {
-  transform: scale(0.9);
+  transform: scale(0.95);
 }
 
 /* Content Container */
@@ -101,30 +101,32 @@ body.dark {
   padding: 20px;
 }
 
+/* Main Content */
 .main-content {
   flex: 1;
   min-width: 0;
+  margin-left: -10px; /* Shift introduction text left */
 }
 
 /* Profile Section */
 .profile-container {
   flex: 0 0 300px;
-  background-color: rgba(42, 43, 43, 1);
+  background-color: rgba(42, 43, 43, 0.9);
   border-radius: 15px;
   padding: 28px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   user-select: none;
   align-self: flex-start;
-  margin-top: -20px; /* Moved further up */
-  margin-right: -20px; /* Kept same for right alignment */
+  margin-top: -80px;
+  margin-right: -15px; /* Slightly less negative for rightward nudge */
 }
 
 /* Profile Hover Effect */
 .profile-container:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 12px rgba(180, 130, 255, 0.5);
+  transform: scale(1.03);
+  box-shadow: 0 4px 8px rgba(180, 130, 255, 0.3);
 }
 
 /* Profile Header and Image */
@@ -152,13 +154,13 @@ body.dark {
 .profile-info h2 {
   margin: 0;
   font-size: 18px;
-  color: #fff;
+  color: #e0e0e0;
   text-align: center;
 }
 
 .gender-button {
   background-color: #4a3f56;
-  color: #fff;
+  color: #e0e0e0;
   padding: 5px 9px;
   border-radius: 9px;
   display: inline-block;
@@ -174,7 +176,7 @@ body.dark {
 .interest-section h3 {
   font-size: 22px;
   font-weight: bold;
-  color: #fff;
+  color: #e0e0e0;
   margin-bottom: 10px;
 }
 
@@ -183,9 +185,9 @@ body.dark {
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-top: 120px;
+  margin-top: 60px;
   text-align: left;
-  background-color: rgba(42, 43, 43, 1);
+  background-color: rgba(42, 43, 43, 0.9);
   border-radius: 10px;
   padding: 20px;
   align-self: flex-start;
@@ -202,14 +204,14 @@ body.dark {
   background-color: #333;
   border-radius: 10px;
   padding: 15px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Blog Hover Effect - Lilac Glow */
 .blog-box:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 12px rgba(180, 130, 255, 0.5);
+  transform: scale(1.03);
+  box-shadow: 0 4px 8px rgba(180, 130, 255, 0.3);
 }
 
 .blog-box::after {
@@ -217,7 +219,7 @@ body.dark {
   display: block;
   height: 4px;
   width: 0%;
-  background-color: rgba(180, 130, 255, 0.8);
+  background-color: rgba(180, 130, 255, 0.6);
   transition: width 0.3s ease, background-color 0.3s ease;
 }
 
@@ -228,13 +230,13 @@ body.dark {
 
 @keyframes borderPulse {
   0% {
-    background-color: rgba(180, 130, 255, 0.8);
+    background-color: rgba(180, 130, 255, 0.6);
   }
   50% {
-    background-color: rgba(180, 130, 255, 0.3);
+    background-color: rgba(180, 130, 255, 0.2);
   }
   100% {
-    background-color: rgba(180, 130, 255, 0.8);
+    background-color: rgba(180, 130, 255, 0.6);
   }
 }
 
@@ -249,7 +251,7 @@ body.dark {
   background-color: #4a3f56;
   padding: 5px 12px;
   border-radius: 13px;
-  color: #fff;
+  color: #e0e0e0;
   font-size: 14px;
   transition: background-color 0.3s, transform 0.3s ease;
   cursor: pointer;
@@ -258,11 +260,12 @@ body.dark {
 /* Hover Effect for Tags */
 .tag:hover {
   background-color: #4a3f56;
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
+/* Blog Titles and Text */
 .title {
-  color: #fff;
+  color: #e0e0e0;
   font-size: 18px;
   font-weight: bold;
   margin: 10px 0;
@@ -276,7 +279,7 @@ body.dark {
 
 .content {
   font-size: 16px;
-  color: #ced4da;
+  color: #c0c7d1;
 }
 
 /* Social Media Buttons */
@@ -293,67 +296,165 @@ body.dark {
   background-color: #4a3f56;
   padding: 8px 12px;
   border-radius: 8px;
-  color: #fff;
+  color: #e0e0e0;
   font-size: 14px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .social-button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 6px 12px rgba(180, 130, 255, 0.5);
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(180, 130, 255, 0.3);
 }
 
 /* Dark Mode Profile and Blog */
 body.dark .profile-container {
-  background-color: #131312;
+  background-color: #1a1a1a;
 }
 
 body.dark #blog {
-  background-color: #131312;
+  background-color: #1a1a1a;
 }
 
 body.dark .blog-box {
-  background-color: #232129;
-  color: #cfcfcf;
+  background-color: #25232d;
+  color: #c0c7d1;
 }
 
 body.dark .blog-box::after {
-  background-color: rgba(106, 13, 173, 0.8);
+  background-color: rgba(106, 13, 173, 0.6);
 }
 
-/* Responsive Design */
+/* Mobile Responsive Design */
 @media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+    width: 100%;
+  }
+
   .content-container {
     flex-direction: column;
+    padding: 10px;
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .main-content {
+    margin-left: 0; /* Reset for mobile */
   }
 
   .profile-container {
+    flex: 0 0 100%;
     max-width: 100%;
-    margin: 20px auto;
-    margin-right: 0;
+    margin: 10px 0;
     margin-top: 0;
+    margin-right: 0; /* Reset for mobile */
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .profile-headers {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px;
   }
 
   .profile-buttons {
     flex-direction: column;
     align-items: center;
+    width: 100%;
+  }
+
+  .custom-button {
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+  }
+
+  #blog {
+    margin-top: 20px;
+    padding: 15px;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .blog-grid {
     grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .blog-box {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  body.dark .profile-container,
+  body.dark #blog,
+  body.dark .blog-box {
+    background-color: #1a1a1a;
+    color: #c0c7d1;
+  }
+
+  .profile-info h2,
+  .interest-section h3,
+  .title,
+  .tag,
+  .social-button,
+  .custom-button {
+    color: #e0e0e0;
+  }
+
+  .button {
+    right: 10px;
+    font-size: 1.5rem;
   }
 }
 
 @media (max-width: 480px) {
   .profile-header {
     flex-direction: column;
+    align-items: center;
   }
 
   .profile-image {
+    width: 60px;
+    height: 60px;
     margin: 0 auto 10px;
+  }
+
+  .profile-info h2 {
+    font-size: 16px;
+  }
+
+  .gender-button {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+
+  .interest-section h3 {
+    font-size: 18px;
   }
 
   .social-links {
     flex-direction: column;
+    align-items: center;
+  }
+
+  .social-button {
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+  }
+
+  .blog-box {
+    padding: 10px;
+  }
+
+  .title {
+    font-size: 16px;
+  }
+
+  .content {
+    font-size: 14px;
   }
 }
