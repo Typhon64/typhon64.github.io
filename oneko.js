@@ -1,11 +1,13 @@
-// oneko.js: https://github.com/adryd325/oneko.js
-
 (function oneko() {
+  console.log("Oneko script started");
+
   const isReducedMotion =
     window.matchMedia(`(prefers-reduced-motion: reduce)`) === true ||
     window.matchMedia(`(prefers-reduced-motion: reduce)`).matches === true;
 
-  if (isReducedMotion) return;
+  console.log("Reduced motion:", isReducedMotion);
+  // Temporarily bypass for testing
+  // if (isReducedMotion) return;
 
   const nekoEl = document.createElement("div");
 
@@ -85,6 +87,7 @@
   };
 
   function init() {
+    console.log("Oneko initializing...");
     nekoEl.id = "oneko";
     nekoEl.ariaHidden = true;
     nekoEl.style.width = "32px";
@@ -96,14 +99,16 @@
     nekoEl.style.top = `${nekoPosY - 16}px`;
     nekoEl.style.zIndex = 2147483647;
 
-    let nekoFile = "./oneko.gif"
-    const curScript = document.currentScript
+    let nekoFile = "./oneko.gif";
+    const curScript = document.currentScript;
     if (curScript && curScript.dataset.cat) {
-      nekoFile = curScript.dataset.cat
+      nekoFile = curScript.dataset.cat;
     }
     nekoEl.style.backgroundImage = `url(${nekoFile})`;
+    console.log("Background image set to:", nekoFile);
 
     document.body.appendChild(nekoEl);
+    console.log("Oneko appended to body");
 
     document.addEventListener("mousemove", function (event) {
       mousePosX = event.clientX;
@@ -116,16 +121,16 @@
   let lastFrameTimestamp;
 
   function onAnimationFrame(timestamp) {
-    // Stops execution if the neko element is removed from DOM
     if (!nekoEl.isConnected) {
+      console.log("Oneko element removed from DOM");
       return;
     }
     if (!lastFrameTimestamp) {
       lastFrameTimestamp = timestamp;
     }
     if (timestamp - lastFrameTimestamp > 100) {
-      lastFrameTimestamp = timestamp
-      frame()
+      lastFrameTimestamp = timestamp;
+      frame();
     }
     window.requestAnimationFrame(onAnimationFrame);
   }
@@ -143,28 +148,27 @@
   function idle() {
     idleTime += 1;
 
-    // every ~ 20 seconds
     if (
       idleTime > 10 &&
       Math.floor(Math.random() * 200) == 0 &&
       idleAnimation == null
     ) {
-      let avalibleIdleAnimations = ["sleeping", "scratchSelf"];
+      let availableIdleAnimations = ["sleeping", "scratchSelf"];
       if (nekoPosX < 32) {
-        avalibleIdleAnimations.push("scratchWallW");
+        availableIdleAnimations.push("scratchWallW");
       }
       if (nekoPosY < 32) {
-        avalibleIdleAnimations.push("scratchWallN");
+        availableIdleAnimations.push("scratchWallN");
       }
       if (nekoPosX > window.innerWidth - 32) {
-        avalibleIdleAnimations.push("scratchWallE");
+        availableIdleAnimations.push("scratchWallE");
       }
       if (nekoPosY > window.innerHeight - 32) {
-        avalibleIdleAnimations.push("scratchWallS");
+        availableIdleAnimations.push("scratchWallS");
       }
       idleAnimation =
-        avalibleIdleAnimations[
-          Math.floor(Math.random() * avalibleIdleAnimations.length)
+        availableIdleAnimations[
+          Math.floor(Math.random() * availableIdleAnimations.length)
         ];
     }
 
@@ -212,7 +216,6 @@
 
     if (idleTime > 1) {
       setSprite("alert", 0);
-      // count down after being alerted before moving
       idleTime = Math.min(idleTime, 7);
       idleTime -= 1;
       return;
