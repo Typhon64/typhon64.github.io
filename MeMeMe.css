@@ -1,245 +1,59 @@
+/* Basic styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 /* (Body Styles) */
 body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
-  transition: background-color 0.3s, color 0.3s; /* Background and color transition effect */
-  overflow-x: hidden; /* Prevents horizontal scrolling */
-  user-select: text; /* Restores text selection */
+  transition: background-color 0.3s, color 0.3s;
+  overflow-x: hidden;
+  user-select: text;
 }
 
 body.dark {
-  background-color: #2a2838; /* Dark mode background color */
-  color: #abb2bf; /* Dark mode text color */
-  background: linear-gradient(135deg, #2a2838, #2a2838); /* Linear gradient for dark mode */
+  background-color: #2a2838;
+  color: #abb2bf;
+  background: linear-gradient(135deg, #2a2838, #2a2838);
 }
 
 /* (Night Mode Button) */
 .button {
-  position: absolute;
-  top: 40px; 
+  position: fixed;
+  top: 10px;
   right: 10px;
   background: none;
   border: none;
   font-size: 2rem;
   cursor: pointer;
   outline: none;
-  color: inherit; 
-  transition: transform 0.3s ease; 
+  color: inherit;
+  transition: transform 0.3s ease;
+  user-select: none;
+  z-index: 1000;
 }
 
 .button:hover {
-  transform: scale(1.2); /* Enlarges the button on hover */
-}
-
-/* Profile Section */
-.profile-container {
-  user-select: none; /* Prevents text selection */
-  top: 50px; /* Distance from the top of the profile */
-  right: 100px; /* Distance from the right of the profile */
-  background-color: rgba(42, 43, 43, 1); /* Profile background color */
-  border-radius: 15px; /* Rounded corners for the profile box */
-  width: 100%; /* Updated width */
-  padding: 28px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for profile box */
-  text-align: center; /* Centers the profile text */
-  /* deleted z index */
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hover animation */
-    position: absolute;
-}
-
-.profile-container:hover {
-  transform: scale(1.05); /* Grows the profile box on hover */
-  box-shadow: 0 6px 12px rgba(180, 130, 255, 0.5); /* Lilac glow on hover */
-}
-
-/* Profile Header and Image */
-.profile-headers img {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%; /* Circular profile image */
-  margin-bottom: 10px;
-}
-
-.profile-header h2 {
-  font-size: 20px;
-  color: #fff; /* White title text */
-}
-
-.gender-button {
-  background-color: #4a3f56; /* Lilac color */
-  color: #fff; /* White text */
-  padding: 5px 9px;
-  border-radius: 9px;
-  display: inline-block;
-  margin-top: 9px;
-  font-size: 14px;
-}
-
-/* Interest Section */
-.interest-section {
-  margin-top: 15px;
-}
-
-.interest-section h3 {
-  font-size: 22px; /* Larger text size */
-  font-weight: bold; /* Bold text */
-  color: #fff; /* White text */
-  margin-bottom: 10px;
-}
-
-.interest-button {
-  background-color: #1a1a1a; /* Button color */
-  color: #fff; /* White text */
-  padding: 8px 15px;
-  border-radius: 8px;
-  display: inline-block;
-  margin: 5px 5px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.interest-button:hover {
-  transform: scale(1.1); /* Enlarges the button on hover */
-  box-shadow: 0 6px 12px rgba(180, 130, 255, 0.5); /* Lilac glow on hover */
-}
-
-/* Blog Section */
-#blog {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-top: 120px;
-  text-align: left;
-  background-color: rgba(42, 43, 43, 1);
-  border-radius: 10px;
-  padding: 20px;
-}
-
-.blog-grid {
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
-.blog-box {
-  background-color: #333;
-  border-radius: 10px;
-  padding: 15px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Blog box shadow */
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* Blog Hover Effect - Bottom Border Expands and Pulses */
-.blog-box::after {
-  content: "";
-  display: block;
-  height: 4px; /* Border height */
-  width: 0%; /* Starts with 0% width */
-  background-color: rgba(180, 130, 255, 0.8); /* Lilac color */
-  transition: width 0.3s ease, background-color 0.3s ease;
-}
-
-.blog-box:hover::after {
-  width: 100%; /* Expands the border to full width */
-  animation: borderPulse 1.5s infinite; /* Pulsing effect for the border */
-}
-
-@keyframes borderPulse {
-  0% {
-    background-color: rgba(180, 130, 255, 0.8); /* Initial color */
-  }
-  50% {
-    background-color: rgba(180, 130, 255, 0.3); /* Less prominent lilac */
-  }
-  100% {
-    background-color: rgba(180, 130, 255, 0.8); /* Next color */
-  }
-}
-
-.blog-box:hover {
-  transform: scale(1.05); /* Enlarges the blog box on hover */
-  box-shadow: 0 6px 12px rgba(180, 130, 255, 0.5); /* Lilac glow on hover */
-}
-
-.tags {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  font-size: 12px;
-}
-
-.tag {
-  background-color: #6c757d;
-  padding: 5px 10px;
-  border-radius: 15px;
-  color: #fff;
-}
-
-.title {
-  color: #fff;
-  font-size: 18px;
-  font-weight: bold;
-  margin: 10px 0;
-}
-
-.date {
-  font-size: 14px;
-  color: #adb5bd;
-  margin-bottom: 10px;
-}
-
-.content {
-  font-size: 16px;
-  color: #ced4da;
-}
-
-/* Social Media Buttons */
-.social-links {
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  user-select: none; /* Prevents text selection */
-}
-
-.social-button {
-  text-decoration: none;
-  background-color: #4a3f56;
-  padding: 8px 12px;
-  border-radius: 8px;
-  color: #fff;
-  font-size: 14px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.social-button:hover {
-  transform: scale(1.1); /* Enlarges the button on hover */
-  box-shadow: 0 6px 12px rgba(180, 130, 255, 0.5); /* Lilac glow on hover */
-}
-
-/* Web Pointer */
-.web-pointer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  z-index: 9999;
+  transform: scale(1.2);
 }
 
 /* Profile Header */
 .profile-headers {
   display: flex;
-  align-items: center; /* Align profile image and buttons vertically */
+  align-items: center;
   gap: 12px;
+  padding: 20px;
 }
 
-.profile-image {
+/* Windows Logo */
+.windows-logo {
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
   user-select: none;
 }
 
@@ -247,7 +61,7 @@ body.dark {
 .profile-buttons {
   user-select: none;
   display: flex;
-  flex-direction: row; /* Horizontal alignment */
+  flex-direction: row;
   gap: 12px;
 }
 
@@ -262,12 +76,14 @@ body.dark {
   border-radius: 5px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   text-align: center;
+  height: 40px;
+  line-height: 28px;
 }
 
 /* Hover Effect */
 .custom-button:hover {
-  transform: scale(1.1); /* Enlargement effect */
-  box-shadow: 0 0 8px 4px rgba(106, 13, 173, 0.5); /* Glow effect */
+  transform: scale(1.1);
+  box-shadow: 0 0 8px 4px rgba(106, 13, 173, 0.5);
 }
 
 /* Click Effect */
@@ -275,187 +91,62 @@ body.dark {
   transform: scale(0.9);
 }
 
-/* Dark Mode Profile and Blog */
-body.dark .profile-container {
-  background-color: #131312; /* Changes profile background */
-}
-
-body.dark #blog {
-  background-color: #131312; /* Changes blog background */
-}
-
-body.dark .blog-box {
-  background-color: #232129; /* Changes blog box background */
-  color: #cfcfcf; /* Blog text color */
-}
-
-body.dark .blog-box::after {
-  background-color: rgba(106, 13, 173, 0.8); /* Updates blog hover effect */
-}
-
-body.dark .interest-button {
-  background-color: #3a3a3a; /* Interest button color */
-  color: #fff; /* Interest button text color */
-}
-
-.button {
-  user-select: none; /* Prevents text selection */
-}
-
-/* Basic styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-/* Titlebar Container */
-.titlebar-container {
-  position: relative;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-}
-
-/* Titlebar */
-.titlebar {
-  background: linear-gradient(to right, #060606, #060204);
-  color: #f5f5f5;
-  padding: 5px 15px;
+/* Content Container */
+.content-container {
   display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  height: 28px;
-  width: 100%;
-  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
-  user-select: none; /* Prevents text selection */
+  flex-wrap: wrap;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
-/* Title Text */
-.title {
-  font-size: 16px;
-  font-weight: 600;
-  margin-right: auto;
-  user-select: none; /* Prevents text selection */
+.main-content {
+  flex: 1;
+  min-width: 0;
 }
 
-/* Win98-style Buttons */
-.winbutton {
-  background-color: #b4b4b4;
-  border: none;
-  padding: 4px 8px;
-  font-size: 12px;
-  cursor: pointer;
-  outline: none;
-  border-radius: 4px;
-  transition: background-color 0.2s, transform 0.2s ease;
-  color: #333;
-  margin-left: 4px;
-  user-select: none; /* Prevents text selection */
-}
-
-/* Hover Effect */
-.winbutton:hover {
-  background-color: #a0a0a0;
-  transform: scale(1.05);
-}
-
-/* Active State */
-.winbutton:active {
-  background-color: #808080;
-  transform: scale(0.98);
-}
-
-/* Button Alignment */
-.controls {
-  display: flex;
-  gap: 3px;
-  align-items: center;
-}
-
-/* Day/Night Mode for Titlebar */
-body.dark .titlebar {
-  background: right, #131312;
-}
-
-body .titlebar {
-  background: right, #2a2a2a; /* Default color for light mode */
-}
-
-/* Profile Section Position */
+/* Profile Section */
 .profile-container {
-  position: absolute;
-  top: 85px; /* Moves profile section down */
-  right: 100px;
+  flex: 0 0 300px;
+  background-color: rgba(42, 43, 43, 1);
+  border-radius: 15px;
+  padding: 28px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  user-select: none;
+  align-self: flex-start;
+  margin-top: -20px; /* Moved further up */
+  margin-right: -20px; /* Kept same for right alignment */
 }
 
-/* Tags (Labels) */
-.tag {
-  background-color: #4a3f56; /* Background color */
-  padding: 5px 12px;
-  border-radius: 13px;
-  color: #fff; /* White text */
-  font-size: 14px;
-  transition: background-color 0.3s, transform 0.3s ease; /* Transition effect */
-  cursor: pointer; /* Pointer cursor */
+/* Profile Hover Effect */
+.profile-container:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(180, 130, 255, 0.5);
 }
 
-/* Hover Effect for Tags */
-.tag:hover {
-  background-color: #4a3f56; /* Darker on hover */
-  transform: scale(1.1); /* Tag grows on hover */
-}
-
-/* Page Transition Animations */
-.page-enter {
-  opacity: 0;
-  transform: translateX(100%);
-}
-
-.page-enter-active {
-  opacity: 1;
-  transform: translateX(0%);
-  transition: opacity 300ms, transform 300ms;
-}
-
-.page-exit {
-  opacity: 1;
-  transform: translateX(0%);
-}
-
-.page-exit-active {
-  opacity: 0;
-  transform: translateX(-100%);
-  transition: opacity 300ms, transform 300ms;
-}
-
-/* Last Added Styles */
+/* Profile Header and Image */
 .profile-header {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center; /* Centers profile header */
   gap: 12px;
   width: 100%;
-  position: relative;
 }
 
-.profile-header img {
+.profile-image {
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  position: absolute;
-  left: 40px; /* Moves profile image slightly to the left */
-  margin: 40px auto;
 }
 
 .profile-info {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Centers username and gender */
+  align-items: center;
   justify-content: center;
-  flex-grow: 1; /* Keeps it in the center */
 }
 
 .profile-info h2 {
@@ -466,26 +157,26 @@ body .titlebar {
 }
 
 .gender-button {
-  padding: 5px 10px;
-  font-size: 14px;
+  background-color: #4a3f56;
+  color: #fff;
+  padding: 5px 9px;
+  border-radius: 9px;
+  display: inline-block;
   margin-top: 5px;
-}  
+  font-size: 14px;
+}
 
+/* Interest Section */
+.interest-section {
+  margin-top: 15px;
+}
 
-
-
-
-
-
-
-
-.profile-container {
-  position: static;
-
-
-} 
-
-
+.interest-section h3 {
+  font-size: 22px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 10px;
+}
 
 /* Blog Section */
 #blog {
@@ -497,12 +188,7 @@ body .titlebar {
   background-color: rgba(42, 43, 43, 1);
   border-radius: 10px;
   padding: 20px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-#blog:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 12px rgba(180, 130, 255, 0.5); /* Lilac glow on hover */
+  align-self: flex-start;
 }
 
 .blog-grid {
@@ -540,41 +226,134 @@ body .titlebar {
   animation: borderPulse 1.5s infinite;
 }
 
-
-
-/* Navigation Buttons */
-.nav-buttons {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  justify-content: center;
-  padding: 20px;
+@keyframes borderPulse {
+  0% {
+    background-color: rgba(180, 130, 255, 0.8);
+  }
+  50% {
+    background-color: rgba(180, 130, 255, 0.3);
+  }
+  100% {
+    background-color: rgba(180, 130, 255, 0.8);
+  }
 }
 
-.nav-button {
+.tags {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 12px;
+}
+
+.tag {
   background-color: #4a3f56;
-  color: white;
-  padding: 10px;
-  border-radius: 5px;
-  text-align: center;
+  padding: 5px 12px;
+  border-radius: 13px;
+  color: #fff;
+  font-size: 14px;
+  transition: background-color 0.3s, transform 0.3s ease;
+  cursor: pointer;
+}
+
+/* Hover Effect for Tags */
+.tag:hover {
+  background-color: #4a3f56;
+  transform: scale(1.1);
+}
+
+.title {
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.date {
+  font-size: 14px;
+  color: #adb5bd;
+  margin-bottom: 10px;
+}
+
+.content {
+  font-size: 16px;
+  color: #ced4da;
+}
+
+/* Social Media Buttons */
+.social-links {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  user-select: none;
+}
+
+.social-button {
   text-decoration: none;
+  background-color: #4a3f56;
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.nav-button:hover {
+.social-button:hover {
   transform: scale(1.1);
-  box-shadow: 0 0 8px 4px rgba(106, 13, 173, 0.5);
+  box-shadow: 0 6px 12px rgba(180, 130, 255, 0.5);
 }
 
-/* Responsive Button Layout */
+/* Dark Mode Profile and Blog */
+body.dark .profile-container {
+  background-color: #131312;
+}
+
+body.dark #blog {
+  background-color: #131312;
+}
+
+body.dark .blog-box {
+  background-color: #232129;
+  color: #cfcfcf;
+}
+
+body.dark .blog-box::after {
+  background-color: rgba(106, 13, 173, 0.8);
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
-  .nav-buttons {
-    grid-template-columns: repeat(2, 1fr);
+  .content-container {
+    flex-direction: column;
+  }
+
+  .profile-container {
+    max-width: 100%;
+    margin: 20px auto;
+    margin-right: 0;
+    margin-top: 0;
+  }
+
+  .profile-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .blog-grid {
+    grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 480px) {
-  .nav-buttons {
-    grid-template-columns: repeat(2, 1fr);
+  .profile-header {
+    flex-direction: column;
+  }
+
+  .profile-image {
+    margin: 0 auto 10px;
+  }
+
+  .social-links {
+    flex-direction: column;
   }
 }
