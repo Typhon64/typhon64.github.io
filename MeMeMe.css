@@ -13,6 +13,7 @@ body {
   transition: background-color 0.5s ease, color 0.5s ease;
   overflow-x: hidden;
   user-select: text;
+  width: 100vw; /* Ensure full viewport width */
 }
 
 body.dark {
@@ -31,10 +32,12 @@ body.dark {
   font-size: 2rem;
   cursor: pointer;
   outline: none;
-  color: inherit;
+  color: #e0e0e0; /* Explicit color */
   transition: transform 0.3s ease;
   user-select: none;
-  z-index: 1000;
+  z-index: 10000; /* Higher than #oneko */
+  padding: 5px; /* Improve tap area */
+  touch-action: manipulation; /* Prevent zoom on tap */
 }
 
 .button:hover {
@@ -99,6 +102,7 @@ body.dark {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+  width: 100%;
 }
 
 /* Main Content */
@@ -120,7 +124,7 @@ body.dark {
   user-select: none;
   align-self: flex-start;
   margin-top: -80px;
-  margin-right: -15px; /* Slightly less negative for rightward nudge */
+  margin-right: -15px;
 }
 
 /* Profile Hover Effect */
@@ -326,20 +330,20 @@ body.dark .blog-box::after {
 
 /* Oneko Cat */
 #oneko {
-  z-index: 9999 !important;
-  position: fixed !important;
-  pointer-events: none !important;
+  z-index: 9999;
+  position: fixed;
+  pointer-events: none;
   image-rendering: pixelated;
   width: 32px;
   height: 32px;
 }
 
 /* Mobile Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   body {
     overflow-x: hidden;
-    width: 100%;
-    background-color: #2e2c3e; /* Ensure consistent background */
+    width: 100vw;
+    background-color: #2e2c3e; /* Consistent background */
   }
 
   .content-container {
@@ -352,26 +356,27 @@ body.dark .blog-box::after {
   }
 
   .main-content {
-    margin-left: 0; /* Reset negative margin */
+    margin-left: 0;
     width: 100%;
-    padding: 0 5px; /* Small padding for text */
+    padding: 0 10px;
+    word-wrap: break-word; /* Prevent text overflow */
   }
 
   .profile-container {
     flex: 0 0 100%;
     max-width: 100%;
-    width: 100%; /* Match blog post width */
+    width: 100%;
     margin: 10px 0;
     margin-top: 0;
     margin-right: 0;
-    padding: 15px; /* Reduced padding */
+    padding: 15px;
     box-sizing: border-box;
     align-self: center;
   }
 
   .profile-headers {
     flex-direction: column;
-    align-items: center; /* Center buttons */
+    align-items: center;
     padding: 10px;
     width: 100%;
   }
@@ -380,16 +385,16 @@ body.dark .blog-box::after {
     flex-direction: column;
     align-items: center;
     width: 100%;
-    gap: 8px; /* Tighter spacing */
+    gap: 8px;
   }
 
   .custom-button {
     width: 100%;
-    max-width: 200px; /* Smaller buttons */
-    height: 36px; /* Slightly shorter */
-    line-height: 24px;
-    font-size: 13px; /* Slightly smaller text */
-    padding: 5px 10px;
+    max-width: 180px; /* Smaller buttons */
+    height: 34px;
+    line-height: 22px;
+    font-size: 12px;
+    padding: 5px 8px;
     box-sizing: border-box;
   }
 
@@ -412,12 +417,12 @@ body.dark .blog-box::after {
     box-sizing: border-box;
   }
 
-  /* Ensure consistent colors */
+  /* Consistent colors */
   body.dark,
   body.dark .profile-container,
   body.dark #blog,
   body.dark .blog-box {
-    background-color: #1a1a1a;
+    background-color: #2e2c3e; /* Match body */
     color: #c0c7d1;
   }
 
@@ -431,7 +436,7 @@ body.dark .blog-box::after {
   .tag,
   .social-button,
   .custom-button {
-    color: #e0e0e0 !important; /* Override unexpected colors */
+    color: #e0e0e0 !important;
   }
 
   .content {
@@ -439,13 +444,47 @@ body.dark .blog-box::after {
   }
 
   a, a:hover, a:visited, a:active {
-    color: #e0e0e0 !important; /* Prevent blue links */
+    color: #e0e0e0 !important;
     text-decoration: none;
   }
 
   .button {
     right: 10px;
     font-size: 1.5rem;
+    padding: 8px; /* Larger tap area */
+    z-index: 10000;
+    color: #e0e0e0 !important;
+    background-color: transparent;
+    border-radius: 50%; /* Circular touch area */
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 12px;
+  }
+
+  .custom-button {
+    max-width: 160px;
+    font-size: 11px;
+  }
+
+  .social-button {
+    max-width: 160px;
+    font-size: 11px;
+    padding: 5px 8px;
+  }
+
+  .blog-box {
+    padding: 8px;
+  }
+
+  .title {
+    font-size: 14px;
+  }
+
+  .content {
+    font-size: 13px;
   }
 }
 
@@ -456,51 +495,100 @@ body.dark .blog-box::after {
   }
 
   .profile-image {
-    width: 60px;
-    height: 60px;
-    margin: 0 auto 8px;
+    width: 50px;
+    height: 50px;
+    margin: 0 auto 6px;
   }
 
   .profile-info h2 {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .gender-button {
-    font-size: 12px;
-    padding: 4px 8px;
+    font-size: 11px;
+    padding: 3px 6px;
   }
 
   .interest-section h3 {
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .social-links {
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
   }
 
+  .custom-button,
   .social-button {
-    width: 100%;
-    max-width: 200px; /* Match custom-button */
-    font-size: 13px;
-    padding: 6px 10px;
+    max-width: 140px;
+    height: 32px;
+    line-height: 20px;
   }
 
   .blog-box {
-    padding: 8px;
+    padding: 6px;
   }
 
   .title {
-    font-size: 15px;
+    font-size: 13px;
   }
 
   .content {
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .tag {
+    font-size: 12px;
+    padding: 3px 8px;
+  }
+
+  .button {
+    font-size: 1.25rem;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 360px) {
+  .content-container {
+    padding: 8px;
+  }
+
+  .main-content {
+    padding: 0 8px;
+  }
+
+  .profile-container {
+    padding: 10px;
+  }
+
+  .custom-button,
+  .social-button {
+    max-width: 120px;
+    font-size: 10px;
+    height: 30px;
+    line-height: 18px;
+    padding: 4px 6px;
+  }
+
+  .profile-image {
+    width: 45px;
+    height: 45px;
+  }
+
+  .profile-info h2 {
     font-size: 13px;
-    padding: 4px 10px;
+  }
+
+  .interest-section h3 {
+    font-size: 15px;
+  }
+
+  .title {
+    font-size: 12px;
+  }
+
+  .content {
+    font-size: 11px;
   }
 }
