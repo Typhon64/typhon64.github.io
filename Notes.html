@@ -1,0 +1,2088 @@
+<script type="text/javascript">
+    // Global state variables
+    var gk_isXlsx = false;  // Flag to indicate if the file is an XLSX format
+    var gk_xlsxFileLookup = {};  // Lookup table for XLSX files
+    var gk_fileData = {};  // Storage for file data
+
+    /**
+     * Checks if a cell contains data
+     * @param {string|null} cell - The cell value to check
+     * @returns {boolean} - True if cell has content, false otherwise
+     */
+    function filledCell(cell) {
+        return cell !== '' && cell != null;
+    }
+
+    /**
+     * Loads and processes file data
+     * @param {string} filename - Name of the file to load
+     * @returns {string} - Processed file content as CSV
+     */
+    function loadFileData(filename) {
+        // Input validation
+        if (!filename || typeof filename !== 'string') {
+            console.error('Invalid filename provided');
+            return "";
+        }
+        
+        // Handle XLSX files
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                // Check if file data exists
+                if (!gk_fileData[filename]) {
+                    console.error('File data not found for:', filename);
+                    return "";
+                }
+                
+                // Read and process XLSX workbook
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                if (!workbook || !workbook.SheetNames || workbook.SheetNames.length === 0) {
+                    console.error('Invalid workbook structure');
+                    return "";
+                }
+                
+                // Get first sheet
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+                if (!worksheet) {
+                    console.error('Worksheet not found');
+                    return "";
+                }
+
+                // Convert sheet to JSON and filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                if (!Array.isArray(jsonData) || jsonData.length === 0) {
+                    console.error('No data found in worksheet');
+                    return "";
+                }
+                
+                // Filter out completely empty rows
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+                if (filteredData.length === 0) {
+                    console.error('No non-empty rows found after filtering');
+                    return "";
+                }
+
+                // Find header row using a heuristic approach
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                    row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback to first row if no suitable header found
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                    headerRowIndex = 0;
+                }
+
+                // Convert filtered data back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error('Error processing XLSX file:', e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+    }
+</script>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Personal blog about technology, privacy, and security">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <title>Typhon64 Notes - Test</title>
+    
+    <!-- External CSS Dependencies -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/standalone/umd/vis-network.min.css">
+    
+    <style>
+        /* CSS Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-transition: all 0.3s ease;
+            -moz-transition: all 0.3s ease;
+            transition: all 0.3s ease;
+        }
+
+        /* CSS Custom Properties (Variables) */
+        :root {
+            /* Layout Dimensions */
+            --header-height: 60px;
+            --sidebar-width: 280px;
+            --graph-width: 300px;
+            
+            /* Colors and Effects */
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --border: 1px solid rgba(255, 255, 255, 0.1);
+            
+            /* Dark Theme Colors */
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --accent: #9b4dff;
+            --accent-hover: #7c4dff;
+            --surface-dark: #2d2d2d;
+            --text-dark: #ffffff;
+            
+            /* Light Theme Colors */
+            --bg-primary-light: #ffffff;
+            --bg-secondary-light: #f5f5f5;
+            --text-primary-light: #333333;
+            --text-secondary-light: #666666;
+            --surface-light: #ffffff;
+            --text-light: #2c3e50;
+            --border-light: 1px solid rgba(0, 0, 0, 0.1);
+            
+            /* Common Colors */
+            --border-color: #404040;
+            --bg-hover: #404040;
+            --link-color: #3498db;
+            --link-hover: #2980b9;
+        }
+
+        /* Base Body Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Light Theme Overrides */
+        body.light {
+            background-color: var(--bg-primary-light);
+            color: var(--text-primary-light);
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f5f5;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --border-color: #e0e0e0;
+            --bg-hover: #e0e0e0;
+            --link-color: #2980b9;
+            --link-hover: #3498db;
+        }
+
+        /* Header Styles */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem;
+            z-index: 100;
+            border-radius: 0 0 16px 16px;
+        }
+
+        .breadcrumbs h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-height: 2.7rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Hamburger menu styles */
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            margin-left: 0.5rem;
+        }
+
+        /* Responsive Design for Mobile */
+        @media (max-width: 600px) {
+            .header {
+                padding: 0 0.5rem;
+                height: 48px;
+            }
+            .breadcrumbs h1 {
+                font-size: 1.05rem;
+                min-height: 2rem;
+                gap: 0.5rem;
+                max-width: 60vw;
+            }
+            .profile-avatar {
+                width: 1.7rem;
+                height: 1.7rem;
+            }
+            .navigation, .hamburger {
+                display: none !important;
+            }
+        }
+        @media (min-width: 601px) {
+            .hamburger {
+                display: none !important;
+            }
+            .navigation {
+                display: flex !important;
+                position: static;
+                flex-direction: row;
+                background: none;
+                box-shadow: none;
+                padding: 0;
+            }
+        }
+
+        /* Light Theme Header Overrides */
+        body.light .header {
+            background-color: var(--bg-secondary-light);
+            border-bottom: var(--border-light);
+            border-radius: 0 0 16px 16px;
+        }
+
+        /* Breadcrumbs Navigation */
+        .breadcrumbs {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .breadcrumbs h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-height: 2.7rem;
+        }
+
+        .profile-avatar {
+            width: 2.7rem;
+            height: 2.7rem;
+            border-radius: 50%;
+            object-fit: cover;
+            vertical-align: middle;
+            background: var(--bg-secondary);
+        }
+
+        /* Modernize box shadows and border radii */
+        .about-section,
+        .highlights-section,
+        .post-item,
+        .header {
+            border-radius: 16px;
+            box-shadow: 0 4px 24px 0 rgba(0,0,0,0.13);
+            background: var(--bg-secondary);
+        }
+        body.light .about-section,
+        body.light .highlights-section,
+        body.light .post-item,
+        body.light .header {
+            background: var(--bg-secondary-light);
+            box-shadow: 0 4px 24px 0 rgba(0,0,0,0.08);
+        }
+        .header {
+            border-radius: 0 0 16px 16px;
+        }
+        body.light .header {
+            border-radius: 0 0 16px 16px;
+        }
+
+        /* Navigation (Categories) */
+        .navigation {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .navigation::-webkit-scrollbar {
+            display: none;
+        }
+        .navigation a,
+        .navigation button {
+            background-color: var(--surface-dark);
+            color: var(--text-dark);
+            padding: 8px 12px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 3px 10px 0 rgba(80, 80, 120, 0.18);
+            min-width: 80px;
+        }
+        .navigation a,
+        .navigation button {
+            white-space: nowrap;
+        }
+
+        /* Light Theme Navigation Overrides */
+        body.light .navigation a,
+        body.light .navigation button {
+            background-color: var(--surface-light);
+            color: var(--text-light);
+        }
+
+        /* Navigation Hover Effects */
+        .navigation a:hover,
+        .navigation button:hover {
+            background-color: var(--accent);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow-color);
+        }
+
+        /* Main Layout Container */
+        .main-container {
+            display: grid;
+            grid-template-columns: var(--sidebar-width) 1fr var(--graph-width);
+            gap: 1rem;
+            padding: calc(var(--header-height) + 1rem) 1rem 1rem;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background-color: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            height: calc(100vh - var(--header-height) - 2rem);
+            position: sticky;
+            top: calc(var(--header-height) + 1rem);
+            overflow-y: auto;
+            border: var(--border);
+        }
+
+        /* Light Theme Sidebar Overrides */
+        body.light .sidebar {
+            background-color: var(--bg-secondary-light);
+            border: var(--border-light);
+        }
+
+        /* Search Bar Styles */
+        .search-bar {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background-color: var(--bg-primary);
+            border: var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Light Theme Search Bar Overrides */
+        body.light .search-bar {
+            background-color: var(--bg-primary-light);
+            color: var(--text-primary-light);
+            border: var(--border-light);
+        }
+
+        /* Search Bar Focus State */
+        .search-bar:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(124, 77, 255, 0.2);
+        }
+
+        /* Section Headers */
+        .section-header {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin: 1.5rem 0 0.75rem;
+        }
+
+        /* Light Theme Section Header Overrides */
+        body.light .section-header {
+            color: var(--text-secondary-light);
+        }
+
+        /* Sidebar Navigation Lists */
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar ul ul {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Sidebar Links */
+        .sidebar a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 6px;
+        }
+
+        /* Toggle Button Styles */
+        .toggle {
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: var(--border);
+            cursor: pointer;
+        }
+
+        /* Toggle Arrow Animation */
+        .toggle .arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .toggle.active .arrow {
+            transform: rotate(90deg);
+        }
+
+        /* Main Content Area */
+        .content {
+            background-color: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            min-height: calc(100vh - var(--header-height) - 2rem);
+            border: var(--border);
+        }
+
+        /* Light Theme Content Overrides */
+        body.light .content {
+            background-color: var(--bg-secondary-light);
+            border: var(--border-light);
+        }
+
+        /* Content Container */
+        .content-container {
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        /* Folder Info Display */
+        .folder-info {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        /* About Section Styles */
+        .about-section {
+            margin-bottom: 2.5rem;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            box-shadow: 0 4px 24px 0 rgba(0,0,0,0.10);
+            padding: 2rem;
+        }
+
+        .about-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .about-section p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Post List Styles */
+        .post-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            padding: 1rem;
+        }
+
+        .post-item {
+            background-color: var(--bg-primary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        /* Light Theme Post Item Overrides */
+        body.light .post-item,
+        body.light .highlight-category .toggle,
+        body.light .highlight-category .content,
+        body.light .highlight-category .post-item {
+            background-color: var(--bg-primary-light);
+            border: var(--border-light);
+        }
+
+        /* Post Item Hover Effect */
+        .post-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px var(--shadow-color);
+        }
+
+        /* Post Header Styles */
+        .post-header {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .post-header .date {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .post-header .date i {
+            color: var(--accent);
+        }
+
+        .post-header .title {
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            font-weight: 600;
+            text-decoration: none;
+            line-height: 1.4;
+        }
+
+        .post-header .title:hover {
+            color: var(--accent);
+        }
+
+        /* Post Content Styles */
+        .post-content {
+            display: none;
+            padding: 2rem;
+            background-color: var(--bg-primary);
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.8;
+            font-size: 1rem;
+            box-shadow: 0 4px 6px var(--shadow-color);
+        }
+
+        .post-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        /* Post Meta Information */
+        .post-meta {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0 1.5rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .post-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .post-meta i {
+            color: var(--accent);
+        }
+
+        /* Post Content Typography */
+        .post-content h2 {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .post-content h3 {
+            font-size: 1.6rem;
+            margin: 2rem 0 1rem;
+            color: var(--text-primary);
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .post-content p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Light Theme Post Content Overrides */
+        body.light .post-content p {
+            color: var(--text-secondary-light);
+        }
+
+        /* Graph Sidebar Styles */
+        .graph-sidebar {
+            background-color: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            height: calc(100vh - var(--header-height) - 2rem);
+            position: sticky;
+            top: calc(var(--header-height) + 1rem);
+            border: var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        /* Light Theme Graph Sidebar Overrides */
+        body.light .graph-sidebar {
+            background-color: var(--bg-secondary-light);
+            border: var(--border-light);
+        }
+
+        /* Graph Sidebar Header */
+        .graph-sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Graph Control Buttons */
+        .expand-btn, .shrink-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 6px;
+        }
+
+        /* Light Theme Button Overrides */
+        body.light .expand-btn,
+        body.light .shrink-btn {
+            color: var(--text-primary-light);
+            background-color: var(--bg-primary-light);
+        }
+
+        /* Button Hover Effects */
+        .expand-btn:hover, .shrink-btn:hover {
+            color: var(--text-primary);
+            background-color: var(--bg-primary);
+        }
+
+        /* Graph View Container */
+        .post-graph-view {
+            height: 300px;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: var(--bg-primary);
+            border: var(--border);
+            flex-shrink: 0;
+        }
+
+        /* Light Theme Graph View Overrides */
+        body.light .post-graph-view {
+            background-color: var(--bg-primary-light);
+            border: var(--border-light);
+        }
+
+        /* Table of Contents Styles */
+        .toc-divider {
+            margin: 1rem 0;
+            border: none;
+            border-top: var(--border);
+        }
+
+        .table-of-contents {
+            background-color: var(--bg-primary);
+            border-radius: 8px;
+            border: var(--border);
+            padding: 1rem;
+            flex-grow: 1;
+            overflow-y: auto;
+            max-height: 200px;
+        }
+
+        /* Light Theme TOC Overrides */
+        body.light .table-of-contents {
+            background-color: var(--bg-primary-light);
+            border: var(--border-light);
+        }
+
+        .table-of-contents h3 {
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .table-of-contents ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .table-of-contents li {
+            margin: 0.5rem 0;
+        }
+
+        .table-of-contents a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            display: block;
+            padding: 0.25rem 0;
+        }
+
+        .table-of-contents a:hover {
+            color: var(--text-primary);
+        }
+
+        /* Category Button Styles */
+        .category-button {
+            background-color: var(--surface-dark);
+            color: var(--text-dark);
+            padding: 8px 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 3px 10px 0 rgba(80, 80, 120, 0.18);
+        }
+
+        /* Light Theme Category Button Overrides */
+        body.light .category-button {
+            background-color: var(--surface-light);
+            color: var(--text-light);
+        }
+
+        /* Category Button Hover Effects */
+        .category-button:hover {
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .category-button.active {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        /* Animation Keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Responsive Design Breakpoints */
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: var(--sidebar-width) 1fr;
+            }
+            .graph-sidebar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                display: none;
+            }
+            .content {
+                padding: 1rem;
+            }
+            .post-content {
+                padding: 1.5rem;
+            }
+            .navigation {
+                gap: 0.5rem;
+            }
+            .highlight-category {
+                max-width: 100%;
+            }
+        }
+
+        /* Graph Overlay Styles */
+        .graph-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+        }
+
+        .graph-overlay.active {
+            display: flex;
+        }
+
+        .graph-overlay-content {
+            position: relative;
+            width: 90%;
+            max-width: 1000px;
+            height: 90%;
+            max-height: 90vh;
+            margin: auto;
+            background-color: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .overlay-graph-view {
+            flex-grow: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: var(--bg-primary);
+            border: var(--border);
+            width: 100%;
+        }
+
+        /* Focus Mode Toggle Button */
+        .focus-mode-toggle {
+            position: fixed;
+            top: calc(var(--header-height) + 1rem);
+            right: calc(var(--graph-width) + 2rem);
+            z-index: 1000;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            border: var(--border);
+            border-radius: 8px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px var(--shadow-color);
+            transition: all 0.3s ease;
+            opacity: 0.9;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Focus Mode Toggle Hover Effect */
+        .focus-mode-toggle:hover {
+            transform: translateY(-2px);
+            background-color: var(--bg-hover);
+            opacity: 1;
+        }
+
+        /* Focus Mode Layout Changes */
+        .focus-mode .sidebar,
+        .focus-mode .graph-sidebar,
+        .focus-mode .header {
+            transform: translateX(-100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .focus-mode .content {
+            margin: 0;
+            padding: 2rem;
+            max-width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .focus-mode .focus-mode-toggle {
+            right: 2rem;
+        }
+
+        .focus-mode .focus-mode-toggle i {
+            transform: rotate(180deg);
+        }
+
+        /* Theme Toggle in Focus Mode */
+        .focus-mode .theme-toggle {
+            position: fixed;
+            top: calc(var(--header-height) + 1rem);
+            right: 8rem;
+            z-index: 1000;
+            transform: none;
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Responsive Focus Mode Adjustments */
+        @media (max-width: 1200px) {
+            .focus-mode-toggle {
+                right: 2rem;
+            }
+            .focus-mode .theme-toggle {
+                right: 8rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .focus-mode-toggle {
+                top: calc(var(--header-height) + 0.5rem);
+                right: 1rem;
+            }
+            .focus-mode .theme-toggle {
+                right: 6rem;
+            }
+        }
+
+        /* Highlights Section (Accordion) */
+        .highlights-section {
+            margin-top: 0;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            box-shadow: 0 4px 24px 0 rgba(0,0,0,0.10);
+            padding: 2rem;
+        }
+        .highlights-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+        .accordion-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .accordion-item {
+            background: none;
+            border: none;
+        }
+        .accordion-toggle {
+            width: 100%;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            margin-bottom: 0.5rem;
+            padding: 0;
+            outline: none;
+            box-shadow: none;
+            transition: background 0.2s;
+        }
+        .accordion-toggle:focus, .accordion-toggle:active {
+            outline: none;
+            box-shadow: none;
+            background: none;
+            color: var(--text-primary);
+        }
+        .accordion-content {
+            padding-left: 2rem;
+        }
+        .accordion-content p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin: 0 0 0.5rem 0;
+        }
+        .recent-posts {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .recent-posts li {
+            margin-bottom: 0.5rem;
+        }
+        .recent-link {
+            color: #a991ff;
+            text-decoration: none;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .recent-link:hover {
+            text-decoration: underline;
+            color: var(--accent);
+        }
+        /* Light Theme Overrides */
+        body.light .highlights-section {
+            background: var(--bg-secondary-light);
+            border: var(--border-light);
+        }
+        body.light .accordion-content p {
+            color: var(--text-secondary-light);
+        }
+
+        /* Responsive Design for Mobile */
+        @media (max-width: 600px) {
+            .header {
+                padding: 0 0.5rem;
+                height: 48px;
+            }
+            .breadcrumbs h1 {
+                font-size: 1.1rem;
+                min-height: 2.1rem;
+            }
+            .about-section,
+            .highlights-section {
+                padding: 1rem 0.5rem;
+                margin-left: -0.5rem;
+                margin-right: -0.5rem;
+                border-radius: 12px;
+            }
+            .about-section {
+                margin-bottom: 1.2rem;
+            }
+            .highlights-section {
+                margin-top: 1.2rem;
+            }
+            .navigation {
+                gap: 0.25rem;
+                padding-bottom: 0.5rem;
+                overflow-x: auto;
+                flex-wrap: nowrap;
+            }
+            .navigation a,
+            .navigation button {
+                font-size: 0.85rem;
+                padding: 6px 8px;
+                min-width: 64px;
+                border-radius: 6px;
+                box-shadow: 0 3px 12px 0 rgba(80, 80, 120, 0.22);
+            }
+            .content {
+                padding: 0.5rem;
+            }
+            .highlights-section h2 {
+                font-size: 1.2rem;
+                margin-bottom: 1rem;
+            }
+            .about-section h2 {
+                font-size: 1.2rem;
+                margin-bottom: 1rem;
+            }
+        }
+
+        /* Add style for test note */
+        .test-note {
+            color: #a991ff;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body class="dark">
+    <button class="focus-mode-toggle" id="focusModeToggle" aria-label="Toggle focus mode">
+        <i class="fas fa-expand"></i>
+        <span>Focus Mode</span>
+    </button>
+    
+    <header class="header">
+        <div class="breadcrumbs" id="breadcrumbs">
+            <h1><i class="fas fa-book-open"></i> Typhon64 Notes</h1>
+        </div>
+        <button class="hamburger" id="hamburgerMenu" aria-label="Open menu">&#9776;</button>
+        <nav class="navigation" id="mainNav">
+            <button class="category-button" onclick="filterPosts('tech')" aria-label="Technology filter">
+                <i class="fas fa-microchip"></i> Tech
+            </button>
+            <button class="category-button" onclick="filterPosts('privacy')" aria-label="Privacy filter">
+                <i class="fas fa-user-secret"></i> Privacy
+            </button>
+            <button class="category-button" onclick="filterPosts('security')" aria-label="Security filter">
+                <i class="fas fa-shield-alt"></i> Security
+            </button>
+            <button class="category-button" onclick="filterPosts('all')" aria-label="All Posts filter">
+                <i class="fas fa-th-large"></i> All
+            </button>
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                <i class="fas fa-moon" id="themeIcon"></i> Theme
+            </button>
+            <a href="https://typhon64.github.io" class="home-button" aria-label="Go to main site">
+                <i class="fas fa-home"></i> Main
+            </a>
+        </nav>
+    </header>
+
+    <div class="main-container">
+        <aside class="sidebar">
+            <input type="text" class="search-bar" placeholder="Search posts..." oninput="debouncedSearch(this.value)" aria-label="Search blog posts">
+            <div class="section-header">General</div>
+            <ul>
+                <li><a href="#" onclick="resetToAbout(); return false;" aria-label="About Me">
+                    <i class="fas fa-user"></i> About Me
+                </a></li>
+            </ul>
+            <hr>
+            <div class="section-header">Explorer</div>
+            <ul>
+                <li>
+                    <div class="toggle active" onclick="toggleMenu(this)" aria-expanded="true" role="button" tabindex="0">
+                        <i class="fas fa-folder"></i> <i class="fas fa-chevron-right arrow"></i> Explorer
+                    </div>
+                    <ul style="display: block;">
+                        <li>
+                            <div class="toggle active" onclick="toggleMenu(this)" aria-expanded="true" role="button" tabindex="0">
+                                <i class="fas fa-book"></i> <i class="fas fa-chevron-right arrow"></i> Blogs
+                            </div>
+                            <ul style="display: block;">
+                                <li><a href="#" onclick="loadCategory('linux'); return false;" aria-label="Linux category">
+                                    <i class="fab fa-linux"></i> Linux
+                                </a></li>
+                                <li><a href="#" onclick="loadCategory('ctf'); return false;" aria-label="CTF category">
+                                    <i class="fas fa-flag"></i> CTF
+                                </a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </aside>
+
+        <main class="content">
+            <p class="folder-info" id="folderInfo" style="display: none;"></p>
+            <div class="about-section" id="aboutSection">
+                <h2>About Me</h2>
+                <p>I'm Typhon64, an IT enthusiast focused on OPSEC, OSINT, Linux security, malware analysis, and CTFs.<br>
+                Here, I share practical notes, research, and insights from across the cybersecurity and IT world.<br>
+                For more details or to get in touch, visit my main homepage or check out my work on <br> <a href="https://github.com/Typhon64" target="_blank" rel="noopener">GitHub</a>.</p>
+            </div>
+            <div class="highlights-section">
+                <h2>Highlights</h2>
+                <div class="accordion-group">
+                    <div class="accordion-item">
+                        <button class="accordion-toggle" aria-expanded="false" onclick="toggleAccordion(this)">
+                            <span class="accordion-arrow">&#9654;</span> <i class="fas fa-star"></i> Projects
+                        </button>
+                        <div class="accordion-content" style="display: none;">
+                            <p>Test <a href="https://github.com/typhon64" target="_blank" rel="noopener">GitHub</a></p>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <button class="accordion-toggle" aria-expanded="false" onclick="toggleAccordion(this)">
+                            <span class="accordion-arrow">&#9654;</span> <i class="fas fa-book"></i> Recent Posts
+                        </button>
+                        <div class="accordion-content" style="display: none;">
+                            <ul class="recent-posts">
+                                <li><a href="#" class="recent-link" onclick="loadPost('post1'); return false;"><i class="fas fa-angle-right"></i> Configuring a Linux Firewall with iptables</a></li>
+                                <li><a href="#" class="recent-link" onclick="loadPost('post2'); return false;"><i class="fas fa-angle-right"></i> Automating Linux Backups with rsync</a></li>
+                                <li><a href="#" class="recent-link" onclick="loadPost('post3'); return false;"><i class="fas fa-angle-right"></i> Nix on macOS using nix-darwin</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="post-list" id="postList" style="display: none;"></div>
+            <div class="post-content" id="post1">
+                <div class="test-note">These blog posts are for testing purposes.</div>
+                <h2>Configuring a Linux Firewall with iptables</h2>
+                <div class="post-meta">
+                    <span class="date"><i class="fas fa-calendar"></i> March 15, 2024</span>
+                    <span class="tags"><i class="fas fa-tags"></i> linux, security, networking</span>
+                </div>
+                <h3>Overview</h3>
+                <p>Learn how to secure your Linux server using iptables to manage network traffic effectively.</p>
+                <h3>Implementation</h3>
+                <p>Step-by-step guide to setting up basic firewall rules and advanced configurations.</p>
+            </div>
+            <div class="post-content" id="post2">
+                <div class="test-note">These blog posts are for testing purposes.</div>
+                <h2>Automating Linux Backups with rsync</h2>
+                <div class="post-meta">
+                    <span class="date"><i class="fas fa-calendar"></i> March 10, 2024</span>
+                    <span class="tags"><i class="fas fa-tags"></i> linux, backup, automation</span>
+                </div>
+                <h3>Overview</h3>
+                <p>Explore how to use rsync for efficient and reliable backups on Linux systems.</p>
+                <h3>Implementation</h3>
+                <p>Practical examples of rsync scripts for local and remote backups.</p>
+            </div>
+            <div class="post-content" id="post3">
+                <div class="test-note">These blog posts are for testing purposes.</div>
+                <h2>Web Security CTF Challenges</h2>
+                <div class="post-meta">
+                    <span class="date"><i class="fas fa-calendar"></i> March 1, 2024</span>
+                    <span class="tags"><i class="fas fa-tags"></i> security, ctf, web</span>
+                </div>
+                <h3>Overview</h3>
+                <p>Common web security challenges in CTF competitions.</p>
+                <h3>Implementation</h3>
+                <p>Solutions and walkthroughs for various web security challenges.</p>
+            </div>
+        </main>
+
+        <aside class="graph-sidebar" id="graphSidebar">
+            <div class="graph-sidebar-header">
+                <h3>Explore Posts</h3>
+                <button class="expand-btn" id="expand-graph" onclick="toggleGraphExpand()" aria-label="Expand graph view">
+                    <i class="fas fa-expand"></i>
+                </button>
+            </div>
+            <div class="post-graph-view" id="postGraphView" style="width: 100%; height: 300px;"></div>
+            <hr class="toc-divider">
+            <div class="table-of-contents" id="postToc">
+                <h3>Table of Contents</h3>
+                <ul></ul>
+            </div>
+        </aside>
+    </div>
+
+    <div class="graph-overlay" id="graphOverlay">
+        <div class="graph-overlay-content">
+            <button class="shrink-btn" id="shrink-graph" onclick="toggleGraphExpand()" aria-label="Close graph view">
+                <i class="fas fa-compress"></i> Close
+            </button>
+            <div class="overlay-graph-view" id="overlayGraphView"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/standalone/umd/vis-network.min.js"></script>
+    <script>
+        const postsData = {
+            linux: [
+                {
+                    id: 'post1',
+                    title: 'Configuring a Linux Firewall with iptables',
+                    date: '2024-03-15',
+                    tags: ['linux', 'security', 'networking'],
+                    content: `
+                        <h2>Configuring a Linux Firewall with iptables</h2>
+                        <div class="post-meta">
+                            <span class="date"><i class="fas fa-calendar"></i> March 15, 2024</span>
+                            <span class="tags"><i class="fas fa-tags"></i> linux, security, networking</span>
+                        </div>
+                        <h3>Overview</h3>
+                        <p>Learn how to secure your Linux server using iptables to manage network traffic effectively.</p>
+                        <h3>Implementation</h3>
+                        <p>Step-by-step guide to setting up basic firewall rules and advanced configurations.</p>
+                    `
+                },
+                {
+                    id: 'post2',
+                    title: 'Automating Linux Backups with rsync',
+                    date: '2024-03-10',
+                    tags: ['linux', 'backup', 'automation'],
+                    content: `
+                        <h2>Automating Linux Backups with rsync</h2>
+                        <div class="post-meta">
+                            <span class="date"><i class="fas fa-calendar"></i> March 10, 2024</span>
+                            <span class="tags"><i class="fas fa-tags"></i> linux, backup, automation</span>
+                        </div>
+                        <h3>Overview</h3>
+                        <p>Explore how to use rsync for efficient and reliable backups on Linux systems.</p>
+                        <h3>Implementation</h3>
+                        <p>Practical examples of rsync scripts for local and remote backups.</p>
+                    `
+                }
+            ],
+            ctf: [
+                {
+                    id: 'post3',
+                    title: 'Web Security CTF Challenges',
+                    date: '2024-03-01',
+                    tags: ['security', 'ctf', 'web'],
+                    content: `
+                        <h2>Web Security CTF Challenges</h2>
+                        <div class="post-meta">
+                            <span class="date"><i class="fas fa-calendar"></i> March 1, 2024</span>
+                            <span class="tags"><i class="fas fa-tags"></i> security, ctf, web</span>
+                        </div>
+                        <h3>Overview</h3>
+                        <p>Common web security challenges in CTF competitions.</p>
+                        <h3>Implementation</h3>
+                        <p>Solutions and walkthroughs for various web security challenges.</p>
+                    `
+                }
+            ]
+        };
+
+        let currentTheme = 'dark';
+        let currentSearch = '';
+        let currentFilter = 'all';
+        let isGraphExpanded = false;
+        let currentPostId = null;
+        let networkInstance = null;
+        let isFocusMode = false;
+
+        function destroyNetwork() {
+            if (networkInstance) {
+                networkInstance.destroy();
+                networkInstance = null;
+            }
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>"']/g, match => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            })[match]);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setTheme(currentTheme);
+            handleURL();
+            renderListView();
+            renderGraphSidebar();
+            
+            // Event delegation for toggle buttons
+            document.querySelectorAll('.toggle').forEach(toggle => {
+                toggle.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    toggleMenu(toggle);
+                });
+
+                // Klavye erişilebilirliği için
+                toggle.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleMenu(toggle);
+                    }
+                });
+            });
+
+            // Graph overlay handling
+            const graphOverlay = document.getElementById('graphOverlay');
+            const handleOverlayClick = (e) => {
+                if (e.target === graphOverlay) {
+                    toggleGraphExpand();
+                }
+            };
+            
+            graphOverlay.addEventListener('click', handleOverlayClick);
+            graphOverlay.addEventListener('touchend', handleOverlayClick);
+
+            // Search input handling with debounce
+            const searchInput = document.querySelector('.search-bar');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    debouncedSearch(e.target.value);
+                });
+            }
+
+            // Window resize handling with debounce
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    if (isGraphExpanded) {
+                        renderOverlayGraph();
+                    } else {
+                        renderGraphSidebar();
+                    }
+                }, 250);
+            });
+
+            // Focus mode toggle
+            const focusModeToggle = document.getElementById('focusModeToggle');
+            if (focusModeToggle) {
+                focusModeToggle.addEventListener('click', toggleFocusMode);
+                focusModeToggle.addEventListener('keydown', e => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleFocusMode();
+                    }
+                });
+                
+                // İlk yüklemede toggle'ın görünürlüğünü ayarla
+                updateFocusModeToggle();
+            }
+
+            // Tag cloud ve recent posts güncelleme
+            generateTagCloud();
+            updateRecentPosts();
+
+            // Explorer menüsü için event listener
+            document.addEventListener('click', (e) => {
+                const toggle = e.target.closest('.toggle');
+                if (toggle) {
+                    e.preventDefault();
+                    toggleMenu(toggle);
+                }
+            });
+
+            // Klavye erişilebilirliği için
+            document.addEventListener('keydown', (e) => {
+                const toggle = e.target.closest('.toggle');
+                if (toggle && (e.key === 'Enter' || e.key === ' ')) {
+                    e.preventDefault();
+                    toggleMenu(toggle);
+                }
+            });
+        });
+
+        function toggleTheme() {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(currentTheme);
+        }
+
+        function setTheme(theme) {
+            document.body.className = theme;
+            document.getElementById('themeIcon').className = `fas fa-${theme === 'dark' ? 'moon' : 'sun'}`;
+            renderGraphSidebar();
+            if (isGraphExpanded) renderOverlayGraph();
+            renderListView();
+        }
+
+        function toggleMenu(element) {
+            const submenu = element.nextElementSibling;
+            if (submenu && submenu.tagName === 'UL') {
+                const isActive = element.classList.contains('active');
+                element.classList.toggle('active');
+                submenu.style.display = isActive ? 'none' : 'block';
+                element.setAttribute('aria-expanded', !isActive);
+            }
+        }
+
+        function toggleGraphExpand() {
+            isGraphExpanded = !isGraphExpanded;
+            const graphSidebar = document.getElementById('graphSidebar');
+            const graphOverlay = document.getElementById('graphOverlay');
+            graphSidebar.style.display = isGraphExpanded ? 'none' : 'block';
+            graphOverlay.style.display = isGraphExpanded ? 'flex' : 'none';
+            document.body.style.overflow = isGraphExpanded ? 'hidden' : '';
+            if (isGraphExpanded) renderOverlayGraph();
+            else renderGraphSidebar();
+        }
+
+        const graphOptions = {
+            nodes: {
+                shape: 'dot',
+                size: 18,
+                font: { size: 13, face: 'Inter', color: '#fff' },
+                borderWidth: 3,
+                color: {
+                    background: '#7c4dff',
+                    border: '#fff',
+                    highlight: {
+                        background: '#a991ff',
+                        border: '#fff'
+                    }
+                },
+                shadow: {
+                    enabled: true,
+                    color: 'rgba(80,80,120,0.18)',
+                    size: 10,
+                    x: 0,
+                    y: 2
+                }
+            },
+            edges: {
+                width: 2.5,
+                color: {
+                    color: '#a991ff',
+                    highlight: '#fff',
+                    hover: '#fff'
+                },
+                shadow: true,
+                smooth: { type: 'dynamic' }
+            },
+            physics: {
+                forceAtlas2Based: {
+                    gravitationalConstant: -180,
+                    centralGravity: 0.08,
+                    springLength: 110,
+                    springConstant: 0.12
+                },
+                maxVelocity: 30,
+                solver: 'forceAtlas2Based',
+                timestep: 0.25,
+                stabilization: { iterations: 200 }
+            },
+            interaction: { hover: true, tooltipDelay: 200, zoomView: true, dragView: true },
+            layout: {
+                improvedLayout: true
+            }
+        };
+
+        function updateGraphTheme() {
+            const isLight = document.body.classList.contains('light');
+            graphOptions.nodes.font.color = isLight ? '#333333' : '#ffffff';
+            graphOptions.edges.color = {
+                color: isLight ? 'rgba(124, 77, 255, 0.4)' : 'rgba(124, 77, 255, 0.4)',
+                highlight: 'rgba(124, 77, 255, 0.6)',
+                hover: 'rgba(124, 77, 255, 0.6)'
+            };
+        }
+
+        function renderGraphSidebar() {
+            const container = document.getElementById('postGraphView');
+            if (!container) return;
+            
+            destroyNetwork();
+            updateGraphTheme();
+            
+            const nodes = [];
+            const edges = [];
+            const nodeMap = new Map();
+            const edgeSet = new Set();
+            
+            // Batch process nodes and edges
+            const processData = () => {
+                Object.entries(postsData).forEach(([category, posts]) => {
+                    posts.forEach((post, index) => {
+                        const nodeId = `${category}-${index}`;
+                        nodes.push({
+                            id: nodeId,
+                            label: escapeHTML(post.title),
+                            title: escapeHTML(post.title),
+                            group: category,
+                            color: {
+                                background: category === 'linux' ? '#1E90FF' : '#FF4500',
+                                border: category === 'linux' ? '#1873CC' : '#CC3700',
+                                highlight: {
+                                    background: category === 'linux' ? '#1873CC' : '#CC3700',
+                                    border: category === 'linux' ? '#1E90FF' : '#FF4500'
+                                }
+                            }
+                        });
+                        nodeMap.set(post.id, nodeId);
+                    });
+                });
+
+                Object.values(postsData).forEach(posts => {
+                    posts.forEach((post, i) => {
+                        posts.forEach((otherPost, j) => {
+                            if (i < j && post.tags.some(tag => otherPost.tags.includes(tag))) {
+                                const edgeId = `${nodeMap.get(post.id)}-${nodeMap.get(otherPost.id)}`;
+                                if (!edgeSet.has(edgeId)) {
+                                    edges.push({
+                                        from: nodeMap.get(post.id),
+                                        to: nodeMap.get(otherPost.id)
+                                    });
+                                    edgeSet.add(edgeId);
+                                }
+                            }
+                        });
+                    });
+                });
+            };
+
+            processData();
+            
+            const data = { 
+                nodes: new vis.DataSet(nodes), 
+                edges: new vis.DataSet(edges) 
+            };
+            
+            networkInstance = new vis.Network(container, data, {
+                ...graphOptions,
+                nodes: {
+                    ...graphOptions.nodes,
+                    font: {
+                        ...graphOptions.nodes.font,
+                        multi: true,
+                        align: 'left'
+                    }
+                }
+            });
+
+            networkInstance.on('click', params => {
+                if (params.nodes.length > 0) {
+                    const [category, index] = params.nodes[0].split('-');
+                    const post = postsData[category][parseInt(index)];
+                    if (post) {
+                        loadPost(post.id);
+                    }
+                }
+            });
+        }
+
+        function renderOverlayGraph() {
+            const container = document.getElementById('overlayGraphView');
+            if (!container) return;
+            
+            destroyNetwork();
+            updateGraphTheme();
+            
+            const nodes = [];
+            const edges = [];
+            const nodeMap = new Map();
+            const edgeSet = new Set();
+            
+            // Batch process nodes and edges
+            const processData = () => {
+                Object.entries(postsData).forEach(([category, posts]) => {
+                    posts.forEach((post, index) => {
+                        const nodeId = `${category}-${index}`;
+                        nodes.push({
+                            id: nodeId,
+                            label: escapeHTML(post.title),
+                            title: escapeHTML(post.title),
+                            group: category,
+                            color: {
+                                background: category === 'linux' ? '#1E90FF' : '#FF4500',
+                                border: category === 'linux' ? '#1873CC' : '#CC3700',
+                                highlight: {
+                                    background: category === 'linux' ? '#1873CC' : '#CC3700',
+                                    border: category === 'linux' ? '#1E90FF' : '#FF4500'
+                                }
+                            }
+                        });
+                        nodeMap.set(post.id, nodeId);
+                    });
+                });
+
+                Object.values(postsData).forEach(posts => {
+                    posts.forEach((post, i) => {
+                        posts.forEach((otherPost, j) => {
+                            if (i < j && post.tags.some(tag => otherPost.tags.includes(tag))) {
+                                const edgeId = `${nodeMap.get(post.id)}-${nodeMap.get(otherPost.id)}`;
+                                if (!edgeSet.has(edgeId)) {
+                                    edges.push({
+                                        from: nodeMap.get(post.id),
+                                        to: nodeMap.get(otherPost.id)
+                                    });
+                                    edgeSet.add(edgeId);
+                                }
+                            }
+                        });
+                    });
+                });
+            };
+
+            processData();
+            
+            const data = { 
+                nodes: new vis.DataSet(nodes), 
+                edges: new vis.DataSet(edges) 
+            };
+            
+            networkInstance = new vis.Network(container, data, {
+                ...graphOptions,
+                nodes: {
+                    ...graphOptions.nodes,
+                    font: {
+                        ...graphOptions.nodes.font,
+                        multi: true,
+                        align: 'left'
+                    }
+                }
+            });
+
+            networkInstance.on('click', params => {
+                if (params.nodes.length > 0) {
+                    const [category, index] = params.nodes[0].split('-');
+                    const post = postsData[category][parseInt(index)];
+                    if (post) {
+                        loadPost(post.id);
+                    }
+                }
+            });
+        }
+
+        function generateTableOfContents(postId) {
+            const postContent = document.getElementById(postId);
+            const toc = document.getElementById('postToc');
+            if (!postContent || !toc) return;
+            const ul = toc.querySelector('ul');
+            ul.innerHTML = '';
+            const headings = postContent.querySelectorAll('h2, h3');
+            headings.forEach((heading, i) => {
+                const id = `heading-${postId}-${i}`;
+                heading.id = id;
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = `#${id}`;
+                a.textContent = escapeHTML(heading.textContent);
+                li.appendChild(a);
+                ul.appendChild(li);
+            });
+            toc.classList.toggle('active', headings.length > 0 && postId);
+        }
+
+        function renderListView() {
+            const listView = document.getElementById('listView');
+            if (!listView) return;
+            listView.innerHTML = '';
+            const allPosts = [];
+            Object.values(postsData).forEach(categoryPosts => {
+                categoryPosts.forEach(post => {
+                    if (currentFilter === 'all' || post.tags.includes(currentFilter)) {
+                        allPosts.push(post);
+                    }
+                });
+            });
+            allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+            allPosts.slice(0, 3).forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.className = 'post-item';
+                const snippet = post.content.split('</h3>')[1]?.split('</p>')[0]?.replace('<p>', '').trim() || 'No preview available';
+                postElement.innerHTML = `
+                    <div class="post-header">
+                        <span class="date">${new Date(post.date).toLocaleDateString()}</span>
+                        <a href="#" class="title" onclick="loadPost('${post.id}'); return false;">${escapeHTML(post.title)}</a>
+                    </div>
+                    <div class="snippet">${escapeHTML(snippet)}</div>
+                `;
+                listView.appendChild(postElement);
+            });
+        }
+
+        function filterPosts(tag) {
+            currentFilter = tag;
+            const postList = document.getElementById('postList');
+            const aboutSection = document.getElementById('aboutSection');
+            const folderInfo = document.getElementById('folderInfo');
+            aboutSection.style.display = 'none';
+            postList.style.display = 'grid';
+            folderInfo.style.display = 'block';
+            document.querySelectorAll('.post-content').forEach(content => content.classList.remove('active'));
+            postList.innerHTML = '';
+            let postCount = 0;
+            Object.values(postsData).forEach(categoryPosts => {
+                categoryPosts.forEach(post => {
+                    if (tag === 'all' || post.tags.includes(tag)) {
+                        const postElement = document.createElement('div');
+                        postElement.className = 'post-item';
+                        const snippet = post.content.split('</h3>')[1]?.split('</p>')[0]?.replace('<p>', '').trim() || 'No preview available';
+                        postElement.innerHTML = `
+                            <div class="post-header">
+                                <span class="date">${new Date(post.date).toLocaleDateString()}</span>
+                                <a href="#" class="title" onclick="loadPost('${post.id}'); return false;">${escapeHTML(post.title)}</a>
+                            </div>
+                            <div class="snippet">${escapeHTML(snippet)}</div>
+                        `;
+                        postList.appendChild(postElement);
+                        postCount++;
+                    }
+                });
+            });
+            folderInfo.textContent = `${postCount} ${postCount === 1 ? 'post' : 'posts'} found`;
+            currentPostId = null;
+            updateBreadcrumbs(tag);
+            renderGraphSidebar();
+            renderListView();
+            try {
+                window.history.pushState({ view: 'filter', tag }, '', `${window.location.pathname}?filter=${tag}`);
+            } catch (e) {
+                console.warn('pushState failed:', e);
+            }
+
+            // Tag cloud ve recent posts güncelle
+            generateTagCloud();
+            updateRecentPosts();
+        }
+
+        function resetToAbout() {
+            const postList = document.getElementById('postList');
+            const aboutSection = document.getElementById('aboutSection');
+            const folderInfo = document.getElementById('folderInfo');
+            const toc = document.getElementById('postToc');
+            document.querySelectorAll('.post-content').forEach(content => content.classList.remove('active'));
+            postList.style.display = 'none';
+            aboutSection.style.display = 'block';
+            folderInfo.style.display = 'none';
+            toc.classList.remove('active');
+            currentPostId = null;
+            currentSearch = '';
+            currentFilter = 'all';
+            document.querySelector('.search-bar').value = '';
+            try {
+                window.history.pushState({ view: 'about' }, '', window.location.pathname);
+            } catch (e) {
+                console.warn('pushState failed:', e);
+            }
+            updateBreadcrumbs('about');
+            renderGraphSidebar();
+            renderListView();
+            
+            // Focus mode toggle'ı güncelle
+            updateFocusModeToggle();
+        }
+
+        function loadCategory(category) {
+            const postList = document.getElementById('postList');
+            const aboutSection = document.getElementById('aboutSection');
+            const folderInfo = document.getElementById('folderInfo');
+            aboutSection.style.display = 'none';
+            postList.style.display = 'grid';
+            folderInfo.style.display = 'block';
+            document.querySelectorAll('.post-content').forEach(content => content.classList.remove('active'));
+            postList.innerHTML = '';
+            const posts = postsData[category] || [];
+            posts.forEach(post => {
+                if (
+                    (!currentSearch || post.title.toLowerCase().includes(currentSearch) || post.content.toLowerCase().includes(currentSearch)) &&
+                    (currentFilter === 'all' || post.tags.includes(currentFilter))
+                ) {
+                    const postItem = document.createElement('div');
+                    postItem.className = 'post-item';
+                    const snippet = post.content.split('</h3>')[1]?.split('</p>')[0]?.replace('<p>', '').trim() || 'No preview available';
+                    postItem.innerHTML = `
+                        <div class="post-header">
+                            <span class="date">${post.date}</span>
+                            <a href="?post=${post.id}" class="title" onclick="loadPost('${post.id}'); return false;" aria-label="${escapeHTML(post.title)}">${escapeHTML(post.title)}</a>
+                        </div>
+                        <div class="snippet">${escapeHTML(snippet)}</div>
+                    `;
+                    postList.appendChild(postItem);
+                }
+            });
+            folderInfo.textContent = `${postList.children.length} ${postList.children.length === 1 ? 'item' : 'items'} found`;
+            currentPostId = null;
+            try {
+                window.history.pushState({ category }, '', `${window.location.pathname}?category=${category}`);
+            } catch (e) {
+                console.warn('pushState failed:', e);
+            }
+            updateBreadcrumbs(category);
+            renderGraphSidebar();
+            renderListView();
+        }
+
+        function loadPost(postId) {
+            const postList = document.getElementById('postList');
+            const aboutSection = document.getElementById('aboutSection');
+            const folderInfo = document.getElementById('folderInfo');
+            document.querySelectorAll('.post-content').forEach(content => content.classList.remove('active'));
+            const postContent = document.getElementById(postId);
+            if (postContent) {
+                postContent.classList.add('active');
+                postList.style.display = 'none';
+                aboutSection.style.display = 'none';
+                folderInfo.style.display = 'none';
+                generateTableOfContents(postId);
+                try {
+                    window.history.pushState({ postId }, '', `${window.location.pathname}?post=${postId}`);
+                } catch (e) {
+                    console.warn('pushState failed:', e);
+                }
+            }
+            currentPostId = postId;
+            updateBreadcrumbs(postId);
+            renderGraphSidebar();
+            if (isGraphExpanded) toggleGraphExpand();
+            
+            // Focus mode toggle'ı güncelle
+            updateFocusModeToggle();
+            
+            // Tag cloud ve recent posts güncelle
+            generateTagCloud();
+            updateRecentPosts();
+        }
+
+        function updateBreadcrumbs(item) {
+            const breadcrumbs = document.getElementById('breadcrumbs');
+            let path = `<span onclick=\"resetToAbout()\" role=\"button\" tabindex=\"0\"><i class='fas fa-book-open'></i> Typhon64 Notes</span>`;
+            if (item !== 'about') {
+                const category = Object.keys(postsData).find(cat => postsData[cat].some(post => post.id === item)) || item;
+                if (postsData[category]?.some(post => post.id === item)) {
+                    path += ` / <span onclick="loadCategory('${category}')" role="button" tabindex="0">${escapeHTML(category.charAt(0).toUpperCase() + category.slice(1))}</span>`;
+                    const post = postsData[category].find(post => post.id === item);
+                    path += ` / <span>${escapeHTML(post.title)}</span>`;
+                } else {
+                    path += ` / <span>${escapeHTML(category.charAt(0).toUpperCase() + category.slice(1))}</span>`;
+                }
+            }
+            breadcrumbs.innerHTML = path;
+            breadcrumbs.querySelectorAll('span[role="button"]').forEach(span => {
+                span.addEventListener('keydown', e => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        span.click();
+                    }
+                });
+                span.addEventListener('touchend', e => {
+                    e.preventDefault();
+                    span.click();
+                });
+            });
+            // Show Highlights only on About Me
+            const highlightsSection = document.querySelector('.highlights-section');
+            if (highlightsSection) {
+                highlightsSection.style.display = (item === 'about') ? 'block' : 'none';
+            }
+        }
+
+        function searchPosts(query) {
+            currentSearch = query.toLowerCase().trim();
+            if (document.getElementById('aboutSection').style.display === 'block') {
+                loadCategory('linux');
+            } else {
+                const category = Object.keys(postsData).find(cat => document.getElementById('postList').style.display === 'grid' && postsData[cat].length > 0) || 'linux';
+                loadCategory(category);
+            }
+            renderGraphSidebar();
+            renderListView();
+        }
+
+        const debouncedSearch = debounce(searchPosts, 300);
+
+        function handleURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const postId = urlParams.get('post');
+            const category = urlParams.get('category');
+            
+            if (postId) {
+                loadPost(postId);
+            } else if (category) {
+                loadCategory(category);
+            } else {
+                resetToAbout();
+            }
+        }
+
+        window.addEventListener('popstate', handleURL);
+
+        // Focus mode toggle
+        function toggleFocusMode() {
+            // Sadece post içeriği görüntülenirken focus mode'u aktifleştir
+            const postContent = document.querySelector('.post-content.active');
+            if (!postContent && !isFocusMode) return;
+
+            isFocusMode = !isFocusMode;
+            document.body.classList.toggle('focus-mode', isFocusMode);
+            const toggle = document.getElementById('focusModeToggle');
+            const icon = toggle.querySelector('i');
+            const text = toggle.querySelector('span');
+            
+            if (isFocusMode) {
+                icon.className = 'fas fa-compress';
+                text.textContent = 'Exit Focus';
+            } else {
+                icon.className = 'fas fa-expand';
+                text.textContent = 'Focus Mode';
+            }
+            
+            toggle.setAttribute('aria-label', isFocusMode ? 'Exit focus mode' : 'Enter focus mode');
+            
+            // Graph'ı güncelle
+            if (isGraphExpanded) {
+                renderOverlayGraph();
+            } else {
+                renderGraphSidebar();
+            }
+        }
+
+        // Focus mode toggle butonunun görünürlüğünü güncelle
+        function updateFocusModeToggle() {
+            const toggle = document.getElementById('focusModeToggle');
+            const postContent = document.querySelector('.post-content.active');
+            if (toggle) {
+                toggle.style.display = postContent ? 'flex' : 'none';
+            }
+        }
+
+        // Tag cloud oluşturma
+        function generateTagCloud() {
+            const tagCloud = document.getElementById('tagCloud');
+            if (!tagCloud) return;
+
+            const tagCounts = new Map();
+            Object.values(postsData).forEach(posts => {
+                posts.forEach(post => {
+                    post.tags.forEach(tag => {
+                        tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1);
+                    });
+                });
+            });
+
+            const tags = Array.from(tagCounts.entries())
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+
+            tagCloud.innerHTML = tags.map(([tag, count]) => `
+                <span class="tag" onclick="filterPosts('${tag}')" style="font-size: ${0.8 + (count / Math.max(...tags.map(t => t[1]))) * 0.4}em">
+                    ${escapeHTML(tag)}
+                </span>
+            `).join('');
+        }
+
+        // Recent posts güncelleme
+        function updateRecentPosts() {
+            const listView = document.getElementById('listView');
+            if (!listView) return;
+
+            const allPosts = [];
+            Object.values(postsData).forEach(categoryPosts => {
+                categoryPosts.forEach(post => {
+                    if (currentFilter === 'all' || post.tags.includes(currentFilter)) {
+                        allPosts.push(post);
+                    }
+                });
+            });
+
+            allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            listView.innerHTML = allPosts.slice(0, 5).map(post => {
+                const snippet = post.content.split('</h3>')[1]?.split('</p>')[0]?.replace('<p>', '').trim() || 'No preview available';
+                return `
+                    <div class="post-item">
+                        <div class="date">${new Date(post.date).toLocaleDateString()}</div>
+                        <a href="#" class="title" onclick="loadPost('${post.id}'); return false;">${escapeHTML(post.title)}</a>
+                        <div class="snippet">${escapeHTML(snippet)}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleAccordion(btn) {
+            const content = btn.nextElementSibling;
+            const expanded = btn.getAttribute('aria-expanded') === 'true';
+            btn.setAttribute('aria-expanded', !expanded);
+            content.style.display = expanded ? 'none' : 'block';
+            // Arrow icon
+            const arrow = btn.querySelector('.accordion-arrow');
+            if (arrow) {
+                arrow.innerHTML = expanded ? '&#9654;' : '&#9660;';
+            }
+        }
+
+        // Hamburger menu toggle for mobile
+        const hamburger = document.getElementById('hamburgerMenu');
+        const nav = document.getElementById('mainNav');
+        if (hamburger && nav) {
+            hamburger.addEventListener('click', function() {
+                nav.classList.toggle('open');
+            });
+            // Kapatmak için dışarı tıklama
+            document.addEventListener('click', function(e) {
+                if (!nav.contains(e.target) && e.target !== hamburger) {
+                    nav.classList.remove('open');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
