@@ -137,14 +137,14 @@ document.addEventListener('visibilitychange', () => {
 
 // Initial load settings
 const savedTheme = localStorage.getItem('theme') || 'dark'; // Default to dark
-const savedLang = localStorage.getItem('language') || 'tr'; // Default to Turkish
+const savedLang = localStorage.getItem('language') || 'en'; // Default to English
 
-// Apply theme first (as it might affect particles that language function might interact with if not careful)
-if (typeof applyTheme === 'function') { // Ensure applyTheme is defined
+// Apply theme first
+if (typeof applyTheme === 'function') {
     applyTheme(savedTheme);
 }
 
 // Apply language and update toggle button text on initial load
-if (typeof applyLanguage === 'function') { // Ensure applyLanguage is defined
+if (typeof applyLanguage === 'function') {
     applyLanguage(savedLang);
 }
