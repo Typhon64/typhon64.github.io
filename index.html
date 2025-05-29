@@ -1,27 +1,279 @@
-<!DOCTYPE html>
-<html lang="en-US" data-theme="default-system" data-disable-pointer="false">
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="tr">
 <head>
-<script> 
-/* "The troll guest" Just open the developer tools (with the F12 key) on any browser and, in the console tab, copy and paste this */
+    <!-- Temel meta etiketler: SEO ve uyumluluk için -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Typhon64 - Cyber Threat Intelligence Expert">
+   
+    <meta name="keywords" content="Typhon64, cyber threat, intelligence, OSINT">
+    <meta name="author" content="Typhon64">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Typhon64</title>
 
-_img = document.createElement("img");
-_img.style.position = 'absolute';
-_img.style.margin = '0';
-_img.style.zIndex = '1000';
-_img.onload = function() {
-  document.body.insertBefore(_img, document.body.firstChild);
-  setInterval(function(){
-    document.getElementById('char1').style.left = Math.floor(Math.random() * (window.innerWidth - _img.width))+'px';
-    document.getElementById('char1').style.top = Math.floor(Math.random() * (window.innerHeight - _img.height))+'px';
-    var randomRot = (-45+Math.floor((Math.random()*90)));
-    document.getElementById('char1').style.transform = 'rotate('+randomRot+'deg)';
-    document.getElementById('char1').style.webkitTransform = 'rotate('+randomRot+'deg)';
+    <!-- Google Fonts: Inter - Genel yazı tipi -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- SF Mono: Terminal hissi için -->
+    <link href="https://fonts.cdnfonts.com/css/sf-mono" rel="stylesheet">
+    <!-- Font Awesome: Sosyal medya ikonları için (şimdilik kullanılmıyor) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- PWA: Çevrimdışı erişim için -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="var(--accent-dark)">
+    <!-- Özel CSS dosyamız -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Particles.js: Tüm sayfayı kapsıyor, header dahil -->
+    <div id="particles-js"></div>
 
-  }, 1500);
-}
-_img.id = "char1";
-/* you can use whatever image you like */
-_img.src = "https://i.imgur.com/FmXCDNG.gif";
-</script>
+    <!-- Header: Sadece logo, navigasyon kaldırıldı -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="header-left">
+                <span class="header-logo">
+                  <span class="network-icon" style="display:inline-block;width:1.2em;height:1.2em;vertical-align:middle;margin-right:0.5em;">
+                    <svg viewBox="0 0 24 24" width="1.2em" height="1.2em" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="5" cy="12" r="2" stroke="var(--accent)" stroke-width="2"/>
+                      <circle cx="19" cy="12" r="2" stroke="var(--accent)" stroke-width="2"/>
+                      <circle cx="12" cy="5" r="2" stroke="var(--accent)" stroke-width="2"/>
+                      <circle cx="12" cy="19" r="2" stroke="var(--accent)" stroke-width="2"/>
+                      <line x1="7" y1="12" x2="10" y2="12" stroke="var(--accent)" stroke-width="2"/>
+                      <line x1="14" y1="12" x2="17" y2="12" stroke="var(--accent)" stroke-width="2"/>
+                      <line x1="12" y1="7" x2="12" y2="10" stroke="var(--accent)" stroke-width="2"/>
+                      <line x1="12" y1="14" x2="12" y2="17" stroke="var(--accent)" stroke-width="2"/>
+                    </svg>
+                  </span>
+                  Typhon64
+                </span>
+                <div class="header-btn-group">
+                    <a href="https://typhon64.github.io/notes.html" class="header-btn" title="Notlar" target="_blank" rel="noopener noreferrer" data-tr="Notlar" data-en="Notes">Notlar</a>
+                    <a href="resume.html" class="header-btn" title="Özgeçmiş" target="_blank" rel="noopener noreferrer" data-tr="Özgeçmiş" data-en="Resume">Özgeçmiş</a>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="header-btn-group">
+                    <button id="language-toggle-btn" class="header-btn lang-toggle-btn" title="Dili Değiştir">TR</button>
+                </div>
+                <button id="theme-toggle" class="header-btn theme-btn" title="Temayı Değiştir" aria-label="Temayı değiştir" aria-pressed="false">
+                    <i class="fas fa-moon"></i>
+                    <i class="fas fa-sun"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Ana İçerik: Boş, sadece arka plan efektleri -->
+    <main class="main-content">
+        <div class="container">
+            <div class="content">
+                <div class="left-section">
+                    <div class="about">
+                        <h2 class="glitch" data-text="Typhon" translate="no" data-tr="Typhon" data-en="Typhon">Typhon</h2>
+                        <div class="hero-subtext">
+                            <span class="line"></span>
+                            <p data-tr="öğreniyorum, öğrenecek çok şey var." data-en="learning there's a lot to learn.">öğreniyorum, öğrenecek çok şey var.</p>
+                        </div>
+                        <div class="hi-text" data-tr="selam." data-en="hi.">selam.</div>
+                        <div style="height: 1.5rem;"></div>
+                        <p data-tr="Siber güvenlik ve tehdit istihbaratı alanında uzmanım.<br>OSINT, tehdit analizi ve güvenlik araştırması konularında deneyimliyim.<br>Siber güvenlik ekosistemine katkıda bulunmak için çalışıyorum.<br><span class='highlight'>İşbirlikleri ve projeler için benimle iletişime geçmekten çekinmeyin.</span>" data-en="I am a specialized in cybersecurity and threat intelligence.<br>Experienced in OSINT, threat analysis, and security research.<br>Working to contribute to the cybersecurity ecosystem.<br><span class='highlight'>Feel free to contact me for collaborations and projects.</span>">
+                            Siber güvenlik ve tehdit istihbaratı alanında uzmanım.<br>
+                            OSINT, tehdit analizi ve güvenlik araştırması konularında deneyimliyim.<br>
+                            Siber güvenlik ekosistemine katkıda bulunmak için çalışıyorum.<br>
+                            <span class="highlight">İşbirlikleri ve projeler için benimle iletişime geçmekten çekinmeyin.</span>
+                        </p>
+                        
+                        <div class="tech-stack">
+                            <div class="tech-item" data-tooltip="OSINT" data-tr-tooltip="OSINT" data-en-tooltip="OSINT">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div class="tech-item" data-tooltip="Siber Güvenlik" data-tr-tooltip="Siber Güvenlik" data-en-tooltip="Cybersecurity">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="tech-item" data-tooltip="Tehdit Analizi" data-tr-tooltip="Tehdit Analizi" data-en-tooltip="Threat Analysis">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="tech-item" data-tooltip="Ağ Güvenliği" data-tr-tooltip="Ağ Güvenliği" data-en-tooltip="Network Security">
+                                <i class="fas fa-network-wired"></i>
+                            </div>
+                            <div class="tech-item" data-tooltip="Veri Analizi" data-tr-tooltip="Veri Analizi" data-en-tooltip="Data Analysis">
+                                <i class="fas fa-database"></i>
+                            </div>
+                        </div>
+
+                        <div class="contact-buttons">
+                            <a href="mailto:your.email@example.com" class="contact-btn">
+                                <i class="fas fa-envelope"></i>
+                                <span data-tr="İletişime Geç" data-en="Contact Me">İletişime Geç</span>
+                            </a>
+                            <button type="button" class="contact-btn session-btn" onclick="copySessionID()">
+                                <span class="session-icon" style="display:inline-block;width:1.2em;height:1.2em;vertical-align:middle;margin-right:0.5em;">
+                                    <svg viewBox="0 0 24 24" width="1.2em" height="1.2em" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10Z" stroke="var(--text-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </span>
+                                <span data-tr="Session'a Ekle" data-en="Add on Session">Session'a Ekle</span>
+                            </button>
+                            <span id="session-copied" style="display:none;margin-left:10px;color:var(--accent);font-size:0.95rem;" data-tr="Kopyalandı!" data-en="Copied!">Kopyalandı!</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="right-section">
+                    <div class="profile-card">
+                        <div class="card-header site-harmony-banner">
+                            <img src="profile.jpg" alt="Profil Resmi" class="profile-img">
+                        </div>
+                        <div class="card-body">
+                            <div class="profile-info">
+                                <h3>Ahmet</h3>
+                                <div class="profile-meta">
+                                    <span class="badge" data-tr="Siber Güvenlik" data-en="Cyber Security">Siber Güvenlik</span>
+                                    <span id="current-time" class="time-badge">14:04</span>
+                                </div>
+                                <p class="profile-lang" data-tr="Diller: Türkçe, İngilizce" data-en="Languages: Turkish, English">Diller: Türkçe, İngilizce</p>
+                            </div>
+                            
+                            <div class="divider"></div>
+                            
+                            <div class="interests">
+                                <h4 data-tr="İlgi Alanları" data-en="Interests">İlgi Alanları</h4>
+                                <div class="interest-tags">
+                                    <span data-tr="Güvenlik Araştırması" data-en="Security Research">Güvenlik Araştırması</span>
+                                    <span data-tr="Bilgisayar Bilimi" data-en="Computer Science">Bilgisayar Bilimi</span>
+                                    <span data-tr="CTI" data-en="CTI">CTI</span>
+                                </div>
+                            </div>
+                            
+                            <div class="social-links">
+                                <a href="https://github.com/typhon64" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="GitHub">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                                <a href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="LinkedIn">
+                                    <i class="fab fa-linkedin"></i>
+                                </a>
+                                <a href="https://twitter.com/typhon64" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Twitter">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="terminal-container">
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <span class="terminal-btn red"></span>
+                        <span class="terminal-btn yellow"></span>
+                        <span class="terminal-btn green"></span>
+                    </div>
+                    <div class="terminal-body">
+                        <p class="terminal-text"><span class="prompt">Typhon64@system:~$</span> <span class="command">whoami</span></p>
+                        <p class="terminal-output" data-tr="Tehdit İstihbaratı" data-en="Threat Intelligence">Tehdit İstihbaratı</p>
+                        <p class="terminal-text"><span class="prompt">Typhon64@system:~$</span> <span class="command">date</span></p>
+                        <p class="terminal-output" id="current-date">2024-03-19 14:04:00</p>
+                        <p class="terminal-text"><span class="prompt">Typhon64@system:~$</span> <span class="cursor"></span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lang-switcher" style="display:none;">
+                <button data-lang="tr">TR</button>
+                <button data-lang="en">EN</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- PWA: Service worker kaydı -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(reg => console.log('Service Worker kayıtlı!'))
+                    .catch(err => console.error('Service Worker hatası:', err));
+            });
+        }
+    </script>
+    <!-- GSAP: Animasyonlar için -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <!-- Particles.js: Arka planda veri akışı efekti -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <!-- Özel JS dosyamız -->
+    <script src="script.js"></script>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const istanbulTime = new Date(now.getTime() + (3 * 60 * 60 * 1000));
+            
+            let hours = istanbulTime.getUTCHours();
+            let minutes = istanbulTime.getUTCMinutes();
+            
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            
+            document.getElementById('current-time').textContent = hours + ':' + minutes;
+            
+            const year = istanbulTime.getUTCFullYear();
+            const month = String(istanbulTime.getUTCMonth() + 1).padStart(2, '0');
+            const day = String(istanbulTime.getUTCDate()).padStart(2, '0');
+            const seconds = String(istanbulTime.getUTCSeconds()).padStart(2, '0');
+            
+            document.getElementById('current-date').textContent = 
+                `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        }
+        
+        updateTime();
+        setInterval(updateTime, 1000);
+    </script>
+    <script>
+    function copySessionID() {
+        const sessionID = '05e7b2c1d2a3f4e5c6b7a8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9'; // Kendi Session ID'nizi buraya yazın
+        navigator.clipboard.writeText(sessionID).then(function() {
+            const el = document.getElementById('session-copied');
+            el.style.display = 'inline';
+            setTimeout(() => { el.style.display = 'none'; }, 2000);
+        });
+    }
+    </script>
 </body>
 </html>
