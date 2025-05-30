@@ -19,8 +19,8 @@ const particleConfigBase = {
             resize: true
         },
         modes: {
-            grab: { distance: 140, line_linked: { opacity: 0.75 } },
-            push: { particles_nb: 2 }
+            grab: { distance: 100, line_linked: { opacity: 0.75 } },
+            push: { particles_nb: 1 }
         }
     },
     retina_detect: true,
