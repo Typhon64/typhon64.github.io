@@ -9,9 +9,13 @@ gsap.from(".terminal-container", { opacity: 0, y: 50, duration: 1.2, ease: "expo
 // Particle.js configuration - This will be our base
 const particleConfigBase = {
     particles: {
-        number: { value: 260, density: { enable: true, value_area: 800 } },
+        number: { value: 260, density: { enable: true, value_area: 800 } }, // value_area will be dynamically set
         shape: { type: 'circle' },
-        opacity: { value: 0.35, random: true },
+        opacity: { 
+            value: 0.5, // Base opacity
+            random: true, 
+            anim: { enable: true, speed: 0.5, opacity_min: 0.1, sync: false } // Opacity animation
+        },
         size: { value: 3, random: true },
         line_linked: { enable: true, distance: 150, opacity: 0.25, width: 1 },
         move: { enable: true, speed: 1.8, direction: 'none', random: true }
@@ -32,45 +36,135 @@ const particleConfigBase = {
     fps_limit: 60
 };
 
-function initializeParticles(particleColor) {
-    let currentParticleConfig = JSON.parse(JSON.stringify(particleConfigBase)); // Deep copy
+let initialWindowArea; // Will be set on DOMContentLoaded
+let initialParticleCanvasArea; // To store the initial area of the particle canvas
 
+function initializeParticles(particleColor) {
+    let pJSInstance;
+
+    if (window.pJSDom && window.pJSDom[0] && window.pJSDom[0].pJS) {
+        pJSInstance = window.pJSDom[0].pJS;
+        pJSInstance.particles.color.value = particleColor;
+        if (pJSInstance.particles.line_linked) {
+             pJSInstance.particles.line_linked.color = particleColor; 
+        }
+        updateParticlesDensity(); 
+        return;
+    }
+
+    // First time initialization
+    let currentParticleConfig = JSON.parse(JSON.stringify(particleConfigBase));
     currentParticleConfig.particles.color = { value: particleColor };
-    currentParticleConfig.particles.line_linked.color = particleColor;
-    particlesJS('particles-js', currentParticleConfig);
-    // Ensure particles canvas doesn't block interactions
-    const particlesJSElement = document.getElementById('particles-js');
-    if (particlesJSElement && particlesJSElement.style) {
-        particlesJSElement.style.pointerEvents = 'none'; 
+    currentParticleConfig.particles.line_linked.color = particleColor; 
+    currentParticleConfig.particles.number.value = 260; 
+    currentParticleConfig.particles.number.density.enable = true;
+    
+    particlesJS('particles-js', currentParticleConfig); 
+
+    if (window.pJSDom && window.pJSDom[0] && window.pJSDom[0].pJS) {
+        pJSInstance = window.pJSDom[0].pJS;
+        pJSInstance.particles.color.value = particleColor;
+        if (pJSInstance.particles.line_linked) {
+            pJSInstance.particles.line_linked.color = particleColor;
+        }
+       
+        // Capture initial canvas area here, only once after pJS is created
+        if (pJSInstance && initialParticleCanvasArea === undefined) { 
+            initialParticleCanvasArea = pJSInstance.canvas.w * pJSInstance.canvas.h;
+            // console.log('Initial particle canvas area captured:', initialParticleCanvasArea); 
+        }
+
+        updateParticlesDensity(); 
+
+        const particlesJSElement = document.getElementById('particles-js');
+        if (particlesJSElement && particlesJSElement.style) {
+            particlesJSElement.style.pointerEvents = 'none'; 
+        }
+    } else {
+        console.error("particles.js failed to initialize during first load.");
+    }
+}
+
+function updateParticlesDensity() {
+    if (window.pJSDom && window.pJSDom[0] && window.pJSDom[0].pJS) {
+        const pJS = window.pJSDom[0].pJS;
+        const currentParticleCanvasArea = pJS.canvas.w * pJS.canvas.h;
+
+        // This is the base for density.value_area that would make particles.js render 
+        // pJS.particles.number.value (260) particles across the current canvas.
+        // The division by 1000 is part of particles.js internal formula.
+        let baseDensityAreaForCurrentCanvas = currentParticleCanvasArea / 1000.0;
+        
+        // Prevent division by zero or extremely small values if canvas somehow has zero area
+        if (baseDensityAreaForCurrentCanvas <= 0.001) baseDensityAreaForCurrentCanvas = 0.001; 
+
+        pJS.particles.number.value = 260; // Ensure base number of particles to aim for is 260
+
+        let densityAdjustmentFactor = 1.0; // Default: aims for 260 particles
+
+        if (typeof initialParticleCanvasArea === 'number' && initialParticleCanvasArea > 0 && currentParticleCanvasArea > 0) {
+            const canvasAreaZoomRatio = currentParticleCanvasArea / initialParticleCanvasArea;
+
+            // Define thresholds for zoom-out (canvas getting smaller than initial)
+            const NORMAL_CANVAS_RATIO_LOWER_BOUND = 0.8; // Below this, canvas is considered "zoomed out"
+            
+            const MODERATE_ZOOM_OUT_SPARSITY_FACTOR = 1.75; // Results in ~148 particles
+            const EXTREME_ZOOM_OUT_SPARSITY_FACTOR = 3.5;   // Results in ~74 particles
+
+            // Thresholds for applying zoom-out sparsity
+            const EXTREME_ZOOM_OUT_RATIO_THRESHOLD = 0.25; // Canvas area < 25% of initial
+
+            if (canvasAreaZoomRatio < EXTREME_ZOOM_OUT_RATIO_THRESHOLD) { // Extreme Zoom OUT
+                densityAdjustmentFactor = EXTREME_ZOOM_OUT_SPARSITY_FACTOR;
+            } else if (canvasAreaZoomRatio < NORMAL_CANVAS_RATIO_LOWER_BOUND) { // Moderate Zoom OUT
+                densityAdjustmentFactor = MODERATE_ZOOM_OUT_SPARSITY_FACTOR;
+            }
+            // If canvasAreaZoomRatio >= NORMAL_CANVAS_RATIO_LOWER_BOUND (i.e., normal size or zoomed-in/larger):
+            // densityAdjustmentFactor remains 1.0. This means we aim for 260 particles.
+            // When zoomed-in, the canvas is larger, so 260 particles spread over this larger area
+            // will naturally appear sparse and spread out from the viewport's perspective.
+        }
+        
+        pJS.particles.number.density.value_area = baseDensityAreaForCurrentCanvas * densityAdjustmentFactor;
+        
+        pJS.fn.particlesRefresh(); // This will recalculate and redraw particles
     }
 }
 
 // Theme toggle
 const themeToggleButton = document.getElementById('theme-toggle');
-const body = document.body;
+const body = document.body; // Define body here as it's used in applyTheme
 
-function applyTheme(theme) {
+function applyTheme(theme, isInitialLoad = false) {
     if (theme === 'light') {
         body.classList.add('light-theme');
-        initializeParticles(getComputedStyle(body).getPropertyValue('--particle-color-light').trim().replace(/'/g, ''));
         themeToggleButton.setAttribute('aria-pressed', 'true');
     } else {
         body.classList.remove('light-theme');
-        initializeParticles(getComputedStyle(body).getPropertyValue('--particle-color-dark').trim().replace(/'/g, ''));
         themeToggleButton.setAttribute('aria-pressed', 'false');
     }
     localStorage.setItem('theme', theme);
+
+    if (!isInitialLoad) {
+        if (initialWindowArea !== undefined) {
+            const particleColor = getComputedStyle(body).getPropertyValue(
+                theme === 'light' ? '--particle-color-light' : '--particle-color-dark'
+            ).trim().replace(/\'/g, '');
+            initializeParticles(particleColor);
+        }
+    }
 }
 
 themeToggleButton.addEventListener('click', () => {
     const newTheme = body.classList.contains('light-theme') ? 'dark' : 'light';
-    applyTheme(newTheme);
+    applyTheme(newTheme, false); // isInitialLoad = false
 });
 
 // Language toggle
 const languageToggleButton = document.getElementById('language-toggle-btn');
 const elementsToTranslate = document.querySelectorAll('[data-tr], [data-en]');
 const tooltipElements = document.querySelectorAll('[data-tr-tooltip], [data-en-tooltip]');
+let originalTitle = ""; // Will be set on DOMContentLoaded
 
 function applyLanguage(lang) {
     document.documentElement.lang = lang;
@@ -108,17 +202,18 @@ function applyLanguage(lang) {
         }
     });
 
-    // Update the toggle button text
     if (languageToggleButton) {
         languageToggleButton.textContent = lang.toUpperCase();
     }
     
     localStorage.setItem('language', lang);
 
-    if (document.hidden) {
-        document.title = lang === 'tr' ? 'Sistem Çevrimdışı!' : 'System Offline!';
-    } else {
-        document.title = originalTitle; 
+    if (originalTitle) { 
+        if (document.hidden) {
+            document.title = lang === 'tr' ? 'Sistem Çevrimdışı!' : 'System Offline!';
+        } else {
+            document.title = originalTitle; 
+        }
     }
 }
 
@@ -130,57 +225,103 @@ if (languageToggleButton) {
     });
 }
 
-// Tab title: Change based on tab visibility
-let originalTitle = document.title;
 document.addEventListener('visibilitychange', () => {
     const currentLang = localStorage.getItem('language') || 'tr';
-    if (document.hidden) {
-        document.title = currentLang === 'tr' ? 'Sistem Çevrimdışı!' : 'System Offline!';
-    } else {
-        document.title = originalTitle; 
+    if (!originalTitle && document.title) {
+         originalTitle = document.title.replace(/System Offline!|Sistem Çevrimdışı!/, '').trim();
+    }
+    if (originalTitle) {
+        if (document.hidden) {
+            document.title = currentLang === 'tr' ? 'Sistem Çevrimdışı!' : 'System Offline!';
+        } else {
+            document.title = originalTitle; 
+        }
     }
 });
 
-// Initial load settings
-const savedTheme = localStorage.getItem('theme') || 'dark'; // Default to dark
-const savedLang = localStorage.getItem('language') || 'en'; // Default to English
+// Debounce function
+function debounce(func, wait, immediate) {
+    var timeout;
+    return function() {
+        var context = this, args = arguments;
+        var later = function() {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+    };
+};
 
-// Apply theme first
-if (typeof applyTheme === 'function') {
-    applyTheme(savedTheme);
-}
+const handleResize = debounce(function() {
+    if (initialWindowArea !== undefined) { 
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+        const particleColor = getComputedStyle(body).getPropertyValue(
+            currentTheme === 'light' ? '--particle-color-light' : '--particle-color-dark'
+        ).trim().replace(/\'/g, '');
+        initializeParticles(particleColor);
+    }
+}, 250);
 
-// Apply language and update toggle button text on initial load
-if (typeof applyLanguage === 'function') {
-    applyLanguage(savedLang);
-}
+window.addEventListener('resize', handleResize);
 
-// Terminal button functionality
+// Initial load settings moved to DOMContentLoaded
 document.addEventListener('DOMContentLoaded', () => {
+    initialWindowArea = window.innerWidth * window.innerHeight;
+    
+    if (document.title) { // Set original title here
+        originalTitle = document.title;
+    }
+
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    applyTheme(savedTheme, true); 
+
+    const currentAppliedTheme = body.classList.contains('light-theme') ? 'light' : 'dark';
+    const particleColor = getComputedStyle(body).getPropertyValue(
+        currentAppliedTheme === 'light' ? '--particle-color-light' : '--particle-color-dark'
+    ).trim().replace(/'/g, '');
+    
+    // Initialize particles. This will also attempt to set initialParticleCanvasArea.
+    initializeParticles(particleColor); 
+
+    // Fallback: Ensure initialParticleCanvasArea is set if initializeParticles didn't (e.g., pJS not ready immediately)
+    // This is a bit redundant if initializeParticles always succeeds in setting it.
+    if (initialParticleCanvasArea === undefined && window.pJSDom && window.pJSDom[0] && window.pJSDom[0].pJS) {
+        const pJS = window.pJSDom[0].pJS;
+        initialParticleCanvasArea = pJS.canvas.w * pJS.canvas.h;
+        // console.log('Initial particle canvas area captured (DOMContentLoaded fallback):', initialParticleCanvasArea);
+    }
+
+    const savedLang = localStorage.getItem('language') || 'en';
+    applyLanguage(savedLang);
+    // Ensure title is correct after language is applied
+    if (document.hidden) {
+        document.title = savedLang === 'tr' ? 'Sistem Çevrimdışı!' : 'System Offline!';
+    } else {
+        document.title = originalTitle;
+    }
+
+
+    // Terminal button functionality
     const terminalRedBtn = document.getElementById('terminal-btn-red');
     const terminalYellowBtn = document.getElementById('terminal-btn-yellow');
     const terminalGreenBtn = document.getElementById('terminal-btn-green');
-    const terminalWindow = document.querySelector('.terminal'); // To potentially hide/minimize later
 
     if (terminalRedBtn) {
         terminalRedBtn.addEventListener('click', () => {
             console.log('Kırmızı terminal butonuna tıklandı! (Kapatma simüle ediliyor)');
-            // Örnek: Terminali gizle
-            // if (terminalWindow) terminalWindow.style.display = 'none'; 
         });
     }
-
     if (terminalYellowBtn) {
         terminalYellowBtn.addEventListener('click', () => {
             console.log('Sarı terminal butonuna tıklandı! (Küçültme simüle ediliyor)');
-            // Örnek: Terminali küçült/eski boyutuna getir (CSS ile class ekleyerek yapılabilir)
         });
     }
-
     if (terminalGreenBtn) {
         terminalGreenBtn.addEventListener('click', () => {
             console.log('Yeşil terminal butonuna tıklandı! (Tam ekran simüle ediliyor)');
-            // Örnek: Terminali tam ekran yap/eski boyutuna getir (CSS ile class ekleyerek yapılabilir)
         });
     }
 });
