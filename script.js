@@ -1,5 +1,10 @@
 // GSAP Animation for header entrance
-gsap.from('.header', { y: -50, opacity: 0, duration: 0.8, ease: 'power2.out' });
+gsap.from('.header', { y: -50, opacity: 0, duration: 1, ease: 'expo.out' });
+
+// Entrance animations for main content sections
+gsap.from(".left-section", { opacity: 0, y: 50, duration: 1.2, ease: "expo.out", delay: 0.2 });
+gsap.from(".right-section", { opacity: 0, y: 50, duration: 1.2, ease: "expo.out", delay: 0.4 });
+gsap.from(".terminal-container", { opacity: 0, y: 50, duration: 1.2, ease: "expo.out", delay: 0.6 });
 
 // Particle.js configuration - This will be our base
 const particleConfigBase = {
