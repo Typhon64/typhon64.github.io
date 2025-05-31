@@ -572,6 +572,13 @@ body {
     width: 12px;
     height: 12px;
     border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.1s ease, filter 0.1s ease; /* Smooth transition for the effect */
+}
+
+.terminal-btn:active {
+    transform: scale(0.85); /* Slightly shrink the button on click */
+    filter: brightness(0.8); /* Slightly darken the button on click */
 }
 
 .red { background-color: #ff5f57; }
