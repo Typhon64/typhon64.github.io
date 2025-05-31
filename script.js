@@ -29,6 +29,7 @@ const particleConfigBase = {
 
 function initializeParticles(particleColor) {
     let currentParticleConfig = JSON.parse(JSON.stringify(particleConfigBase)); // Deep copy
+
     currentParticleConfig.particles.color = { value: particleColor };
     currentParticleConfig.particles.line_linked.color = particleColor;
     particlesJS('particles-js', currentParticleConfig);
