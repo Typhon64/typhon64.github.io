@@ -568,6 +568,11 @@ body {
     align-items: center;
 }
 
+body.light-theme .terminal-header {
+    background-color: var(--bg-secondary-light); /* Light theme terminal header background - More opaque Mocha/Cream */
+    border-bottom: 1px solid var(--border-light); /* Subtle separator line */
+}
+
 .terminal-btn {
     width: 12px;
     height: 12px;
