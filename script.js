@@ -6,15 +6,15 @@ gsap.from(".left-section", { opacity: 0, y: 50, duration: 1.2, ease: "expo.out",
 gsap.from(".right-section", { opacity: 0, y: 50, duration: 1.2, ease: "expo.out", delay: 0.4 });
 gsap.from(".terminal-container", { opacity: 0, y: 50, duration: 1.2, ease: "expo.out", delay: 0.6 });
 
-// Particle.js configuration - This will be our base
+// Particle.js configuration - Base config
 const particleConfigBase = {
     particles: {
-        number: { value: 260, density: { enable: true, value_area: 800 } }, // value_area will be dynamically set
+        number: { value: 260, density: { enable: true, value_area: 800 } }, // Sabit 260 parçacık
         shape: { type: 'circle' },
         opacity: { 
-            value: 0.5, // Base opacity
+            value: 0.5,
             random: true, 
-            anim: { enable: true, speed: 0.5, opacity_min: 0.1, sync: false } // Opacity animation
+            anim: { enable: true, speed: 0.5, opacity_min: 0.1, sync: false }
         },
         size: { value: 3, random: true },
         line_linked: { enable: true, distance: 150, opacity: 0.25, width: 1 },
@@ -36,27 +36,28 @@ const particleConfigBase = {
     fps_limit: 60
 };
 
-let initialWindowArea; // Will be set on DOMContentLoaded
-let initialParticleCanvasArea; // To store the initial area of the particle canvas
+let initialWindowArea; // Pencere alanı için
+let initialParticleCanvasArea; // Parçacık canvas alanı için
 
 function initializeParticles(particleColor) {
     let pJSInstance;
 
+    // Mevcut pJS örneği varsa, sadece rengi ve yoğunluğu güncelle
     if (window.pJSDom && window.pJSDom[0] && window.pJSDom[0].pJS) {
         pJSInstance = window.pJSDom[0].pJS;
         pJSInstance.particles.color.value = particleColor;
         if (pJSInstance.particles.line_linked) {
-             pJSInstance.particles.line_linked.color = particleColor; 
+            pJSInstance.particles.line_linked.color = particleColor; 
         }
         updateParticlesDensity(); 
         return;
     }
 
-    // First time initialization
+    // İlk kez başlatma
     let currentParticleConfig = JSON.parse(JSON.stringify(particleConfigBase));
     currentParticleConfig.particles.color = { value: particleColor };
     currentParticleConfig.particles.line_linked.color = particleColor; 
-    currentParticleConfig.particles.number.value = 260; 
+    currentParticleConfig.particles.number.value = 260; // Sabit 260 parçacık
     currentParticleConfig.particles.number.density.enable = true;
     
     particlesJS('particles-js', currentParticleConfig); 
@@ -68,10 +69,9 @@ function initializeParticles(particleColor) {
             pJSInstance.particles.line_linked.color = particleColor;
         }
        
-        // Capture initial canvas area here, only once after pJS is created
+        // İlk canvas alanını yakala
         if (pJSInstance && initialParticleCanvasArea === undefined) { 
             initialParticleCanvasArea = pJSInstance.canvas.w * pJSInstance.canvas.h;
-            // console.log('Initial particle canvas area captured:', initialParticleCanvasArea); 
         }
 
         updateParticlesDensity(); 
@@ -81,7 +81,7 @@ function initializeParticles(particleColor) {
             particlesJSElement.style.pointerEvents = 'none'; 
         }
     } else {
-        console.error("particles.js failed to initialize during first load.");
+        console.error("particles.js başlatılamadı!");
     }
 }
 
@@ -90,50 +90,44 @@ function updateParticlesDensity() {
         const pJS = window.pJSDom[0].pJS;
         const currentParticleCanvasArea = pJS.canvas.w * pJS.canvas.h;
 
-        // This is the base for density.value_area that would make particles.js render 
-        // pJS.particles.number.value (260) particles across the current canvas.
-        // The division by 1000 is part of particles.js internal formula.
+        // Canvas alanı için temel yoğunluk hesaplaması
         let baseDensityAreaForCurrentCanvas = currentParticleCanvasArea / 1000.0;
-        
-        // Prevent division by zero or extremely small values if canvas somehow has zero area
         if (baseDensityAreaForCurrentCanvas <= 0.001) baseDensityAreaForCurrentCanvas = 0.001; 
 
-        pJS.particles.number.value = 260; // Ensure base number of particles to aim for is 260
+        pJS.particles.number.value = 260; // Parçacık sayısını sabit tut
 
-        let densityAdjustmentFactor = 1.0; // Default: aims for 260 particles
+        let densityAdjustmentFactor = 1.0; // Varsayılan: 260 parçacık hedefi
 
         if (typeof initialParticleCanvasArea === 'number' && initialParticleCanvasArea > 0 && currentParticleCanvasArea > 0) {
             const canvasAreaZoomRatio = currentParticleCanvasArea / initialParticleCanvasArea;
 
-            // Define thresholds for zoom-out (canvas getting smaller than initial)
-            const NORMAL_CANVAS_RATIO_LOWER_BOUND = 0.8; // Below this, canvas is considered "zoomed out"
-            
-            const MODERATE_ZOOM_OUT_SPARSITY_FACTOR = 1.75; // Results in ~148 particles
-            const EXTREME_ZOOM_OUT_SPARSITY_FACTOR = 3.5;   // Results in ~74 particles
+            // Zoom-out için eşikler
+            const NORMAL_CANVAS_RATIO_LOWER_BOUND = 0.8; // Zoom-out başlangıcı
+            const MODERATE_ZOOM_OUT_SPARSITY_FACTOR = 1.75; // ~148 parçacık
+            const EXTREME_ZOOM_OUT_SPARSITY_FACTOR = 3.5;   // ~74 parçacık
+            const EXTREME_ZOOM_OUT_RATIO_THRESHOLD = 0.25; // Ekstrem zoom-out
 
-            // Thresholds for applying zoom-out sparsity
-            const EXTREME_ZOOM_OUT_RATIO_THRESHOLD = 0.25; // Canvas area < 25% of initial
-
-            if (canvasAreaZoomRatio < EXTREME_ZOOM_OUT_RATIO_THRESHOLD) { // Extreme Zoom OUT
+            if (canvasAreaZoomRatio < EXTREME_ZOOM_OUT_RATIO_THRESHOLD) {
                 densityAdjustmentFactor = EXTREME_ZOOM_OUT_SPARSITY_FACTOR;
-            } else if (canvasAreaZoomRatio < NORMAL_CANVAS_RATIO_LOWER_BOUND) { // Moderate Zoom OUT
+            } else if (canvasAreaZoomRatio < NORMAL_CANVAS_RATIO_LOWER_BOUND) {
                 densityAdjustmentFactor = MODERATE_ZOOM_OUT_SPARSITY_FACTOR;
             }
-            // If canvasAreaZoomRatio >= NORMAL_CANVAS_RATIO_LOWER_BOUND (i.e., normal size or zoomed-in/larger):
-            // densityAdjustmentFactor remains 1.0. This means we aim for 260 particles.
-            // When zoomed-in, the canvas is larger, so 260 particles spread over this larger area
-            // will naturally appear sparse and spread out from the viewport's perspective.
+            // Yakınlaştırma durumunda (canvasAreaZoomRatio >= 0.8), 260 parçacık korunur
         }
         
+        // Yoğunluk ayarını güncelle
         pJS.particles.number.density.value_area = baseDensityAreaForCurrentCanvas * densityAdjustmentFactor;
         
-        pJS.fn.particlesRefresh(); // This will recalculate and redraw particles
+        // Parçacıkların birikimini önlemek için mevcut parçacıkları temizle ve yeniden oluştur
+        pJS.fn.particlesEmpty(); // Mevcut parçacıkları sil
+        pJS.fn.particlesCreate(); // Yeni parçacıkları oluştur
+        pJS.fn.particlesRefresh(); // Parçacıkları yenile
     }
 }
 
-// Theme toggle
+// Tema değiştirme
 const themeToggleButton = document.getElementById('theme-toggle');
-const body = document.body; // Define body here as it's used in applyTheme
+const body = document.body;
 
 function applyTheme(theme, isInitialLoad = false) {
     if (theme === 'light') {
@@ -157,14 +151,14 @@ function applyTheme(theme, isInitialLoad = false) {
 
 themeToggleButton.addEventListener('click', () => {
     const newTheme = body.classList.contains('light-theme') ? 'dark' : 'light';
-    applyTheme(newTheme, false); // isInitialLoad = false
+    applyTheme(newTheme, false);
 });
 
-// Language toggle
+// Dil değiştirme
 const languageToggleButton = document.getElementById('language-toggle-btn');
 const elementsToTranslate = document.querySelectorAll('[data-tr], [data-en]');
 const tooltipElements = document.querySelectorAll('[data-tr-tooltip], [data-en-tooltip]');
-let originalTitle = ""; // Will be set on DOMContentLoaded
+let originalTitle = "";
 
 function applyLanguage(lang) {
     document.documentElement.lang = lang;
@@ -208,7 +202,7 @@ function applyLanguage(lang) {
     
     localStorage.setItem('language', lang);
 
-    if (originalTitle) { 
+    if (originalTitle) {
         if (document.hidden) {
             document.title = lang === 'tr' ? 'Sistem Çevrimdışı!' : 'System Offline!';
         } else {
@@ -239,7 +233,7 @@ document.addEventListener('visibilitychange', () => {
     }
 });
 
-// Debounce function
+// Debounce fonksiyonu
 function debounce(func, wait, immediate) {
     var timeout;
     return function() {
@@ -255,56 +249,51 @@ function debounce(func, wait, immediate) {
     };
 };
 
+// Resize olayını optimize et
 const handleResize = debounce(function() {
-    if (initialWindowArea !== undefined) { 
+    if (initialWindowArea !== undefined) {
         const currentTheme = localStorage.getItem('theme') || 'dark';
         const particleColor = getComputedStyle(body).getPropertyValue(
             currentTheme === 'light' ? '--particle-color-light' : '--particle-color-dark'
         ).trim().replace(/\'/g, '');
         initializeParticles(particleColor);
     }
-}, 250);
+}, 150); // Optimize edilmiş debounce süresi
 
 window.addEventListener('resize', handleResize);
 
-// Initial load settings moved to DOMContentLoaded
+// İlk yükleme ayarları
 document.addEventListener('DOMContentLoaded', () => {
     initialWindowArea = window.innerWidth * window.innerHeight;
     
-    if (document.title) { // Set original title here
+    if (document.title) {
         originalTitle = document.title;
     }
 
     const savedTheme = localStorage.getItem('theme') || 'dark';
-    applyTheme(savedTheme, true); 
+    applyTheme(savedTheme, true);
 
     const currentAppliedTheme = body.classList.contains('light-theme') ? 'light' : 'dark';
     const particleColor = getComputedStyle(body).getPropertyValue(
         currentAppliedTheme === 'light' ? '--particle-color-light' : '--particle-color-dark'
     ).trim().replace(/'/g, '');
     
-    // Initialize particles. This will also attempt to set initialParticleCanvasArea.
-    initializeParticles(particleColor); 
+    initializeParticles(particleColor);
 
-    // Fallback: Ensure initialParticleCanvasArea is set if initializeParticles didn't (e.g., pJS not ready immediately)
-    // This is a bit redundant if initializeParticles always succeeds in setting it.
     if (initialParticleCanvasArea === undefined && window.pJSDom && window.pJSDom[0] && window.pJSDom[0].pJS) {
         const pJS = window.pJSDom[0].pJS;
         initialParticleCanvasArea = pJS.canvas.w * pJS.canvas.h;
-        // console.log('Initial particle canvas area captured (DOMContentLoaded fallback):', initialParticleCanvasArea);
     }
 
     const savedLang = localStorage.getItem('language') || 'en';
     applyLanguage(savedLang);
-    // Ensure title is correct after language is applied
     if (document.hidden) {
         document.title = savedLang === 'tr' ? 'Sistem Çevrimdışı!' : 'System Offline!';
     } else {
         document.title = originalTitle;
     }
 
-
-    // Terminal button functionality
+    // Terminal buton işlevselliği
     const terminalRedBtn = document.getElementById('terminal-btn-red');
     const terminalYellowBtn = document.getElementById('terminal-btn-yellow');
     const terminalGreenBtn = document.getElementById('terminal-btn-green');
