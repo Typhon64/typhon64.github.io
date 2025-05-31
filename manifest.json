@@ -1,0 +1,21 @@
+{
+  "name": "Typhon64 - Siber Alan",
+  "short_name": "Typhon64",
+  "description": "Typhon64 - Exploring Cyber Threat Intelligence. Documenting projects and learning in OSINT, threat analysis, and security research.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#c4b5fd",
+  "icons": [
+    {
+      "src": "favicon.png", 
+      "sizes": "192x192",    
+      "type": "image/png"
+    },
+    {
+      "src": "favicon.png", 
+      "sizes": "512x512",    
+      "type": "image/png"
+    }
+  ]
+} 
