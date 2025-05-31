@@ -154,3 +154,33 @@ if (typeof applyTheme === 'function') {
 if (typeof applyLanguage === 'function') {
     applyLanguage(savedLang);
 }
+
+// Terminal button functionality
+document.addEventListener('DOMContentLoaded', () => {
+    const terminalRedBtn = document.getElementById('terminal-btn-red');
+    const terminalYellowBtn = document.getElementById('terminal-btn-yellow');
+    const terminalGreenBtn = document.getElementById('terminal-btn-green');
+    const terminalWindow = document.querySelector('.terminal'); // To potentially hide/minimize later
+
+    if (terminalRedBtn) {
+        terminalRedBtn.addEventListener('click', () => {
+            console.log('Kırmızı terminal butonuna tıklandı! (Kapatma simüle ediliyor)');
+            // Örnek: Terminali gizle
+            // if (terminalWindow) terminalWindow.style.display = 'none'; 
+        });
+    }
+
+    if (terminalYellowBtn) {
+        terminalYellowBtn.addEventListener('click', () => {
+            console.log('Sarı terminal butonuna tıklandı! (Küçültme simüle ediliyor)');
+            // Örnek: Terminali küçült/eski boyutuna getir (CSS ile class ekleyerek yapılabilir)
+        });
+    }
+
+    if (terminalGreenBtn) {
+        terminalGreenBtn.addEventListener('click', () => {
+            console.log('Yeşil terminal butonuna tıklandı! (Tam ekran simüle ediliyor)');
+            // Örnek: Terminali tam ekran yap/eski boyutuna getir (CSS ile class ekleyerek yapılabilir)
+        });
+    }
+});
