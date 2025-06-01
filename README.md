@@ -17,6 +17,7 @@ Any use, adaptation, or sharing of this project — even partially — without p
 Forking, using, or adding this code to other projects without permission is also not welcomed.
 
 To get permission, contact the author via this Session ID:  
-🌐 https://getsession.org/0500d49ca2b7d6e4149e53e8eba080f0b3795af952810f19bc21882121a7a4e760
+🌐 https://getsession.org/
+0500d49ca2b7d6e4149e53e8eba080f0b3795af952810f19bc21882121a7a4e760
 
 © All rights reserved by Typhon64.
