@@ -8,6 +8,9 @@ Anyone can use, modify, and distribute it.
 - Anyone using this project or its code must clearly attribute the original author (Typhon64) and provide the source link.  
 - When using any part of this code in other projects, visible attribution stating "This code was developed by Typhon64" must be included.  
 - The 404 page, if used, must be credited to vmfunc (https://vmfunc.gg).  
+( The 404 page was developed by vmfunc.  
+Thanks to vmfunc.  
+Visit: https://vmfunc.gg • https://github.com/vmfunc )
 - The source link and attribution information must never be removed.
 
 ---
