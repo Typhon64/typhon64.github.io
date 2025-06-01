@@ -1,4 +1,5 @@
 © 2025 Typhon64. All rights reserved.
+Theme idea and owner : Typhon
 
 This project is released as open source.
 Anyone may use, modify, and distribute it freely.
