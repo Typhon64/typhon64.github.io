@@ -34,5 +34,5 @@ You may **not** remove, obscure, or alter attribution statements or source links
 
 **License:** [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)  
 **Author & Theme Creator:** Typhon64  
-**Contact (secure & anonymous):** Session ID `0500d49ca2b7d6e4...`  
+**Contact (secure & anonymous):** Session ID `0500d49ca2b7d6e4149e53e8eba080f0b3795af952810f19bc21882121a7a4e760`  
 (Session: https://getsession.org)
