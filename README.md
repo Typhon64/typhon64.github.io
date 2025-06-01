@@ -1,4 +1,5 @@
-#The site was created by **Typhon** using AI tools like Cursor, Gemini, and Grok.  
+#
+The site was created by **Typhon** using AI tools like Cursor, Gemini, and Grok.  
 Main theme idea and owner: **Typhon64**
 
 The 404 page was made by **vmfunc**.  
