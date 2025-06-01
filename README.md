@@ -1,24 +1,24 @@
-© 2025 Typhon64. All rights reserved.
-Theme idea and owner : Typhon
+© 2025 Typhon64. Licensed under the Apache License, Version 2.0.
 
-This project is released as open source.
-Anyone may use, modify, and distribute it freely.
+This project is released under the Apache License 2.0. You may freely use, modify, and distribute it under the terms of that license.
 
-However, the following conditions apply:
+In addition, the following attribution requirements apply:
 
-Anyone using this project or its code must clearly attribute the original author (Typhon64) and provide the source link.
+1. **Attribution Required**  
+   Any use, modification, or distribution must include **clear and visible attribution**:  
+   > “This code was developed by Typhon64”  
+   A direct link to the original source (repository or website) must also be provided.
 
-When incorporating any part of this code into other projects, a visible attribution stating "This code was developed by Typhon64" must be included.
+2. **404 Page Credit**  
+   If the included 404 page is used, it must be credited as follows:  
+   > “404 page developed by vmfunc – https://vmfunc.gg • https://github.com/vmfunc”
 
-The 404 page, if used, must be credited to vmfunc:
-The 404 page was developed by vmfunc.
-Thanks to vmfunc.
-Visit: https://vmfunc.gg • https://github.com/vmfunc
+3. **Do Not Remove Attribution**  
+   You may not remove or obscure the attribution statements or source links from the code or user interface.
 
-The source link and attribution information must never be removed.
+---
 
-Forking, using, and modifying the code is allowed, but source attribution is mandatory.
-
-Contact:
-https://getsession.org/
-Session ID: 0500d49ca2b7d6e4149e53e8eba080f0b3795af952810f19bc21882121a7a4e760
+**License:** [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)  
+**Author:** Typhon64  
+**Contact:** Session ID `0500d49ca2b7d6e4...`  
+(Session: https://getsession.org)
