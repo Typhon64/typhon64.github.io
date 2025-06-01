@@ -1,22 +1,19 @@
-#
-The site was created by **Typhon** using AI tools like Cursor, Gemini, and Grok.  
-Main theme idea and owner: **Typhon64**
+The site was created by Typhon using AI tools such as Cursor, Gemini, and Grok.  
+Main theme concept and ownership: Typhon64
 
-The 404 page was made by **vmfunc**.  
+The 404 page was developed by vmfunc.  
 Thanks to vmfunc.  
 Visit: https://vmfunc.gg • https://github.com/vmfunc
 
----
+⚠️ Notice
 
-⚠️ **Notice**
+This software is not authorized to be used, shared, modified, or deployed without the explicit permission of the author.
 
-This software is **not welcomed to be used, shared, modified, or deployed without the author’s permission.**
+Any use, adaptation, or distribution of this project — even partially — without permission is unauthorized.
 
-Any use, adaptation, or sharing of this project — even partially — without permission is unauthorized.
+Forking, using, or incorporating this code into other projects without prior approval is also not permitted.
 
-Forking, using, or adding this code to other projects without permission is also not welcomed.
-
-To get permission, contact the author via this Session ID:  
+To request permission, contact the author via this Session ID:  
 🌐 https://getsession.org/
 0500d49ca2b7d6e4149e53e8eba080f0b3795af952810f19bc21882121a7a4e760
 
