@@ -1,0 +1,10 @@
+# Allow all web crawlers to access all content
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://typhon64.github.io/sitemap.xml
+
+# Disallow access to specific files/directories if needed
+# Disallow: /private/
+# Disallow: /script/ 
