@@ -1052,33 +1052,22 @@ body.light-theme .theme-btn {
 .header-btn.lang-toggle-btn {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
     gap: 0.5rem;
     padding: 0 1.1em;
-    min-width: 80px; /* Ensure minimum width for text */
 }
 
 .header-btn.lang-toggle-btn i {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    margin-right: 0.25em;
     font-size: 1.1em;
-    width: 1.2em;
-    height: 1.2em;
-    margin: 0;
 }
 
-/* Remove previous spacing rules that might conflict */
-.header-btn.lang-toggle-btn i + span,
-.header-btn.lang-toggle-btn i + text {
-    margin: 0;
-}
-
-/* Ensure proper spacing in mobile */
+/* Mobil cihazlar için düzenleme */
 @media screen and (max-width: 480px) {
     .header-btn.lang-toggle-btn {
-        min-width: 70px;
         padding: 0 0.8em;
+    }
+    .header-btn.lang-toggle-btn i {
+        margin-right: 0.2em;
     }
 }
 
