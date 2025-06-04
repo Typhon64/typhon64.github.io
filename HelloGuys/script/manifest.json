@@ -1,0 +1,55 @@
+{
+  "name": "Typhon64 - Cyber Security",
+  "short_name": "Typhon64",
+  "description": "Cybersecurity, OSINT, and Threat Intelligence",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#c4b5fd",
+  "orientation": "any",
+  "categories": ["security", "technology", "cybersecurity"],
+  "lang": "en",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/media/favicon.webp",
+      "sizes": "192x192",
+      "type": "image/webp",
+      "purpose": "any"
+    },
+    {
+      "src": "/media/favicon.webp",
+      "sizes": "512x512",
+      "type": "image/webp",
+      "purpose": "any"
+    },
+    {
+      "src": "/media/maskable-icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/media/screenshot.webp",
+      "sizes": "1280x720",
+      "type": "image/webp",
+      "platform": "wide",
+      "label": "Typhon64 Homepage"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Resume",
+      "url": "/page/resume.html",
+      "description": "View my resume"
+    },
+    {
+      "name": "Notes",
+      "url": "https://typhon64.github.io/notes.html",
+      "description": "View my notes"
+    }
+  ]
+} 
