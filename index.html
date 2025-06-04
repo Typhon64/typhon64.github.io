@@ -1,132 +1,325 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en" translate="no">
 <head>
+    <!-- Basic Meta Tags: SEO and Compatibility -->
     <meta charset="UTF-8">
+    <meta name="google-site-verification" content="2m6hNAoGoyNpD6vOxUivIMyW-LyeFz5w7zI_xInx4Kk" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Typhon64 - Özgeçmiş / Resume">
-    <meta name="keywords" content="Typhon64, Resume,">
+    <meta name="description" content="Typhon64 - Exploring Cyber Threat Intelligence. Documenting projects and learning in OSINT, threat analysis, and security research.">
+    <meta name="keywords" content="Typhon64, cyber threat intelligence, OSINT, threat analysis, security research, cybersecurity">
     <meta name="author" content="Typhon64">
-    <meta name="robots" content="noindex, nofollow">
-    <title data-en="Typhon64 - Resume" data-tr="Typhon64 - Özgeçmiş">Typhon64 - Özgeçmiş / Resume</title>
+    <meta name="robots" content="index, follow">
+    <meta name="color-scheme" content="dark light">
+    
+    <!-- Open Graph / Facebook Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://typhon64.github.io/HelloGuys/">
+    <meta property="og:title" content="Typhon64 - Cyber Security">
+    <meta property="og:description" content="Exploring Cyber Threat Intelligence. Documenting projects and learning in OSINT, threat analysis, and security research.">
+    <meta property="og:image" content="https://typhon64.github.io/HelloGuys/media/og-image.jpg">
+    
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://typhon64.github.io/HelloGuys/">
+    <meta name="twitter:title" content="Typhon64 - Cyber Security">
+    <meta name="twitter:description" content="Exploring Cyber Threat Intelligence. Documenting projects and learning in OSINT, threat analysis, and security research.">
+    <meta name="twitter:image" content="https://typhon64.github.io/HelloGuys/media/og-image.jpg">
+    
+    <title data-en="Typhon64 - Cyber Security" data-tr="Typhon64 - Siber Güvenlik">Typhon64 - Cyber Security</title>
 
+    <!-- Favicon -->
+    <link rel="icon" href="/HelloGuys/media/favicon.webp" type="image/webp">
+    <link rel="apple-touch-icon" href="/HelloGuys/media/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/HelloGuys/media/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/HelloGuys/media/favicon-16x16.png">
+    
+    <!-- Preconnect to External Domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    
+    <!-- Google Fonts: Inter - Main font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- SF Mono: Terminal feel -->
     <link href="https://fonts.cdnfonts.com/css/sf-mono" rel="stylesheet">
+    <!-- Font Awesome: Social media icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!-- PWA: Offline access -->
     <link rel="manifest" href="/HelloGuys/script/manifest.json">
-    <meta name="theme-color" content="#8B5CF6">
-    <link rel="stylesheet" href="/HelloGuys/css/resume.css">
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <meta name="theme-color" content="var(--accent-dark)">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/HelloGuys/css/style.css">
+    
+    <!-- Preload critical JS -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" as="script">
+    <link rel="preload" href="/HelloGuys/script/script.js" as="script">
+    
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Typhon64",
+      "url": "https://typhon64.github.io/HelloGuys/",
+      "image": "https://typhon64.github.io/HelloGuys/media/pfp.jpg",
+      "sameAs": [
+        "https://github.com/typhon64",
+        "https://twitter.com/typhon64",
+        "https://linkedin.com/in/yourusername"
+      ],
+      "jobTitle": "Cybersecurity Researcher",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Independent"
+      },
+      "description": "Cybersecurity and threat intelligence researcher focusing on OSINT, threat analysis, and security research."
+    }
+    </script>
+    
+    <!-- Particles.js -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" defer></script>
 </head>
 <body>
-    <div id="particles-js"></div>
+    <!-- Particles.js: Covers the entire page, including header -->
+    <div id="particles-js" aria-hidden="true"></div>
 
+    <!-- Header: Logo only, navigation removed -->
     <header class="header">
         <div class="header-inner">
+            <div class="header-left">
+                <span class="header-logo">
+                  <span class="network-icon" aria-hidden="true" style="display:inline-block;width:1.2em;height:1.2em;vertical-align:middle;margin-right:0.5em;">
+                    <svg viewBox="0 0 24 24" width="1.2em" height="1.2em" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="5" cy="12" r="2" stroke="var(--accent)" stroke-width="2"/>
+                      <circle cx="19" cy="12" r="2" stroke="var(--accent)" stroke-width="2"/>
+                      <circle cx="12" cy="5" r="2" stroke="var(--accent)" stroke-width="2"/>
+                      <circle cx="12" cy="19" r="2" stroke="var(--accent)" stroke-width="2"/>
+                      <line x1="7" y1="12" x2="10" y2="12" stroke="var(--accent)" stroke-width="2"/>
+                      <line x1="14" y1="12" x2="17" y2="12" stroke="var(--accent)" stroke-width="2"/>
+                      <line x1="12" y1="7" x2="12" y2="10" stroke="var(--accent)" stroke-width="2"/>
+                      <line x1="12" y1="14" x2="12" y2="17" stroke="var(--accent)" stroke-width="2"/>
+                    </svg>
+                  </span>
+                  Typhon64
+                </span>
+                <div class="header-btn-group">
+                    <a href="https://typhon64.github.io/HelloGuys/notes.html" class="header-btn" title="Notes" target="_blank" rel="noopener noreferrer" data-tr="Notlar" data-en="Notes">Notes</a>
+                    <a href="/HelloGuys/resume.html" class="header-btn" title="Resume" data-tr="Özgeçmiş" data-en="Resume">Resume</a>
+                </div>
+            </div>
             <div class="header-right">
-                <a href="/HelloGuys/index.html" class="back-btn" title="Geri / Back"> <i class="fas fa-arrow-left"></i>
-                    <span class="back-btn-text" data-tr="Geri" data-en="Back">Geri</span>
-                </a>
-                <button id="lang-toggle-btn" class="header-btn" data-tr-title="Dili Değiştir" data-en-title="Change Language" title="Dili Değiştir / Change Language">
-                    <i class="fas fa-language"></i>
-                    <span id="lang-btn-text" class="lang-btn-text">EN</span>
-                </button>
-                <button id="theme-toggle-btn" class="header-btn" data-tr-title="Temayı Değiştir" data-en-title="Toggle Theme" title="Temayı Değiştir / Toggle Theme">
-                    <i class="fas fa-moon"></i>
-                    <i class="fas fa-sun" style="display:none;"></i>
+                <div class="header-btn-group">
+                    <button id="language-toggle-btn" class="header-btn lang-toggle-btn" title="Change Language" data-tr-title="Dili Değiştir" data-en-title="Change Language">
+                        <i class="fas fa-language" aria-hidden="true"></i>
+                        EN
+                    </button>
+                </div>
+                <button id="theme-toggle" class="header-btn theme-btn" title="Toggle Theme" data-tr-title="Temayı Değiştir" data-en-title="Toggle Theme" aria-label="Toggle theme" aria-pressed="false">
+                    <i class="fas fa-moon" aria-hidden="true"></i>
+                    <i class="fas fa-sun" aria-hidden="true"></i>
                 </button>
             </div>
         </div>
     </header>
 
-    <div class="main-content-wrapper">
+    <!-- Main Content -->
+    <main class="main-content">
         <div class="container">
-            <div class="resume-layout">
-                <aside class="resume-sidebar">
-                    <h3 data-en="Navigation" data-tr="Gezinti">Gezinti</h3>
-                    <nav>
-                        <ul>
-                            <li><a href="#about-me" data-en="About Me" data-tr="Hakkımda">Hakkımda</a></li>
-                            <li><a href="#experience" data-en="Experience" data-tr="Deneyimler">Deneyimler</a></li>
-                            <li><a href="#skills" data-en="Skills" data-tr="Yetenekler">Yetenekler</a></li>
-                            <li><a href="#projects" data-en="Projects" data-tr="Projeler">Projeler</a></li>
-                            <li><a href="#certifications" data-en="Certifications" data-tr="Sertifikalar">Sertifikalar</a></li>
-                        </ul>
-                    </nav>
-                </aside>
-                <article class="resume-main-content">
-                    <h1 class="page-title" data-en="Resume" data-tr="Özgeçmiş">Özgeçmiş</h1>
-
-                    <section class="resume-section" id="about-me">
-                        <h2 data-en="About Me" data-tr="Hakkımda"><i class="fas fa-user"></i> <span data-en="About Me" data-tr="Hakkımda">Hakkımda</span></h2>
-                        <div class="resume-item">
-                            <p class="objective" data-tr="np" data-en="np">np</p>
+            <div class="content">
+                <div class="left-section">
+                    <div class="about">
+                        <h1 class="glitch" data-text="Typhon64" translate="no" data-tr="Typhon64" data-en="Typhon64">Typhon64</h1>
+                        <div class="hero-subtext">
+                            <span class="line"></span>
+                            <p data-tr="öğreniyorum, öğrenecek çok şey var." data-en="learning there's a lot to learn.">learning there's a lot to learn.</p>
                         </div>
-                    </section>
-
-                    <section class="resume-section" id="experience">
-                        <h2 data-en="Experience" data-tr="Deneyimler"><i class="fas fa-briefcase"></i> <span data-en="Experience" data-tr="Deneyimler">Deneyimler</span></h2>
-                        <div class="resume-item">
-                            <h3 data-en="Not yet" data-tr="Henüz yok">Henüz yok</h3>
-                            <p class="subheading" data-en="[Company Name] | [City, Country]" data-tr="[Şirket Adı] | [Şehir, Ülke]">[Şirket Adı] | [Şehir, Ülke]</p>
-                            <p class="date" id="current-date" data-en="3 June 2025" data-tr="3 Haziran 2025">3 Haziran 2025</p>
-                            <ul>
-                            </ul>
-                        </div>
-                    </section>
-
-                    <section class="resume-section" id="skills">
-                        <h2 data-en="Skills" data-tr="Yetenekler"><i class="fas fa-cogs"></i> <span data-en="Skills" data-tr="Yetenekler">Yetenekler</span></h2>
-                        <div class="resume-item">
-                            <h3 data-en="Technical Skills" data-tr="Teknik Yetenekler">Teknik Yetenekler</h3>
-                            <ul class="skills-list">
-                                <li data-en="OSINT" data-tr="OSINT">OSINT</li>
-                                <li data-en="Threat Analysis" data-tr="Tehdit Analizi">Tehdit Analizi</li>
-                                <li data-en="Network Security" data-tr="Ağ Güvenliği">Ağ Güvenliği</li>
-                                <li data-en="Python" data-tr="Python">Python</li>
-                                <li data-en="Linux" data-tr="Linux">Linux</li>
-                            </ul>
-                        </div>
-                        <div class="resume-item">
-                            <h3 data-en="Languages" data-tr="Diller">Diller</h3>
-                            <ul class="skills-list">
-                                <li data-en="Turkish (Native)" data-tr="Türkçe (Ana Dil)">Türkçe (Ana Dil)</li>
-                                <li data-en="English" data-tr="İngilizce">İngilizce</li>
-                            </ul>
-                        </div>
-                    </section>
-
-                    <section class="resume-section" id="projects">
-                        <h2 data-en="Projects" data-tr="Projeler"><i class="fas fa-project-diagram"></i> <span data-en="Projects" data-tr="Projeler">Projeler</span></h2>
-                        <div class="items-container-flex"> 
-                            <div class="resume-item">
-                                <div class="links">
-                                    <a href="https://github.com/Typhon64?tab=repositories" target="_blank" rel="noopener noreferrer">
-                                        <i class="fab fa-github"></i> <span data-en="View Projects" data-tr="Projeleri Görüntüle">Projeleri Görüntüle</span>
-                                    </a>
-                                </div>
+                        <div class="hi-text" data-tr="selam." data-en="hi.">hi.</div>
+                        <div style="height: 1.5rem;"></div>
+                        <p data-tr="Siber güvenlik ve tehdit istihbaratı alanlarında kendimi geliştiriyorum.<br>OSINT, tehdit analizi ve güvenlik araştırması konularında deneyim kazanıyorum.<br>Siber güvenlik ekosistemine katkıda bulunmak için çalışıyorum.<br><span class='highlight'>İşbirlikleri ve projeler için benimle iletişime geçmekten çekinmeyin.</span>" 
+                           data-en="I am developing my skills in cybersecurity and threat intelligence.<br>I am gaining experience in OSINT, threat analysis, and security research.<br>Working to contribute to the cybersecurity ecosystem.<br><span class='highlight'>Feel free to contact me for collaborations and projects.</span>">
+                            I am developing my skills in cybersecurity and threat intelligence.<br>
+                            I am gaining experience in OSINT, threat analysis, and security research.<br>
+                            Working to contribute to the cybersecurity ecosystem.<br>
+                            <span class="highlight">Feel free to contact me for collaborations and projects.</span>
+                        </p>
+                        
+                        <div class="tech-stack" aria-label="Technical skills">
+                            <div class="tech-item" data-tooltip="OSINT" data-tr-tooltip="OSINT" data-en-tooltip="OSINT" aria-label="OSINT">
+                                <i class="fas fa-search" aria-hidden="true"></i>
+                            </div>
+                            <div class="tech-item" data-tooltip="Cybersecurity" data-tr-tooltip="Siber Güvenlik" data-en-tooltip="Cybersecurity" aria-label="Cybersecurity">
+                                <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                            </div>
+                            <div class="tech-item" data-tooltip="Threat Analysis" data-tr-tooltip="Tehdit Analizi" data-en-tooltip="Threat Analysis" aria-label="Threat Analysis">
+                                <i class="fas fa-chart-line" aria-hidden="true"></i>
+                            </div>
+                            <div class="tech-item" data-tooltip="Network Security" data-tr-tooltip="Ağ Güvenliği" data-en-tooltip="Network Security" aria-label="Network Security">
+                                <i class="fas fa-network-wired" aria-hidden="true"></i>
+                            </div>
+                            <div class="tech-item" data-tooltip="Data Analysis" data-tr-tooltip="Veri Analizi" data-en-tooltip="Data Analysis" aria-label="Data Analysis">
+                                <i class="fas fa-database" aria-hidden="true"></i>
                             </div>
                         </div>
-                    </section>
 
-                    <section class="resume-section" id="certifications">
-                        <h2 data-en="Certifications" data-tr="Sertifikalar"><i class="fas fa-certificate"></i> <span data-en="Certifications" data-tr="Sertifikalar">Sertifikalar</span></h2>
-                        <div class="resume-item">
-                            <h3 data-en="Turkcell Network" data-tr="Turkcell Network">Turkcell Network</h3>
-                            <p class="subheading" data-en="Turkcell" data-tr="Turkcell">Turkcell</p>
-                            <p class="date" data-en="[Date Received]" data-tr="[Alınan Tarih]">[Alınan Tarih]</p>
-                            <div class="links">
-                                <a href="../certificate/TURKCELL_NETWORK.pdf" target="_blank" rel="noopener noreferrer">
-                                    <i class="fas fa-award"></i> <span data-en="View Certificate" data-tr="Sertifikayı Görüntüle">Sertifikayı Görüntüle</span>
+                        <div class="contact-buttons">
+                            <a href="mailto:typhon64@example.com" class="contact-btn">
+                                <i class="fas fa-envelope" aria-hidden="true"></i>
+                                <span data-tr="İletişime Geç" data-en="Contact Me">Contact Me</span>
+                            </a>
+                            <button type="button" class="contact-btn session-btn" onclick="copySessionID()">
+                                <span class="session-icon" aria-hidden="true" style="display:inline-block;width:1.2em;height:1.2em;vertical-align:middle;margin-right:0.5em;">
+                                    <svg viewBox="0 0 24 24" width="1.2em" height="1.2em" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10Z" stroke="var(--text-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </span>
+                                <span data-tr="Session'a Ekle" data-en="Add on Session">Add on Session</span>
+                            </button>
+                            <span id="session-copied" style="display:none;margin-left:10px;color:var(--accent);font-size:0.95rem;" data-tr="Kopyalandı!" data-en="Copied!">Copied!</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="right-section">
+                    <div class="profile-card">
+                        <div class="card-header site-harmony-banner" style="background-image: url('/HelloGuys/media/profile-banner.jpg');" aria-label="Profile banner">
+                            <img src="/HelloGuys/media/pfp.jpg" alt="Profile Picture" class="profile-img" loading="lazy" width="100" height="100">
+                        </div>
+                        <div class="card-body">
+                            <div class="profile-info">
+                                <h2>Ahmet</h2>
+                                <div class="profile-meta">
+                                    <span class="badge" data-tr="Siber Güvenlik" data-en="Cyber Security">Cyber Security</span>
+                                    <span id="current-time" class="time-badge" aria-label="Current time">14:04</span>
+                                </div>
+                                <p class="profile-lang" data-tr="Diller: Türkçe, İngilizce" data-en="Languages: Turkish, English">Languages: Turkish, English</p>
+                            </div>
+                            
+                            <div class="divider" aria-hidden="true"></div>
+                            
+                            <div class="interests">
+                                <h3 data-tr="İlgi Alanları" data-en="Interests">Interests</h3>
+                                <div class="interest-tags">
+                                    <span data-tr="Güvenlik Araştırması" data-en="Security Research">Security Research</span>
+                                    <span data-tr="Bilgisayar Bilimi" data-en="Computer Science">Computer Science</span>
+                                    <span data-tr="CTI" data-en="CTI">CTI</span>
+                                </div>
+                            </div>
+                            
+                            <div class="social-links">
+                                <a href="https://github.com/typhon64" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="GitHub">
+                                    <i class="fab fa-github" aria-hidden="true"></i>
+                                </a>
+                                <a href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="LinkedIn">
+                                    <i class="fab fa-linkedin" aria-hidden="true"></i>
+                                </a>
+                                <a href="https://twitter.com/typhon64" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Twitter">
+                                    <i class="fab fa-twitter" aria-hidden="true"></i>
                                 </a>
                             </div>
                         </div>
-                    </section>
-                </article>
+                    </div>
+                </div>
+            </div>
+
+            <div class="terminal-container">
+                <div class="terminal" role="region" aria-label="Terminal Display">
+                    <div class="terminal-header">
+                        <span id="terminal-btn-red" class="terminal-btn red" aria-hidden="true"></span>
+                        <span id="terminal-btn-yellow" class="terminal-btn yellow" aria-hidden="true"></span>
+                        <span id="terminal-btn-green" class="terminal-btn green" aria-hidden="true"></span>
+                    </div>
+                    <div class="terminal-body">
+                        <p class="terminal-text"><span class="prompt">Typhon64@system:~$</span> <span class="command">whoami</span></p>
+                        <p class="terminal-output" data-tr="Tanımak için incele" data-en="Examine to find out">Examine to find out</p>
+                        <p class="terminal-text"><span class="prompt">Typhon64@system:~$</span> <span class="command">date</span></p>
+                        <p class="terminal-output" id="current-date">2024-03-19 14:04:00</p>
+                        <p class="terminal-text"><span class="prompt">Typhon64@system:~$</span> <span class="cursor"></span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lang-switcher" style="display:none;">
+                <button data-lang="tr">TR</button>
+                <button data-lang="en">EN</button>
             </div>
         </div>
-    </div>
+    </main>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="/HelloGuys/script/resume.js"></script>
+    <!-- Footer -->
+    <footer class="footer" style="text-align:center;padding:1rem;font-size:0.8rem;opacity:0.7;margin-top:2rem;">
+        <p></p>
+    </footer>
+
+    <!-- PWA: Service worker registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/HelloGuys/script/service-worker.js')
+                    .then(reg => console.log('Service Worker registered successfully'))
+                    .catch(err => console.error('Service Worker registration error:', err));
+            });
+        }
+        
+        // Set current year in footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+    
+    <!-- GSAP: For animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+    
+    <!-- Custom JS -->
+    <script src="/HelloGuys/script/script.js" defer></script>
+    
+    <!-- Time update script -->
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const istanbulTime = new Date(now.getTime() + (3 * 60 * 60 * 1000));
+            
+            let hours = istanbulTime.getUTCHours();
+            let minutes = istanbulTime.getUTCMinutes();
+            
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            
+            const timeElement = document.getElementById('current-time');
+            if (timeElement) {
+                timeElement.textContent = hours + ':' + minutes;
+                timeElement.setAttribute('aria-label', 'Current time: ' + hours + ':' + minutes);
+            }
+            
+            const year = istanbulTime.getUTCFullYear();
+            const month = String(istanbulTime.getUTCMonth() + 1).padStart(2, '0');
+            const day = String(istanbulTime.getUTCDate()).padStart(2, '0');
+            const seconds = String(istanbulTime.getUTCSeconds()).padStart(2, '0');
+            
+            const dateElement = document.getElementById('current-date');
+            if (dateElement) {
+                dateElement.textContent = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            }
+        }
+        
+        updateTime();
+        setInterval(updateTime, 1000);
+    </script>
+    
+    <!-- Session ID copy script -->
+    <script>
+    function copySessionID() {
+        const sessionID = '05e7b2c1d2a3f4e5c6b7a8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9'; // Your Session ID here
+        navigator.clipboard.writeText(sessionID).then(function() {
+            const el = document.getElementById('session-copied');
+            if (el) {
+                el.style.display = 'inline';
+                setTimeout(() => { el.style.display = 'none'; }, 2000);
+            }
+        }).catch(function(err) {
+            console.error('Could not copy Session ID: ', err);
+        });
+    }
+    </script>
 </body>
 </html>
