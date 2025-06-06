@@ -150,12 +150,10 @@ function applyLanguage(lang) {
     elementsToTranslate.forEach(el => {
         const newText = el.getAttribute(`data-${lang}`);
         if (newText !== null) {
-            // Simple text replacement, prefer textContent for security unless HTML is intended.
-            // Given current attributes, textContent should be fine.
             if (el.tagName === 'A' || el.tagName === 'SPAN' || el.tagName === 'LI' || el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'H3' || el.tagName === 'P' || el.tagName === 'TITLE') {
                 el.textContent = newText;
             } else {
-                el.innerHTML = newText; // Fallback for elements where textContent might not be appropriate (e.g. if they contain other inline elements not meant for translation)
+                el.innerHTML = newText;
             }
         }
     });
@@ -167,11 +165,11 @@ function applyLanguage(lang) {
         }
     });
 
-    // Update page title specifically
     if (pageTitle) {
         const newPageTitle = pageTitle.getAttribute(`data-${lang}`);
         if (newPageTitle) {
             document.title = newPageTitle;
+            originalPageTitle = newPageTitle;
         }
     }
 
@@ -190,11 +188,19 @@ if (themeToggleBtn) {
 
 if (langToggleBtn) {
     langToggleBtn.addEventListener('click', () => {
-        const currentLang = localStorage.getItem('language') || 'tr';
-        const newLang = currentLang === 'tr' ? 'en' : 'tr';
+        const currentLang = localStorage.getItem('language') || 'en';
+        const newLang = currentLang === 'en' ? 'tr' : 'en';
         applyLanguage(newLang);
     });
 }
+
+// Dil değişikliklerini dinle
+window.addEventListener('storage', function(e) {
+    if (e.key === 'language') {
+        const newLang = e.newValue || 'en';
+        applyLanguage(newLang);
+    }
+});
 
 document.addEventListener('visibilitychange', () => {
     const lang = localStorage.getItem('language') || 'tr';
@@ -212,10 +218,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // First apply theme to ensure particles get the right color
     const savedTheme = localStorage.getItem('theme') || 'dark';
-    applyTheme(savedTheme, true); // true for initial load
+    applyTheme(savedTheme, true);
 
-    // Then apply language
-    const savedLang = localStorage.getItem('language') || 'tr';
+    // Then apply language from localStorage
+    const savedLang = localStorage.getItem('language') || 'en';
     applyLanguage(savedLang);
 
     if (document.hidden) {
@@ -242,107 +248,91 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Section Navigation Logic
     const sidebarLinks = document.querySelectorAll('.resume-sidebar nav a');
-    const contentSections = document.querySelectorAll('.resume-main-content .resume-section');
-    let currentVisibleSection = null;
+    const sections = document.querySelectorAll('.resume-section');
 
-    function animateSectionIn(sectionElement) {
-        if (sectionElement && typeof gsap !== 'undefined') {
-            gsap.set(sectionElement, { y: 30, opacity: 0 });
-            gsap.to(sectionElement, {
-                y: 0,
-                opacity: 1,
-                duration: 0.5,
-                ease: 'power2.out'
-            });
-        }
-    }
-
-    function showSection(sectionIdToShow, animate = true) {
-        let sectionToShow = null;
-        
-        // First hide all sections and remove active class from all links
-        contentSections.forEach(section => {
-            section.classList.remove('active-section');
-        });
-        
-        sidebarLinks.forEach(link => {
-            link.classList.remove('active');
-        });
-        
-        // Then show the target section and activate its link
-        contentSections.forEach(section => {
-            if (section.id === sectionIdToShow) {
+    function showSection(sectionId) {
+        sections.forEach(section => {
+            if (section.id === sectionId) {
                 section.classList.add('active-section');
-                sectionToShow = section;
+            } else {
+                section.classList.remove('active-section');
             }
         });
-        
+
         sidebarLinks.forEach(link => {
-            const href = link.getAttribute('href');
-            if (href && href.substring(1) === sectionIdToShow) {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${sectionId}`) {
                 link.classList.add('active');
             }
         });
-
-        if (animate && sectionToShow) {
-            animateSectionIn(sectionToShow);
-        } else if (sectionToShow) {
-            gsap.set(sectionToShow, { y: 0, opacity: 1 });
-        }
-        
-        currentVisibleSection = sectionToShow;
-        return sectionToShow !== null;
     }
 
     sidebarLinks.forEach(link => {
         link.addEventListener('click', function(event) {
             event.preventDefault();
             const targetId = this.getAttribute('href').substring(1);
-
-            if (currentVisibleSection && currentVisibleSection.id === targetId && currentVisibleSection.classList.contains('active-section')) {
-                // If clicking the same section that's already active, do nothing or toggle
-                // showSection(targetId, false);
-            } else {
-                showSection(targetId, true);
-            }
-
-            if(history.pushState) {
+            showSection(targetId);
+            if (history.pushState) {
                 history.pushState(null, null, `#${targetId}`);
             } else {
-                location.hash = `#${targetId}`;
+                window.location.hash = `#${targetId}`;
             }
         });
     });
 
-    // Determine initial section to show
-    let initialSectionId = 'experience'; // Default
-    const availableSections = Array.from(contentSections).map(section => section.id);
-    
-    // Check if URL has a hash
-    const hash = window.location.hash.substring(1);
-    if (hash && availableSections.includes(hash)) {
-        initialSectionId = hash;
-    } else if (availableSections.length > 0) {
-        // If no valid hash, use first available section
-        initialSectionId = availableSections[0];
-    }
+    // Show initial section on page load
+    function showInitialSection() {
+        const hash = window.location.hash.substring(1);
+        const sectionIds = Array.from(sections).map(s => s.id);
+        let initialSectionId = sectionIds[0] || null; // Default to the first section
 
-    // Show initial section
-    if (!showSection(initialSectionId, true) && availableSections.length > 0) {
-        // Fallback if initialSectionId is somehow invalid
-        showSection(availableSections[0], true);
-    }
-
-    // Update current date in Experience section
-    function updateCurrentDate() {
-        const dateElement = document.getElementById('current-date');
-        if (dateElement) {
-            const options = { timeZone: 'Europe/Istanbul', year: 'numeric', month: 'long', day: 'numeric' };
-            const currentDate = new Date().toLocaleDateString('tr-TR', options);
-            dateElement.textContent = currentDate;
-            dateElement.setAttribute('data-lang-tr', currentDate);
-            dateElement.setAttribute('data-lang-en', new Date().toLocaleDateString('en-US', options));
+        if (hash && sectionIds.includes(hash)) {
+            initialSectionId = hash;
+        }
+        
+        if (initialSectionId) {
+            showSection(initialSectionId);
         }
     }
+    showInitialSection();
+
+    function updateCurrentDate() {
+      const dateElement = document.getElementById('current-date');
+      if (dateElement) {
+        const today = new Date();
+        const lang = localStorage.getItem('language') || 'en';
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        dateElement.textContent = today.toLocaleDateString(lang === 'tr' ? 'tr-TR' : 'en-US', options);
+      }
+    }
     updateCurrentDate();
+    
+    // Accordion
+    const accordionHeaders = document.querySelectorAll('.accordion-header');
+    accordionHeaders.forEach(header => {
+        header.addEventListener('click', () => {
+            const accordionItem = header.parentElement;
+            const accordionContent = header.nextElementSibling;
+            
+            // Close other open accordion items
+            accordionHeaders.forEach(otherHeader => {
+                if (otherHeader !== header && otherHeader.classList.contains('active')) {
+                    otherHeader.classList.remove('active');
+                    const otherContent = otherHeader.nextElementSibling;
+                    otherContent.style.maxHeight = 0;
+                    otherContent.style.padding = "0 20px";
+                }
+            });
+
+            header.classList.toggle('active');
+
+            if (header.classList.contains('active')) {
+                accordionContent.style.maxHeight = accordionContent.scrollHeight + "px";
+                accordionContent.style.padding = "15px 20px";
+            } else {
+                accordionContent.style.maxHeight = 0;
+                accordionContent.style.padding = "0 20px";
+            }
+        });
+    });
 }); 
