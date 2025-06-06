@@ -844,45 +844,54 @@ body.light-theme .terminal-header {
 /* Responsive Design */
 @media screen and (max-width: 900px) {
     .content {
-        -webkit-box-orient: vertical;
-        -webkit-box-direction: normal;
-        -ms-flex-direction: column;
         flex-direction: column;
-        gap: 1.5rem;
+        align-items: center;
+        gap: 2rem;
     }
 
     .left-section,
     .right-section {
         width: 100%;
+        max-width: 550px; /* Or a suitable max-width */
+        margin: 0;
     }
 }
 
 @media screen and (max-width: 600px) {
     .header-inner {
-        -ms-flex-wrap: wrap;
-        flex-wrap: wrap;
-        padding: 1rem;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1rem 0.5rem 1rem;
+    }
+
+    .header-left {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
     }
 
     .header-logo {
-        font-size: 1.2rem;
+        font-size: 1.8rem;
+        text-align: center;
+    }
+    .header-btn-group {
+        margin-left: 0;
+        justify-content: center;
     }
 
-    .header-btn-group {
-        gap: 0.3rem;
+    .header-right {
+        margin-top: 0.5rem;
     }
 
     .header-btn {
-        padding: 0 0.8em;
-        font-size: 0.9rem;
-        height: 34px;
-        min-width: 34px;
+        font-size: 0.95rem;
+        padding: 0 1em;
+        height: 36px;
     }
-
     .hi-text {
-        font-size: 1.8rem;
+        font-size: 2rem;
     }
-
     .about p {
         font-size: 0.95rem;
     }
@@ -892,26 +901,20 @@ body.light-theme .terminal-header {
     .container {
         padding: 0 1rem;
     }
-
     .header-logo {
-        font-size: 1.1rem;
+        font-size: 1.6rem;
     }
-
     .header-btn {
-        padding: 0 0.6em;
+        font-size: 0.9rem;
     }
-
     .about p {
         font-size: 0.9rem;
     }
-
     .profile-card {
-        margin: 0 -1rem;
-        border-radius: 0;
+        transform: none;
     }
-
     .terminal-container {
-        margin: 1rem -1rem 0;
+        padding: 0;
     }
 
     .terminal {
