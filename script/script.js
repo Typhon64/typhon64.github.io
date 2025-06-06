@@ -277,18 +277,28 @@ function applyLanguage(lang) {
 
 // Sayfa yüklendiğinde çalışacak kod
 document.addEventListener('DOMContentLoaded', function() {
-    // Her zaman İngilizce ile başla
-    applyLanguage('en');
+    // Mevcut dili localStorage'dan al, yoksa İngilizce kullan
+    const currentLang = localStorage.getItem('language') || 'en';
+    applyLanguage(currentLang);
     
     // Dil değiştirme butonuna tıklama olayı ekle
     if (languageToggleButton) {
         languageToggleButton.addEventListener('click', function() {
-            // Mevcut dili kontrol et
-            const currentLang = this.getAttribute('data-current-lang') || 'en';
+            // Mevcut dili localStorage'dan al
+            const currentLang = localStorage.getItem('language') || 'en';
             // Dili değiştir
             const newLang = currentLang === 'en' ? 'tr' : 'en';
             applyLanguage(newLang);
         });
+    }
+});
+
+// Dil değişikliklerini dinle
+window.addEventListener('storage', function(e) {
+    if (e.key === 'language') {
+        // Dil değişikliği varsa uygula
+        const newLang = e.newValue || 'en';
+        applyLanguage(newLang);
     }
 });
 
