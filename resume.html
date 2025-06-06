@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <meta name="theme-color" content="#8B5CF6">
     <link rel="stylesheet" href="css/resume.css">
+   <link rel="icon" href="media/favicon.webp" type="image/webp">
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 </head>
 <body>
@@ -22,7 +23,7 @@
     <header class="header">
         <div class="header-inner">
             <div class="header-right">
-                <a href="/index.html" class="back-btn" title="Geri / Back"> <i class="fas fa-arrow-left"></i>
+                <a href="/HelloGuys/index.html" class="back-btn" title="Geri / Back"> <i class="fas fa-arrow-left"></i>
                     <span class="back-btn-text" data-tr="Geri" data-en="Back">Geri</span>
                 </a>
                 <button id="lang-toggle-btn" class="header-btn" data-tr-title="Dili Değiştir" data-en-title="Change Language" title="Dili Değiştir / Change Language">
@@ -49,6 +50,7 @@
                             <li><a href="#skills" data-en="Skills" data-tr="Yetenekler">Yetenekler</a></li>
                             <li><a href="#projects" data-en="Projects" data-tr="Projeler">Projeler</a></li>
                             <li><a href="#certifications" data-en="Certifications" data-tr="Sertifikalar">Sertifikalar</a></li>
+                            <li><a href="#network" data-en="Network" data-tr="Ağ">Ağ</a></li>
                         </ul>
                     </nav>
                 </aside>
@@ -59,6 +61,32 @@
                         <h2 data-en="About Me" data-tr="Hakkımda"><i class="fas fa-user"></i> <span data-en="About Me" data-tr="Hakkımda">Hakkımda</span></h2>
                         <div class="resume-item">
                             <p class="objective" data-tr="np" data-en="np">np</p>
+                        </div>
+                    </section>
+
+                    <section class="resume-section" id="network">
+                        <h2 data-en="Network" data-tr="Ağ"><i class="fas fa-network-wired"></i> <span data-en="Network" data-tr="Ağ">Ağ</span></h2>
+                        <div class="resume-item">
+                            <h3 data-en="Social Media" data-tr="Sosyal Medya">Sosyal Medya</h3>
+                            <div class="links">
+                                <a href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i> GitHub</a>
+                                <a href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i> LinkedIn</a>
+                                <a href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i> Twitter</a>
+                            </div>
+                        </div>
+                        <div class="resume-item">
+                            <h3 data-en="Friends" data-tr="Arkadaşlar">Arkadaşlar</h3>
+                            <ul class="skills-list">
+                                <li data-en="Friend 1" data-tr="Arkadaş 1">Arkadaş 1</li>
+                                <li data-en="Friend 2" data-tr="Arkadaş 2">Arkadaş 2</li>
+                            </ul>
+                        </div>
+                        <div class="resume-item">
+                            <h3 data-en="Communities" data-tr="Topluluklar">Topluluklar</h3>
+                            <ul class="skills-list">
+                                <li data-en="Community 1" data-tr="Topluluk 1">Topluluk 1</li>
+                                <li data-en="Community 2" data-tr="Topluluk 2">Topluluk 2</li>
+                            </ul>
                         </div>
                     </section>
 
@@ -109,14 +137,48 @@
 
                     <section class="resume-section" id="certifications">
                         <h2 data-en="Certifications" data-tr="Sertifikalar"><i class="fas fa-certificate"></i> <span data-en="Certifications" data-tr="Sertifikalar">Sertifikalar</span></h2>
-                        <div class="resume-item">
-                            <h3 data-en="Turkcell Network" data-tr="Turkcell Network">Turkcell Network</h3>
-                            <p class="subheading" data-en="Turkcell" data-tr="Turkcell">Turkcell</p>
-                            <p class="date" data-en="[Date Received]" data-tr="[Alınan Tarih]">[Alınan Tarih]</p>
-                            <div class="links">
-                                <a href="../certificate/TURKCELL_NETWORK.pdf" target="_blank" rel="noopener noreferrer">
-                                    <i class="fas fa-award"></i> <span data-en="View Certificate" data-tr="Sertifikayı Görüntüle">Sertifikayı Görüntüle</span>
-                                </a>
+                        <div class="accordion">
+                            <div class="accordion-item">
+                                <button class="accordion-header" data-en="Network Certificates" data-tr="Network Sertifikaları">Network Sertifikaları <i class="fas fa-chevron-down"></i></button>
+                                <div class="accordion-content">
+                                    <div class="resume-item">
+                                        <h3 data-en="Temel Network Eğitimi" data-tr="Temel Network Eğitimi">Temel Network Eğitimi</h3>
+                                        <p class="subheading" data-en="Issued by: Turkcell" data-tr="Veren Kurum: Turkcell">Veren Kurum: Turkcell</p>
+                                        <div class="links">
+                                            <a href="Certifications/Ahmet Bayır - Temel Network Eğitimi.pdf" target="_blank" rel="noopener noreferrer">
+                                                <i class="fas fa-award"></i> <span data-en="View Certificate" data-tr="Sertifikayı Görüntüle">Sertifikayı Görüntüle</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header" data-en="Linux Certificates" data-tr="Linux Sertifikaları">Linux Sertifikaları <i class="fas fa-chevron-down"></i></button>
+                                <div class="accordion-content">
+                                    <div class="resume-item">
+                                        <h3 data-en="Temel Linux 101" data-tr="Temel Linux 101">Temel Linux 101</h3>
+                                        <p class="subheading" data-en="Issued by: Turkcell" data-tr="Veren Kurum: Turkcell">Veren Kurum: Turkcell</p>
+                                        <div class="links">
+                                            <a href="Certifications/Ahmet Bayır - Temel Linux 101.pdf" target="_blank" rel="noopener noreferrer">
+                                                <i class="fas fa-award"></i> <span data-en="View Certificate" data-tr="Sertifikayı Görüntüle">Sertifikayı Görüntüle</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header" data-en="Cyber Security Certificates" data-tr="Siber Güvenlik Sertifikaları">Siber Güvenlik Sertifikaları <i class="fas fa-chevron-down"></i></button>
+                                <div class="accordion-content">
+                                    <div class="resume-item">
+                                        <h3 data-en="Siber Güvenliğe Giriş" data-tr="Siber Güvenliğe Giriş">Siber Güvenliğe Giriş</h3>
+                                        <p class="subheading" data-en="Issued by: Turkcell" data-tr="Veren Kurum: Turkcell">Veren Kurum: Turkcell</p>
+                                        <div class="links">
+                                            <a href="Certifications/Ahmet Bayır - Siber Güvenliğe Giriş.pdf" target="_blank" rel="noopener noreferrer">
+                                                <i class="fas fa-award"></i> <span data-en="View Certificate" data-tr="Sertifikayı Görüntüle">Sertifikayı Görüntüle</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </section>
