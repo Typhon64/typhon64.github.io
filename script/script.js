@@ -178,11 +178,18 @@ if (themeToggleButton) {
 const languageToggleButton = document.getElementById('language-toggle-btn');
 const elementsToTranslate = document.querySelectorAll('[data-tr], [data-en]');
 const tooltipElements = document.querySelectorAll('[data-tr-tooltip], [data-en-tooltip]');
-const pageTitleElement = document.querySelector('title'); // Added for specific title handling
-let currentDisplayTitle = ""; // Stores the current translated page title
+const pageTitleElement = document.querySelector('title');
+let currentDisplayTitle = "";
 
+// Dil ayarlarını uygula
 function applyLanguage(lang) {
+    // Dil değerini HTML elementine ayarla
     document.documentElement.lang = lang;
+    
+    // Dil butonunun data-current-lang özelliğini güncelle
+    if (languageToggleButton) {
+        languageToggleButton.setAttribute('data-current-lang', lang);
+    }
 
     // Dil butonunun içindeki metni güncelle (ikon hariç)
      if (languageToggleButton) {
@@ -268,13 +275,22 @@ function applyLanguage(lang) {
     }
 }
 
-if (languageToggleButton) {
-    languageToggleButton.addEventListener('click', () => {
-        const currentLang = localStorage.getItem('language') || 'tr'; // Default to tr
-        const newLang = currentLang === 'tr' ? 'en' : 'tr';
-        applyLanguage(newLang);
-    });
-}
+// Sayfa yüklendiğinde çalışacak kod
+document.addEventListener('DOMContentLoaded', function() {
+    // Her zaman İngilizce ile başla
+    applyLanguage('en');
+    
+    // Dil değiştirme butonuna tıklama olayı ekle
+    if (languageToggleButton) {
+        languageToggleButton.addEventListener('click', function() {
+            // Mevcut dili kontrol et
+            const currentLang = this.getAttribute('data-current-lang') || 'en';
+            // Dili değiştir
+            const newLang = currentLang === 'en' ? 'tr' : 'en';
+            applyLanguage(newLang);
+        });
+    }
+});
 
 document.addEventListener('visibilitychange', () => {
     const currentLang = localStorage.getItem('language') || 'tr'; // Default to tr
