@@ -8,19 +8,19 @@ gsap.from(".left-section", { opacity: 0, y: 50, duration: 1.2, ease: "expo.out",
 gsap.from(".right-section", { opacity: 0, y: 50, duration: 1.2, ease: "expo.out", delay: 0.4 });
 gsap.from(".terminal-container", { opacity: 0, y: 50, duration: 1.2, ease: "expo.out", delay: 0.6 });
 
-// Particle.js configuration - Base config (Mobil görünürlük ve opaklık için güncellendi)
+// Particle.js configuration - Base config (Mobil görünürlük ve opaklık iyileştirildi)
 // Particles.js arka plan animasyonu için varsayılan yapılandırmayı tanımlar.
 const particleConfigBase = {
     particles: {
-        number: { value: 200, density: { enable: true, value_area: 800 } }, // Genel parçacık sayısı artırıldı
+        number: { value: 300, density: { enable: true, value_area: 800 } }, // Genel parçacık sayısı daha da artırıldı
         shape: { type: 'circle' }, // Parçacıkların şekli
         opacity: {
-            value: 0.7, // Opaklık biraz daha artırıldı (önceki 0.65'ten 0.7'ye)
+            value: 0.8, // Opaklık 0.75'ten 0.8'e artırıldı (daha belirgin olması için)
             random: true,
             anim: { enable: true, speed: 0.5, opacity_min: 0.1, sync: false }
         },
         size: { value: 2.5, random: true }, // Büyük yuvarlak uçlar için boyut korundu
-        line_linked: { enable: true, distance: 120, opacity: 0.45, width: 1 }, // Çizgi opaklığı biraz daha artırıldı (önceki 0.4'ten 0.45'e)
+        line_linked: { enable: true, distance: 120, opacity: 0.55, width: 1 }, // Çizgi opaklığı 0.45'ten 0.55'e artırıldı
         move: { enable: true, speed: 1.5, direction: 'none', random: true } // Hareket tipi korundu
     },
     interactivity: {
@@ -31,7 +31,7 @@ const particleConfigBase = {
             resize: true // Particles.js pencere yeniden boyutlandırmaya tepki vermeli
         },
         modes: {
-            grab: { distance: 70, line_linked: { opacity: 0.7 } }, // Grab modu çizgi opaklığı eşleştirildi
+            grab: { distance: 70, line_linked: { opacity: 0.7 } }, // Grab modu çizgi opaklığı
             push: { particles_nb: 1 } // Tıklamayla oluşturulacak parçacık sayısı
         }
     },
@@ -77,36 +77,36 @@ function initializeParticles(particleColor) {
         let targetParticleSize = particleConfigBase.particles.size.value; // Base config'den alınsın
         let targetLineDistance = particleConfigBase.particles.line_linked.distance; // Base config'den alınsın
 
-        // Ekran boyutuna göre parçacık sayısı, boyutu ve çizgi mesafesini dinamik olarak ayarla
+        // Ekran boyutuna ve donanıma göre parçacık sayısı, boyutu ve çizgi mesafesini dinamik olarak ayarla
         const screenWidth = window.innerWidth;
         if (screenWidth >= 1920) {
-            targetParticleCount = 200; // Artırıldı
+            targetParticleCount = 300; // Artırıldı
             targetParticleSize = 2.5;
             targetLineDistance = 120;
         } else if (screenWidth >= 1440) {
-            targetParticleCount = 170; // Artırıldı
+            targetParticleCount = 250; // Artırıldı
             targetParticleSize = 2.5;
             targetLineDistance = 110;
         } else if (screenWidth >= 1024) {
-            targetParticleCount = 120; // Artırıldı
+            targetParticleCount = 200; // Artırıldı
             targetParticleSize = 2.0;
-            targetLineDistance = 90;
+            targetLineDistance = 100;
         } else if (screenWidth >= 768) {
-            targetParticleCount = 100; // Artırıldı
+            targetParticleCount = 150; // Artırıldı
             targetParticleSize = 1.8;
-            targetLineDistance = 80;
+            targetLineDistance = 90;
         } else if (screenWidth >= 480) {
-            targetParticleCount = 80; // Artırıldı (Mobil için önemli)
+            targetParticleCount = 120; // Mobil için önemli ölçüde artırıldı
             targetParticleSize = 1.5;
-            targetLineDistance = 70;
+            targetLineDistance = 80;
         } else if (screenWidth >= 320) {
-            targetParticleCount = 60; // Artırıldı (Mobil için önemli)
+            targetParticleCount = 90; // Mobil için önemli ölçüde artırıldı
             targetParticleSize = 1.2;
-            targetLineDistance = 60;
+            targetLineDistance = 70;
         } else { // Çok küçük mobil cihazlar (örn. iPhone SE gibi)
-            targetParticleCount = 30; // Artırıldı (Mobil için önemli)
+            targetParticleCount = 60; // Mobil için önemli ölçüde artırıldı
             targetParticleSize = 1.0;
-            targetLineDistance = 50;
+            targetLineDistance = 60;
         }
 
         // Donanım performansına göre daha da azaltma
@@ -181,33 +181,33 @@ function initializeParticles(particleColor) {
 
     const screenWidth = window.innerWidth;
     if (screenWidth >= 1920) {
-        initialParticleCount = 200;
+        initialParticleCount = 300;
         initialParticleSize = 2.5;
         initialLineDistance = 120;
     } else if (screenWidth >= 1440) {
-        initialParticleCount = 170;
+        initialParticleCount = 250;
         initialParticleSize = 2.5;
         initialLineDistance = 110;
     } else if (screenWidth >= 1024) {
-        initialParticleCount = 120;
+        initialParticleCount = 200;
         initialParticleSize = 2.0;
-        initialLineDistance = 90;
+        initialLineDistance = 100;
     } else if (screenWidth >= 768) {
-        initialParticleCount = 100;
+        initialParticleCount = 150;
         initialParticleSize = 1.8;
-        initialLineDistance = 80;
+        initialLineDistance = 90;
     } else if (screenWidth >= 480) {
-        initialParticleCount = 80;
+        initialParticleCount = 120;
         initialParticleSize = 1.5;
-        initialLineDistance = 70;
+        initialLineDistance = 80;
     } else if (screenWidth >= 320) {
-        initialParticleCount = 60;
+        initialParticleCount = 90;
         initialParticleSize = 1.2;
-        initialLineDistance = 60;
+        initialLineDistance = 70;
     } else {
-        initialParticleCount = 30;
+        initialParticleCount = 60;
         initialParticleSize = 1.0;
-        initialLineDistance = 50;
+        initialLineDistance = 60;
     }
 
     if (initialParticleCount > 0 && ((navigator.hardwareConcurrency && navigator.hardwareConcurrency < 2) || (navigator.deviceMemory && navigator.deviceMemory < 1))) {
@@ -301,6 +301,7 @@ let currentDisplayTitle = "";
 
 /**
  * Seçilen dili sayfa içeriğine uygular ve öğeleri günceller.
+ * Ayrıca "Typhon64" metnini "Typhon" olarak değiştirir ve tema uyumlu renklendirir.
  * @param {string} lang - Uygulanacak dil ('en' veya 'tr').
  */
 function applyLanguage(lang) {
@@ -328,11 +329,21 @@ function applyLanguage(lang) {
         const newText = el.getAttribute(`data-${lang}`);
         if (newText !== null) {
             if (el.matches('div.hero-subtext p') || el.matches('.about p') || (el.closest('.card-body') && el.tagName === 'P' && !el.classList.contains('profile-lang'))) {
-                 el.innerHTML = newText;
+                 // "Typhon64" metnini "Typhon" olarak değiştir ve tema uyumlu span ekle
+                 let processedText = newText;
+                 if (processedText.includes('Typhon64')) {
+                     processedText = processedText.replace('Typhon64', '<span class="themed-brand-name">Typhon</span>');
+                 }
+                 el.innerHTML = processedText;
             }
             else if (el.tagName === 'SPAN' || el.tagName === 'A' || el.tagName === 'BUTTON' || el.tagName === 'LI' || el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'H3' || el.tagName === 'P') {
                  if (el.children.length === 0 || !Array.from(el.children).some(child => child.tagName === 'I' || child.tagName === 'SVG' || child.tagName === 'SPAN' || child.tagName === 'BUTTON')) {
-                      el.textContent = newText;
+                      // "Typhon64" metnini "Typhon" olarak değiştir ve tema uyumlu span ekle (eğer zaten iç HTML yoksa)
+                      let processedText = newText;
+                      if (processedText.includes('Typhon64')) {
+                          processedText = processedText.replace('Typhon64', '<span class="themed-brand-name">Typhon</span>');
+                      }
+                      el.innerHTML = processedText; // textContent yerine innerHTML kullanıldı, span'in işlenmesi için
                  } else {
                        el.innerHTML = newText;
                  }
