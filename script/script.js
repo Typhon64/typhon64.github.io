@@ -109,17 +109,17 @@ function initializeParticles(particleColor) {
             targetLineDistance = 60;
         }
 
-        // Donanım performansına göre daha da azaltma
-        if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) {
-            targetParticleCount = Math.floor(targetParticleCount * 0.8); // %20 azalt
-        }
-        if (navigator.deviceMemory && navigator.deviceMemory < 2) {
-             targetParticleCount = Math.floor(targetParticleCount * 0.8); // %20 azalt
-        }
-
-        // Eğer çok düşük performanslı bir cihazsa, parçacıkları tamamen kapat
-        if (targetParticleCount > 0 && ((navigator.hardwareConcurrency && navigator.hardwareConcurrency < 2) || (navigator.deviceMemory && navigator.deviceMemory < 1))) {
-            targetParticleCount = 0;
+        // Donanım performansına göre parçacık sayısını ayarla (daha az agresif)
+        const cores = navigator.hardwareConcurrency;
+        const memory = navigator.deviceMemory;
+        if (cores && memory) { // Sadece her iki bilgi de mevcutsa ayarla
+            if (cores < 2 && memory < 2) {
+                // Çok düşük seviye cihazlar için %40 azaltma
+                targetParticleCount = Math.floor(targetParticleCount * 0.6);
+            } else if (cores < 4 || memory < 4) {
+                // Düşük-orta seviye cihazlar için %20 azaltma
+                targetParticleCount = Math.floor(targetParticleCount * 0.8);
+            }
         }
 
         // Parçacık sayısını istenen min (60) ve maks (260) aralığında sınırla
@@ -210,18 +210,19 @@ function initializeParticles(particleColor) {
         initialLineDistance = 60;
     }
 
-    // Donanım performansına göre azaltma
-    if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) {
-        initialParticleCount = Math.floor(initialParticleCount * 0.8);
-    }
-    if (navigator.deviceMemory && navigator.deviceMemory < 2) {
-        initialParticleCount = Math.floor(initialParticleCount * 0.8);
+    // Donanım performansına göre parçacık sayısını ayarla (daha az agresif)
+    const cores = navigator.hardwareConcurrency;
+    const memory = navigator.deviceMemory;
+    if (cores && memory) { // Sadece her iki bilgi de mevcutsa ayarla
+        if (cores < 2 && memory < 2) {
+            // Çok düşük seviye cihazlar için %40 azaltma
+            initialParticleCount = Math.floor(initialParticleCount * 0.6);
+        } else if (cores < 4 || memory < 4) {
+            // Düşük-orta seviye cihazlar için %20 azaltma
+            initialParticleCount = Math.floor(initialParticleCount * 0.8);
+        }
     }
     
-    if (initialParticleCount > 0 && ((navigator.hardwareConcurrency && navigator.hardwareConcurrency < 2) || (navigator.deviceMemory && navigator.deviceMemory < 1))) {
-        initialParticleCount = 0;
-    }
-
     // Parçacık sayısını istenen min (60) ve maks (260) aralığında sınırla
     if (initialParticleCount > 0) {
         initialParticleCount = Math.max(60, Math.min(initialParticleCount, 260));
