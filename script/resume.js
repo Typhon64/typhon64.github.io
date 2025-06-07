@@ -401,7 +401,7 @@ window.addEventListener('storage', (e) => {
 
 // Sayfa görünürlüğü değişikliklerini yönet (örn. sekme değiştirme)
 document.addEventListener('visibilitychange', () => {
-    const lang = localStorage.getItem('language') || 'tr';
+    const lang = localStorage.getItem('language') || 'en';
     const offlineTitle = lang === 'tr' ? 'Sistem Çevrimdışı!' : 'System Offline!';
     document.title = document.hidden ? offlineTitle : originalPageTitle;
 });
