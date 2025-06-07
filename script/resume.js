@@ -2,15 +2,15 @@
 // Defines the base configuration for the particles.js background animation.
 const particleConfigBase = {
     particles: {
-        number: { value: 300, density: { enable: true, value_area: 800 } }, // Genel parçacık sayısı daha da artırıldı
+        number: { value: 200, density: { enable: true, value_area: 1000 } }, // Parçacık sayısı ve yoğunluk alanı dengelendi
         shape: { type: 'circle' }, // Parçacıkların şekli
         opacity: {
-            value: 0.8, // Opaklık 0.75'ten 0.8'e artırıldı (daha belirgin olması için)
+            value: 0.65, // Opaklık artırıldı
             random: true,
             anim: { enable: true, speed: 0.5, opacity_min: 0.1, sync: false }
         },
-        size: { value: 2.5, random: true }, // Büyük yuvarlak uçlar için boyut korundu
-        line_linked: { enable: true, distance: 120, opacity: 0.55, width: 1 }, // Çizgi opaklığı 0.45'ten 0.55'e artırıldı
+        size: { value: 2.0, random: true }, // Boyut biraz büyütüldü
+        line_linked: { enable: true, distance: 120, opacity: 0.4, width: 1 }, // Çizgi opaklığı artırıldı
         move: { enable: true, speed: 1.5, direction: 'none', random: true } // Hareket tipi korundu
     },
     interactivity: {
@@ -70,31 +70,31 @@ function initializeParticles(particleColor) {
         // Ekran boyutuna ve donanıma göre parçacık sayısı, boyutu ve çizgi mesafesini dinamik olarak ayarla
         const screenWidth = window.innerWidth;
         if (screenWidth >= 1920) {
-            targetParticleCount = 300; // Artırıldı
-            targetParticleSize = 2.5;
+            targetParticleCount = 250;
+            targetParticleSize = 2.2;
             targetLineDistance = 120;
         } else if (screenWidth >= 1440) {
-            targetParticleCount = 250; // Artırıldı
-            targetParticleSize = 2.5;
+            targetParticleCount = 200;
+            targetParticleSize = 2.2;
             targetLineDistance = 110;
         } else if (screenWidth >= 1024) {
-            targetParticleCount = 200; // Artırıldı
+            targetParticleCount = 150;
             targetParticleSize = 2.0;
             targetLineDistance = 100;
         } else if (screenWidth >= 768) {
-            targetParticleCount = 150; // Artırıldı
+            targetParticleCount = 120;
             targetParticleSize = 1.8;
             targetLineDistance = 90;
         } else if (screenWidth >= 480) {
-            targetParticleCount = 120; // Mobil için önemli ölçüde artırıldı
+            targetParticleCount = 100; // Mobil için ayarlandı
             targetParticleSize = 1.5;
             targetLineDistance = 80;
         } else if (screenWidth >= 320) {
-            targetParticleCount = 90; // Mobil için önemli ölçüde artırıldı
+            targetParticleCount = 80; // Mobil için ayarlandı
             targetParticleSize = 1.2;
             targetLineDistance = 70;
         } else { // Çok küçük mobil cihazlar (örn. iPhone SE gibi)
-            targetParticleCount = 60; // Mobil için önemli ölçüde artırıldı
+            targetParticleCount = 60; // Mobil için ayarlandı
             targetParticleSize = 1.0;
             targetLineDistance = 60;
         }
@@ -171,27 +171,27 @@ function initializeParticles(particleColor) {
 
     const screenWidth = window.innerWidth;
     if (screenWidth >= 1920) {
-        initialParticleCount = 300;
-        initialParticleSize = 2.5;
+        initialParticleCount = 250;
+        initialParticleSize = 2.2;
         initialLineDistance = 120;
     } else if (screenWidth >= 1440) {
-        initialParticleCount = 250;
-        initialParticleSize = 2.5;
+        initialParticleCount = 200;
+        initialParticleSize = 2.2;
         initialLineDistance = 110;
     } else if (screenWidth >= 1024) {
-        initialParticleCount = 200;
+        initialParticleCount = 150;
         initialParticleSize = 2.0;
         initialLineDistance = 100;
     } else if (screenWidth >= 768) {
-        initialParticleCount = 150;
+        initialParticleCount = 120;
         initialParticleSize = 1.8;
         initialLineDistance = 90;
     } else if (screenWidth >= 480) {
-        initialParticleCount = 120;
+        initialParticleCount = 100;
         initialParticleSize = 1.5;
         initialLineDistance = 80;
     } else if (screenWidth >= 320) {
-        initialParticleCount = 90;
+        initialParticleCount = 80;
         initialParticleSize = 1.2;
         initialLineDistance = 70;
     } else {
