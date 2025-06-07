@@ -388,12 +388,12 @@ function applyLanguage(lang) {
 
 // Dil değiştirme düğmesi için olay dinleyicisi
 document.addEventListener('DOMContentLoaded', function() {
-    const currentLang = localStorage.getItem('language') || 'tr'; // Default olarak 'tr' ayarlandı
+    const currentLang = localStorage.getItem('language') || 'en'; // Default olarak 'en' ayarlandı
     applyLanguage(currentLang);
 
     if (languageToggleButton) {
         languageToggleButton.addEventListener('click', function() {
-            const currentLang = localStorage.getItem('language') || 'tr';
+            const currentLang = localStorage.getItem('language') || 'en';
             const newLang = currentLang === 'en' ? 'tr' : 'en';
             applyLanguage(newLang);
         });
@@ -403,7 +403,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // localStorage aracılığıyla diğer sekmelerden/pencelerden dil değişikliklerini dinle
 window.addEventListener('storage', function(e) {
     if (e.key === 'language') {
-        const newLang = e.newValue || 'tr'; // Default olarak 'tr' ayarlandı
+        const newLang = e.newValue || 'en'; // Default olarak 'en' ayarlandı
         applyLanguage(newLang);
     }
 });
@@ -470,12 +470,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedTheme = localStorage.getItem('theme') || 'dark';
     applyTheme(savedTheme, true);
 
-    // Dilin varsayılan değerini 'tr' olarak ayarlıyoruz, çünkü Türkçe konuşmayı tercih ettiniz.
-    const savedLang = localStorage.getItem('language') || 'tr';
+    // Dilin varsayılan değerini 'en' olarak ayarlıyoruz.
+    const savedLang = localStorage.getItem('language') || 'en';
     applyLanguage(savedLang);
 
     if (document.hidden) {
-        const langForOfflineTitle = localStorage.getItem('language') || 'tr';
+        const langForOfflineTitle = localStorage.getItem('language') || 'en';
         document.title = langForOfflineTitle === 'tr' ? 'Sistem Çevrimdışı!' : 'System Offline!';
     }
 
