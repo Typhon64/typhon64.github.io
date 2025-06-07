@@ -15,12 +15,12 @@ const particleConfigBase = {
         number: { value: 200, density: { enable: true, value_area: 1000 } }, // Parçacık sayısı ve yoğunluk alanı dengelendi
         shape: { type: 'circle' }, // Parçacıkların şekli
         opacity: {
-            value: 0.65, // Opaklık artırıldı
+            value: 0.75, // Opaklık artırıldı
             random: true,
             anim: { enable: true, speed: 0.5, opacity_min: 0.1, sync: false }
         },
-        size: { value: 2.0, random: true }, // Boyut biraz büyütüldü
-        line_linked: { enable: true, distance: 120, opacity: 0.4, width: 1 }, // Çizgi opaklığı artırıldı
+        size: { value: 2.5, random: true }, // Boyut biraz büyütüldü
+        line_linked: { enable: true, distance: 120, opacity: 0.5, width: 1 }, // Çizgi opaklığı artırıldı
         move: { enable: true, speed: 1.5, direction: 'none', random: true } // Hareket tipi korundu
     },
     interactivity: {
@@ -35,7 +35,7 @@ const particleConfigBase = {
             push: { particles_nb: 1 } // Tıklamayla oluşturulacak parçacık sayısı
         }
     },
-    retina_detect: false, // Yüksek çözünürlüklü ekranlarda potansiyel performans iyileştirmesi için false olarak ayarlandı
+    retina_detect: true, // Yüksek çözünürlüklü ekranlarda kalite için etkinleştirildi
     fps_limit: 30 // Eski cihazlarda daha iyi performans için düşük FPS sınırı
 };
 
@@ -80,32 +80,32 @@ function initializeParticles(particleColor) {
         // Ekran boyutuna ve donanıma göre parçacık sayısı, boyutu ve çizgi mesafesini dinamik olarak ayarla
         const screenWidth = window.innerWidth;
         if (screenWidth >= 1920) {
-            targetParticleCount = 250;
+            targetParticleCount = 260; // Üst limit olarak ayarlandı
             targetParticleSize = 2.2;
             targetLineDistance = 120;
         } else if (screenWidth >= 1440) {
-            targetParticleCount = 200;
+            targetParticleCount = 220;
             targetParticleSize = 2.2;
             targetLineDistance = 110;
         } else if (screenWidth >= 1024) {
-            targetParticleCount = 150;
+            targetParticleCount = 180;
             targetParticleSize = 2.0;
             targetLineDistance = 100;
         } else if (screenWidth >= 768) {
-            targetParticleCount = 120;
+            targetParticleCount = 150; // Tabletler için artırıldı
             targetParticleSize = 1.8;
             targetLineDistance = 90;
         } else if (screenWidth >= 480) {
-            targetParticleCount = 100; // Mobil için ayarlandı
-            targetParticleSize = 1.5;
+            targetParticleCount = 120; // Büyük mobil cihazlar için artırıldı
+            targetParticleSize = 1.8; // Mobil için boyut artırıldı
             targetLineDistance = 80;
         } else if (screenWidth >= 320) {
-            targetParticleCount = 80; // Mobil için ayarlandı
-            targetParticleSize = 1.2;
+            targetParticleCount = 90; // Standart mobil cihazlar için artırıldı
+            targetParticleSize = 1.5; // Mobil için boyut artırıldı
             targetLineDistance = 70;
-        } else { // Çok küçük mobil cihazlar (örn. iPhone SE gibi)
-            targetParticleCount = 60; // Mobil için ayarlandı
-            targetParticleSize = 1.0;
+        } else { // Çok küçük mobil cihazlar
+            targetParticleCount = 70; // En küçük ekranlar için ayarlandı
+            targetParticleSize = 1.3; // Mobil için boyut artırıldı
             targetLineDistance = 60;
         }
 
@@ -117,14 +117,14 @@ function initializeParticles(particleColor) {
              targetParticleCount = Math.floor(targetParticleCount * 0.8); // %20 azalt
         }
 
-        // Minimum parçacık sayısı garantisi (eğer tamamen kapatılmıyorsa)
-        if (targetParticleCount > 0 && targetParticleCount < 10) {
-            targetParticleCount = 10;
-        }
-
         // Eğer çok düşük performanslı bir cihazsa, parçacıkları tamamen kapat
         if (targetParticleCount > 0 && ((navigator.hardwareConcurrency && navigator.hardwareConcurrency < 2) || (navigator.deviceMemory && navigator.deviceMemory < 1))) {
             targetParticleCount = 0;
+        }
+
+        // Parçacık sayısını istenen min (60) ve maks (260) aralığında sınırla
+        if (targetParticleCount > 0) {
+            targetParticleCount = Math.max(60, Math.min(targetParticleCount, 260));
         }
 
         // Parçacık sayısı, boyutu veya çizgi mesafesi değiştiyse güncelle
@@ -181,42 +181,50 @@ function initializeParticles(particleColor) {
 
     const screenWidth = window.innerWidth;
     if (screenWidth >= 1920) {
-        initialParticleCount = 250;
+        initialParticleCount = 260; // Üst limit olarak ayarlandı
         initialParticleSize = 2.2;
         initialLineDistance = 120;
     } else if (screenWidth >= 1440) {
-        initialParticleCount = 200;
+        initialParticleCount = 220;
         initialParticleSize = 2.2;
         initialLineDistance = 110;
     } else if (screenWidth >= 1024) {
-        initialParticleCount = 150;
+        initialParticleCount = 180;
         initialParticleSize = 2.0;
         initialLineDistance = 100;
     } else if (screenWidth >= 768) {
-        initialParticleCount = 120;
+        initialParticleCount = 150; // Tabletler için artırıldı
         initialParticleSize = 1.8;
         initialLineDistance = 90;
     } else if (screenWidth >= 480) {
-        initialParticleCount = 100;
-        initialParticleSize = 1.5;
+        initialParticleCount = 120; // Büyük mobil cihazlar için artırıldı
+        initialParticleSize = 1.8; // Mobil için boyut artırıldı
         initialLineDistance = 80;
     } else if (screenWidth >= 320) {
-        initialParticleCount = 80;
-        initialParticleSize = 1.2;
+        initialParticleCount = 90; // Standart mobil cihazlar için artırıldı
+        initialParticleSize = 1.5; // Mobil için boyut artırıldı
         initialLineDistance = 70;
-    } else {
-        initialParticleCount = 60;
-        initialParticleSize = 1.0;
+    } else { // Çok küçük mobil cihazlar
+        initialParticleCount = 70; // En küçük ekranlar için ayarlandı
+        initialParticleSize = 1.3; // Mobil için boyut artırıldı
         initialLineDistance = 60;
     }
 
+    // Donanım performansına göre azaltma
+    if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) {
+        initialParticleCount = Math.floor(initialParticleCount * 0.8);
+    }
+    if (navigator.deviceMemory && navigator.deviceMemory < 2) {
+        initialParticleCount = Math.floor(initialParticleCount * 0.8);
+    }
+    
     if (initialParticleCount > 0 && ((navigator.hardwareConcurrency && navigator.hardwareConcurrency < 2) || (navigator.deviceMemory && navigator.deviceMemory < 1))) {
         initialParticleCount = 0;
     }
 
-    // Minimum parçacık sayısı garantisi (eğer tamamen kapatılmıyorsa)
-    if (initialParticleCount > 0 && initialParticleCount < 10) {
-        initialParticleCount = 10;
+    // Parçacık sayısını istenen min (60) ve maks (260) aralığında sınırla
+    if (initialParticleCount > 0) {
+        initialParticleCount = Math.max(60, Math.min(initialParticleCount, 260));
     }
 
     currentParticleConfig.particles.number.value = initialParticleCount;
