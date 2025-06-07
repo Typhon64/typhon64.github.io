@@ -1,172 +1,288 @@
 // GSAP Animation for header entrance
+// Header'ın yukarıdan yumuşakça içeri girmesini sağlar.
 gsap.from('.header', { y: -50, opacity: 0, duration: 1, ease: 'expo.out' });
 
 // Entrance animations for main content sections
+// Ana içerik bölümleri için kademeli bir giriş animasyonu oluşturur.
 gsap.from(".left-section", { opacity: 0, y: 50, duration: 1.2, ease: "expo.out", delay: 0.2 });
-gsap.from(".right-section", { opacity: 0, y: 50, duration: 1.2, ease: "expo.out", delay: 0.4 }); // Re-enabled animation
-gsap.from(".terminal-container", { opacity: 0, y: 50, duration: 1.2, ease: "expo.out", delay: 0.6 }); // Re-enabled animation
+gsap.from(".right-section", { opacity: 0, y: 50, duration: 1.2, ease: "expo.out", delay: 0.4 });
+gsap.from(".terminal-container", { opacity: 0, y: 50, duration: 1.2, ease: "expo.out", delay: 0.6 });
 
 // Particle.js configuration - Base config
+// Particles.js arka plan animasyonu için varsayılan yapılandırmayı tanımlar.
 const particleConfigBase = {
     particles: {
-        number: { value: 260, density: { enable: true, value_area: 800 } }, // Sabit 260 parçacık (varsayılan hedef)
-        shape: { type: 'circle' },
+        number: { value: 260, density: { enable: true, value_area: 800 } }, // Varsayılan parçacık sayısı (dinamik olarak ayarlanacak)
+        shape: { type: 'circle' }, // Parçacıkların şekli
         opacity: { 
             value: 0.5,
             random: true, 
             anim: { enable: true, speed: 0.5, opacity_min: 0.1, sync: false }
         },
-        size: { value: 3, random: true },
-        line_linked: { enable: true, distance: 150, opacity: 0.25, width: 1 },
-        move: { enable: true, speed: 1.8, direction: 'none', random: true }
+        size: { value: 3, random: true }, // Parçacıkların boyutu (dinamik olarak ayarlanacak)
+        line_linked: { enable: true, distance: 150, opacity: 0.25, width: 1 }, // Parçacıkları birbirine bağlayan çizgiler (dinamik olarak ayarlanacak)
+        move: { enable: true, speed: 1.8, direction: 'none', random: true } // Parçacıkların hareketi
     },
     interactivity: {
-        detect_on: 'window',
+        detect_on: 'window', // Tüm pencerede etkileşimi algıla
         events: {
-            onhover: { enable: true, mode: 'grab' },
-            onclick: { enable: true, mode: 'push' },
-            resize: true
+            onhover: { enable: true, mode: 'grab' }, // Fare üzerine gelme etkileşim modu
+            onclick: { enable: true, mode: 'push' }, // Fare tıklaması parçacık oluşturur
+            resize: true // Particles.js pencere yeniden boyutlandırmaya tepki vermeli
         },
         modes: {
-            grab: { distance: 100, line_linked: { opacity: 0.75 } },
-            push: { particles_nb: 1 }
+            grab: { distance: 70, line_linked: { opacity: 0.75 } }, // Grab modu özel ayarları, performans için mesafe azaltıldı
+            push: { particles_nb: 1 } // Tıklamayla oluşturulacak parçacık sayısı (Kullanıcı isteği üzerine 1 olarak ayarlandı)
         }
     },
-    retina_detect: true,
-    fps_limit: 60
+    retina_detect: false, // Yüksek çözünürlüklü ekranlarda potansiyel performans iyileştirmesi için false olarak ayarlandı
+    fps_limit: 30 // Eski cihazlarda daha iyi performans için düşük FPS sınırı
 };
 
-let initialWindowArea; // Pencere alanı için
-let initialParticleCanvasArea; // Parçacık canvas alanı için
+let initialWindowArea; // Yeniden boyutlandırma hesaplamaları için başlangıç pencere alanını depolar
+let initialParticleCanvasArea; // Yoğunluk ölçeklemesi için başlangıç particles.js canvas alanını depolar
 
+/**
+ * Verilen renk ile particles.js örneğini başlatır veya günceller ve ekran boyutuna ve cihaz donanımına
+ * göre parçacık sayısını, boyutunu ve çizgi mesafesini dinamik olarak ayarlar. Bu fonksiyon ayrıca canvas'ın
+ * fare olaylarını engellememesini ve etkileşim ayarlarını doğru şekilde uygulamasını sağlar.
+ * @param {string} particleColor - Parçacıklara uygulanacak renk.
+ */
 function initializeParticles(particleColor) {
     let pJSInstance;
 
-    // Mevcut pJS örneği varsa, sadece rengi ve yoğunluğu güncelle
+    // particles.js zaten başlatıldı mı kontrol et
     if (window.pJSDom && window.pJSDom[0] && window.pJSDom[0].pJS) {
         pJSInstance = window.pJSDom[0].pJS;
+        // Parçacık ve çizgi rengini güncelle
         pJSInstance.particles.color.value = particleColor;
         if (pJSInstance.particles.line_linked) {
             pJSInstance.particles.line_linked.color = particleColor; 
         }
-        // updateParticlesDensity(); // Yoğunluk ayarını ekran genişliğine göre aşağıda yapıyoruz.
-        
-        // Ekran genişliğine göre parçacık sayısını ayarla
-        let particleCount = 260; // Varsayılan
-        if (window.innerWidth < 768) {
-            particleCount = 150; // Orta büyüklükteki ekranlar için
-        }
-        if (window.innerWidth < 480) {
-            particleCount = 80; // Küçük ekranlar için
-        }
-        // Veya çok küçük/düşük performanslı olduğu düşünülen durumlar için tamamen kapat (opsiyonel)
-        // if (window.innerWidth < 320 || (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4)) { particleCount = 0; }
 
-        pJSInstance.particles.number.value = particleCount;
-        pJSInstance.fn.particlesEmpty(); // Mevcut parçacıkları temizle
-        pJSInstance.fn.particlesCreate(); // Yeni parçacıkları oluştur
-        pJSInstance.fn.particlesRefresh(); // Parçacıkları yenile
+        // --- Mevcut örnek için Etkileşim Ayarlarını Güncelle ---
+        pJSInstance.interactivity.events.onclick.enable = particleConfigBase.interactivity.events.onclick.enable;
+        pJSInstance.interactivity.modes.push.particles_nb = particleConfigBase.interactivity.modes.push.particles_nb; 
+        pJSInstance.interactivity.events.onhover.enable = particleConfigBase.interactivity.events.onhover.enable;
+        pJSInstance.interactivity.modes.grab.distance = particleConfigBase.interactivity.modes.grab.distance;
+        pJSInstance.interactivity.modes.grab.line_linked.opacity = particleConfigBase.interactivity.modes.grab.line_linked.opacity;
 
+        let targetParticleCount = 0;
+        let targetParticleSize = 3; // Varsayılan boyut
+        let targetLineDistance = 150; // Varsayılan çizgi mesafesi
+
+        // Ekran boyutuna göre parçacık sayısı, boyutu ve çizgi mesafesini dinamik olarak ayarla
+        const screenWidth = window.innerWidth;
+        if (screenWidth >= 1920) {
+            targetParticleCount = 260; // Orijinal maksimum
+            targetParticleSize = 3;
+            targetLineDistance = 100; // Daha yakın bağlantılar için düşürüldü
+        } else if (screenWidth >= 1440) {
+            targetParticleCount = 200;
+            targetParticleSize = 2.8;
+            targetLineDistance = 90;
+        } else if (screenWidth >= 1024) {
+            targetParticleCount = 150;
+            targetParticleSize = 2.5;
+            targetLineDistance = 80;
+        } else if (screenWidth >= 768) {
+            targetParticleCount = 100;
+            targetParticleSize = 2.2;
+            targetLineDistance = 70;
+        } else if (screenWidth >= 480) {
+            targetParticleCount = 70; // Mobil için arttırıldı
+            targetParticleSize = 1.8;
+            targetLineDistance = 60;
+        } else if (screenWidth >= 320) {
+            targetParticleCount = 40; // Mobil için arttırıldı
+            targetParticleSize = 1.5;
+            targetLineDistance = 50;
+        } else { // Çok küçük mobil cihazlar (örn. iPhone SE gibi)
+            targetParticleCount = 20; // Mobil için arttırıldı
+            targetParticleSize = 1.2;
+            targetLineDistance = 40;
+        }
+
+        // Donanım performansına göre daha da azaltma
+        if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) { 
+            targetParticleCount = Math.floor(targetParticleCount * 0.8); // %20 azalt
+        }
+        if (navigator.deviceMemory && navigator.deviceMemory < 2) { 
+             targetParticleCount = Math.floor(targetParticleCount * 0.8); // %20 azalt
+        }
+
+        // Minimum parçacık sayısı garantisi (eğer tamamen kapatılmıyorsa)
+        if (targetParticleCount > 0 && targetParticleCount < 10) { 
+            targetParticleCount = 10; 
+        }
+
+        // Eğer çok düşük performanslı bir cihazsa, parçacıkları tamamen kapat
+        if (targetParticleCount > 0 && ((navigator.hardwareConcurrency && navigator.hardwareConcurrency < 2) || (navigator.deviceMemory && navigator.deviceMemory < 1))) {
+            targetParticleCount = 0; 
+        }
+
+        // Parçacık sayısı, boyutu veya çizgi mesafesi değiştiyse güncelle
+        const numChanged = pJSInstance.particles.number.value !== targetParticleCount;
+        const sizeChanged = pJSInstance.particles.size.value !== targetParticleSize;
+        const lineDistChanged = pJSInstance.particles.line_linked.distance !== targetLineDistance;
+
+        if (numChanged || sizeChanged || lineDistChanged) {
+            pJSInstance.particles.number.value = targetParticleCount;
+            pJSInstance.particles.size.value = targetParticleSize;
+            pJSInstance.particles.line_linked.distance = targetLineDistance;
+
+            // Eğer sayı değiştiyse veya ciddi bir görsel değişim varsa yeniden oluştur
+            if (numChanged) {
+                pJSInstance.fn.particlesEmpty(); 
+                pJSInstance.fn.particlesCreate(); 
+            } else {
+                pJSInstance.fn.particlesRefresh(); // Sadece yenileme
+            }
+        } else {
+            pJSInstance.fn.particlesRefresh(); // Diğer durumlar için yenileme
+        }
+
+        // --- Yakınlaştırma/Yeniden Boyutlandırma için Dinamik Yoğunluk Ayarı ---
+        const currentParticleCanvasArea = pJSInstance.canvas.w * pJSInstance.canvas.h;
+        if (initialParticleCanvasArea === undefined || initialParticleCanvasArea === 0) {
+            initialParticleCanvasArea = currentParticleCanvasArea;
+            if (initialParticleCanvasArea === 0) initialParticleCanvasArea = 1; // Sıfıra bölünmeyi önle
+        }
+
+        if (currentParticleCanvasArea > 0) {
+            const baseDensityArea = particleConfigBase.particles.number.density.value_area;
+            let calculatedDensityArea = baseDensityArea * (currentParticleCanvasArea / initialParticleCanvasArea);
+            
+            calculatedDensityArea = Math.max(calculatedDensityArea, 200); // Minimum yoğunluk alanı
+            calculatedDensityArea = Math.min(calculatedDensityArea, 5000); // Maksimum yoğunluk alanı
+
+            if (pJSInstance.particles.number.density.value_area !== calculatedDensityArea) {
+                pJSInstance.particles.number.density.value_area = calculatedDensityArea;
+                pJSInstance.fn.particlesRefresh();
+            }
+        } else {
+            pJSInstance.fn.particlesRefresh(); 
+        }
         return;
     }
 
-    // İlk kez başlatma
+    // particles.js'in ilk kez başlatılması
     let currentParticleConfig = JSON.parse(JSON.stringify(particleConfigBase));
     currentParticleConfig.particles.color = { value: particleColor };
     currentParticleConfig.particles.line_linked.color = particleColor; 
-    
-    // Ekran genişliğine göre başlangıç parçacık sayısını ayarla
-    let initialParticleCount = 260; // Varsayılan
-     if (window.innerWidth < 768) {
-        initialParticleCount = 150;
-    }
-    if (window.innerWidth < 480) {
-        initialParticleCount = 80;
-    }
-    // if (window.innerWidth < 320 || (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4)) { initialParticleCount = 0; }
 
-    currentParticleConfig.particles.number.value = initialParticleCount; // Başlangıç sayısını ayarla
-    currentParticleConfig.particles.number.density.enable = true;
+    // Etkileşim Ayarlarını Başlangıçta Uygula (Tıklama ile 1 parçacık!)
+    currentParticleConfig.interactivity.modes.push.particles_nb = particleConfigBase.interactivity.modes.push.particles_nb; 
+
+    // İlk yüklemede ekran boyutuna ve donanıma göre başlangıç parçacık sayısı, boyutu ve çizgi mesafesi
+    let initialParticleCount = 0;
+    let initialParticleSize = 3;
+    let initialLineDistance = 150;
+
+    const screenWidth = window.innerWidth;
+    if (screenWidth >= 1920) {
+        initialParticleCount = 260;
+        initialParticleSize = 3;
+        initialLineDistance = 100;
+    } else if (screenWidth >= 1440) {
+        initialParticleCount = 200;
+        initialParticleSize = 2.8;
+        initialLineDistance = 90;
+    } else if (screenWidth >= 1024) {
+        initialParticleCount = 150;
+        initialParticleSize = 2.5;
+        initialLineDistance = 80;
+    } else if (screenWidth >= 768) {
+        initialParticleCount = 100;
+        initialParticleSize = 2.2;
+        initialLineDistance = 70;
+    } else if (screenWidth >= 480) {
+        initialParticleCount = 70; 
+        initialParticleSize = 1.8;
+        initialLineDistance = 60;
+    } else if (screenWidth >= 320) {
+        initialParticleCount = 40; 
+        initialParticleSize = 1.5;
+        initialLineDistance = 50;
+    } else {
+        initialParticleCount = 20; 
+        initialParticleSize = 1.2;
+        initialLineDistance = 40;
+    }
+
+    if (initialParticleCount > 0 && ((navigator.hardwareConcurrency && navigator.hardwareConcurrency < 2) || (navigator.deviceMemory && navigator.deviceMemory < 1))) {
+        initialParticleCount = 0; 
+    }
     
+    // Minimum parçacık sayısı garantisi (eğer tamamen kapatılmıyorsa)
+    if (initialParticleCount > 0 && initialParticleCount < 10) { 
+        initialParticleCount = 10; 
+    }
+
+    currentParticleConfig.particles.number.value = initialParticleCount;
+    currentParticleConfig.particles.size.value = initialParticleSize;
+    currentParticleConfig.particles.line_linked.distance = initialLineDistance;
+    currentParticleConfig.particles.number.density.enable = true; 
+
+    // particlesJS'i başlat
     particlesJS('particles-js', currentParticleConfig); 
 
+    // Başlatmadan sonra, fare etkileşimlerini engellememek için canvas'a pointer-events ve z-index uygula
     if (window.pJSDom && window.pJSDom[0] && window.pJSDom[0].pJS) {
         pJSInstance = window.pJSDom[0].pJS;
         
-        // İlk canvas alanını yakala (yoğunluk hesaplaması gerekirse)
+        // Dinamik yoğunluk hesaplamaları için başlangıç canvas alanını yakala
         if (pJSInstance && initialParticleCanvasArea === undefined) { 
             initialParticleCanvasArea = pJSInstance.canvas.w * pJSInstance.canvas.h;
         }
 
-        // updateParticlesDensity(); // Şu an ekran genişliği bazlı ayarlama yapıyoruz, bu fonksiyona gerek kalmayabilir.
-
         const particlesJSElement = document.getElementById('particles-js');
         if (particlesJSElement && particlesJSElement.style) {
-            particlesJSElement.style.pointerEvents = 'none'; // Fare olaylarını engelle
+            particlesJSElement.style.pointerEvents = 'none'; 
+            particlesJSElement.style.zIndex = '-1'; 
+            particlesJSElement.style.position = 'fixed'; 
+            particlesJSElement.style.top = '0';
+            particlesJSElement.style.left = '0';
+            particlesJSElement.style.width = '100%';
+            particlesJSElement.style.height = '100%';
         }
     } else {
         console.error("particles.js başlatılamadı!");
     }
 }
 
-// updateParticlesDensity fonksiyonunu basitleştir veya kaldır (şu an için ekran genişliğine göre ayarlıyoruz)
-// Eğer canvas yeniden boyutlandığında parçacık yoğunluğunun korunması isteniyorsa revize edilebilir.
-// Mevcut haliyle initializeParticles ekran genişliğine göre parçacık sayısını belirliyor.
-function updateParticlesDensity() {
-     if (window.pJSDom && window.pJSDom[0] && window.pJSDom[0].pJS) {
-        const pJS = window.pJSDom[0].pJS;
-        
-        // Ekran genişliğine göre hedef parçacık sayısını belirle
-        let targetParticleCount = 260;
-        if (window.innerWidth < 768) {
-            targetParticleCount = 150;
-        }
-        if (window.innerWidth < 480) {
-            targetParticleCount = 80;
-        }
-         // if (window.innerWidth < 320 || (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4)) { targetParticleCount = 0; }
-
-        // Sadece hedef parçacık sayısı değişirse güncelleme yap
-        if (pJS.particles.number.value !== targetParticleCount) {
-             pJS.particles.number.value = targetParticleCount;
-             // Yoğunluk alanını yeniden hesaplamaya gerek yok, particles.js bunu otomatik olarak ayarlar
-             // when number.value changes and density.enable is true.
-             pJS.fn.particlesEmpty();
-             pJS.fn.particlesCreate();
-             pJS.fn.particlesRefresh();
-        }
-     }
-}
-
-// Tema değiştirme
+// Tema değiştirme mantığı
 const themeToggleButton = document.getElementById('theme-toggle');
 const body = document.body;
 
+/**
+ * Seçilen temayı (açık/koyu) gövdeye uygular ve parçacık renklerini günceller.
+ * @param {string} theme - Uygulanacak tema ('light' veya 'dark').
+ * @param {boolean} isInitialLoad - Bu ilk sayfa yüklemesi ise true.
+ */
 function applyTheme(theme, isInitialLoad = false) {
     if (theme === 'light') {
         body.classList.add('light-theme');
-        themeToggleButton.setAttribute('aria-pressed', 'true');
+        if (themeToggleButton) themeToggleButton.setAttribute('aria-pressed', 'true');
     } else {
         body.classList.remove('light-theme');
-        themeToggleButton.setAttribute('aria-pressed', 'false');
+        if (themeToggleButton) themeToggleButton.setAttribute('aria-pressed', 'false');
     }
     localStorage.setItem('theme', theme);
 
-    // Tema değiştiğinde parçacık rengini güncelle
-    // CSS değişkenlerinin uygulanması için kısa bir gecikme ekleyelim
     setTimeout(() => {
         const particleColor = getComputedStyle(body).getPropertyValue(
             theme === 'light' ? '--particle-color-light' : '--particle-color-dark'
         ).trim().replace(/\'/g, '');
          if (particleColor) {
-            initializeParticles(particleColor); // Rengi günceller ve yoğunluğu ekran genişliğine göre ayarlar
+            initializeParticles(particleColor); 
         } else {
-            // Fallback renk
             initializeParticles(theme === 'light' ? '#A0522D' : '#c4b5fd'); 
         }
-    }, 50); // 50ms gecikme
+    }, 50); 
 }
 
+// Tema değiştirme düğmesi için olay dinleyicisi
 if (themeToggleButton) {
     themeToggleButton.addEventListener('click', () => {
         const currentTheme = body.classList.contains('light-theme') ? 'light' : 'dark';
@@ -174,75 +290,51 @@ if (themeToggleButton) {
     });
 }
 
-// Dil değiştirme
+// Dil değiştirme mantığı
 const languageToggleButton = document.getElementById('language-toggle-btn');
 const elementsToTranslate = document.querySelectorAll('[data-tr], [data-en]');
 const tooltipElements = document.querySelectorAll('[data-tr-tooltip], [data-en-tooltip]');
 const pageTitleElement = document.querySelector('title');
-let currentDisplayTitle = "";
+let currentDisplayTitle = ""; 
 
-// Dil ayarlarını uygula
+/**
+ * Seçilen dili sayfa içeriğine uygular ve öğeleri günceller.
+ * @param {string} lang - Uygulanacak dil ('en' veya 'tr').
+ */
 function applyLanguage(lang) {
-    // Dil değerini HTML elementine ayarla
     document.documentElement.lang = lang;
     
-    // Dil butonunun data-current-lang özelliğini güncelle
     if (languageToggleButton) {
         languageToggleButton.setAttribute('data-current-lang', lang);
-    }
-
-    // Dil butonunun içindeki metni güncelle (ikon hariç)
-     if (languageToggleButton) {
-        // Create or find the text node for the language
         let textNode = Array.from(languageToggleButton.childNodes)
             .find(node => node.nodeType === Node.TEXT_NODE);
         
-        // If no text node exists, create one
         if (!textNode) {
-            // First, find the icon element
             const iconElement = languageToggleButton.querySelector('i');
             if (iconElement) {
-                // Create text node and insert it after the icon
                 textNode = document.createTextNode('');
                 iconElement.after(textNode);
             } else {
-                // If no icon, append to button
                 textNode = document.createTextNode('');
                 languageToggleButton.appendChild(textNode);
             }
         }
-        
-        // Update the text content
         textNode.textContent = lang.toUpperCase();
     }
 
     elementsToTranslate.forEach(el => {
         const newText = el.getAttribute(`data-${lang}`);
         if (newText !== null) {
-            // İç HTML yapısını korumak istediğimiz belirli paragraflar
             if (el.matches('div.hero-subtext p') || el.matches('.about p') || (el.closest('.card-body') && el.tagName === 'P' && !el.classList.contains('profile-lang'))) {
                  el.innerHTML = newText;
             } 
-             // İkon gibi elementler içerebilen belirli etiketler
             else if (el.tagName === 'SPAN' || el.tagName === 'A' || el.tagName === 'BUTTON' || el.tagName === 'LI' || el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'H3' || el.tagName === 'P') {
-                 // Text içeriğini güncellemeye çalış, HTML elementlerini koruyarak
-                 let targetNode = el;
-                 // Eğer içinde sadece ikon veya başka bir element varsa ve metin direct child değilse,
-                 // tüm innerHTML'i değiştirmekten kaçınmak lazım. Ancak data-* niteliklerimiz düz metin içeriyor.
-                 // Bu durumda textContent daha güvenli.
                  if (el.children.length === 0 || !Array.from(el.children).some(child => child.tagName === 'I' || child.tagName === 'SVG' || child.tagName === 'SPAN' || child.tagName === 'BUTTON')) {
-                      // Eğer içinde ikon veya özel yapı yoksa, textContent kullan
                       el.textContent = newText;
                  } else {
-                      // Eğer içinde ikon veya özel yapı varsa, translatable metin için belirli bir span kullanmak daha iyi olurdu.
-                      // Şu anki yapıda, data niteliği tüm elementin metnini içeriyorsa ve içinde ikon varsa,
-                      // innerHTML kullanmak ikonu korur ama dikkatli olmak gerekir.
-                      // Mevcut element yapısı basit görünüyor, innerHTML burada ikonu koruyacaktır.
-                       el.innerHTML = newText; // İkonları korumak için (eğer data niteliği ikonu içermiyorsa)
+                       el.innerHTML = newText;
                  }
-
             } else {
-                // Diğer tüm elementler için textContent kullan, en güvenli yöntem
                 el.textContent = newText;
             }
         }
@@ -254,76 +346,75 @@ function applyLanguage(lang) {
             el.setAttribute('data-tooltip', tooltipText);
         }
     });
-
     
     localStorage.setItem('language', lang);
 
-    // Update page title specifically
     if (pageTitleElement) {
         const titleText = pageTitleElement.getAttribute(`data-${lang}`);
         if (titleText) {
             document.title = titleText;
-            currentDisplayTitle = titleText; // Store the successfully set title
-        } else if (pageTitleElement.getAttribute('data-en')) { // Fallback to English title if current lang title missing
+            currentDisplayTitle = titleText; 
+        } else if (pageTitleElement.getAttribute('data-en')) { 
             const fallbackTitle = pageTitleElement.getAttribute('data-en');
             document.title = fallbackTitle;
             currentDisplayTitle = fallbackTitle;
-        } else { // Absolute fallback
+        } else { 
             document.title = "Typhon64";
             currentDisplayTitle = "Typhon64";
         }
     }
 }
 
-// Sayfa yüklendiğinde çalışacak kod
+// Dil değiştirme düğmesi için olay dinleyicisi
 document.addEventListener('DOMContentLoaded', function() {
-    // Mevcut dili localStorage'dan al, yoksa İngilizce kullan
     const currentLang = localStorage.getItem('language') || 'en';
     applyLanguage(currentLang);
     
-    // Dil değiştirme butonuna tıklama olayı ekle
     if (languageToggleButton) {
         languageToggleButton.addEventListener('click', function() {
-            // Mevcut dili localStorage'dan al
             const currentLang = localStorage.getItem('language') || 'en';
-            // Dili değiştir
             const newLang = currentLang === 'en' ? 'tr' : 'en';
             applyLanguage(newLang);
         });
     }
 });
 
-// Dil değişikliklerini dinle
+// localStorage aracılığıyla diğer sekmelerden/pencelerden dil değişikliklerini dinle
 window.addEventListener('storage', function(e) {
     if (e.key === 'language') {
-        // Dil değişikliği varsa uygula
         const newLang = e.newValue || 'en';
         applyLanguage(newLang);
     }
 });
 
+// Sayfa görünürlüğü değişikliklerini yönet (örn. sekme değiştirme)
 document.addEventListener('visibilitychange', () => {
-    const currentLang = localStorage.getItem('language') || 'tr'; // Default to tr
+    const currentLang = localStorage.getItem('language') || 'tr'; 
     if (document.hidden) {
         document.title = currentLang === 'tr' ? 'Sistem Çevrimdışı!' : 'System Offline!';
     } else {
-        // Restore to the correctly translated title for the current language
         if (pageTitleElement) {
             const titleText = pageTitleElement.getAttribute(`data-${currentLang}`);
             if (titleText) {
                 document.title = titleText;
-            } else if (pageTitleElement.getAttribute('data-tr')) { // Fallback to Turkish title
+            } else if (pageTitleElement.getAttribute('data-tr')) { 
                  document.title = pageTitleElement.getAttribute('data-tr');
-            } else { // Absolute fallback
+            } else { 
                 document.title = "Typhon64";
             }
-        } else { // Fallback if pageTitleElement is somehow null
+        } else { 
              document.title = currentLang === 'tr' ? "Typhon64" : "Typhon64";
         }
     }
 });
 
-// Debounce fonksiyonu
+/**
+ * Bir fonksiyonun ne sıklıkta çağrıldığını sınırlamak için debounce fonksiyonu.
+ * @param {function} func - Debounce edilecek fonksiyon.
+ * @param {number} wait - Beklenecek milisaniye sayısı.
+ * @param {boolean} immediate - True ise, fonksiyonu ön kenarda tetikle.
+ * @returns {function} - Debounce edilmiş fonksiyon.
+ */
 function debounce(func, wait, immediate) {
     var timeout;
     return function() {
@@ -339,87 +430,71 @@ function debounce(func, wait, immediate) {
     };
 };
 
-// Resize olayını optimize et
+// Parçacık güncellemelerini optimize etmek için debounce edilmiş yeniden boyutlandırma olay işleyici
 const handleResize = debounce(function() {
-    if (initialWindowArea !== undefined) { // Sadece ilk yüklemeden sonra çalıştır
-        const currentTheme = localStorage.getItem('theme') || 'dark';
-        const particleColor = getComputedStyle(body).getPropertyValue(
-            currentTheme === 'light' ? '--particle-color-light' : '--particle-color-dark'
-        ).trim().replace(/\'/g, '');
-        // Sadece rengi güncellemek yeterli, initializeParticles artık yoğunluğu da ayarlıyor.
-        // initializeParticles(particleColor); // Bu satırın kendisi artık yoğunluğu ayarlar
+    const currentTheme = localStorage.getItem('theme') || 'dark';
+    const particleColor = getComputedStyle(body).getPropertyValue(
+        currentTheme === 'light' ? '--particle-color-light' : '--particle-color-dark'
+    ).trim().replace(/'/g, '');
+    initializeParticles(particleColor); 
+}, 150); 
 
-        // Ya da sadece updateParticlesDensity çağırarak yoğunluğu ayarlayabiliriz
-        updateParticlesDensity(); // Ekran genişliğine göre parçacık sayısını ayarlar
-    }
-}, 150); // Optimize edilmiş debounce süresi
-
+// Yeniden boyutlandırma olay dinleyicisi ekle
 window.addEventListener('resize', handleResize);
 
-// İlk yükleme ayarları
+// DOM hazır olduğunda ana başlatma
 document.addEventListener('DOMContentLoaded', () => {
-    initialWindowArea = window.innerWidth * window.innerHeight;
+    initialWindowArea = window.innerWidth * window.innerHeight; 
     
-    // Set body class for theme BEFORE getting particle color
     const savedTheme = localStorage.getItem('theme') || 'dark';
-    applyTheme(savedTheme, true); // Apply theme and update body class. This will init particles.
+    applyTheme(savedTheme, true); 
 
-    // Apply language. This will also set the document.title correctly.
-    const savedLang = localStorage.getItem('language') || 'tr'; // Default to tr
-    applyLanguage(savedLang); // This now sets currentDisplayTitle
+    const savedLang = localStorage.getItem('language') || 'tr'; 
+    applyLanguage(savedLang); 
 
-    // Initialize particles AFTER theme and language (mainly for particle color from CSS vars)
-    // applyTheme already calls initializeParticles, so no need to call again here on DOMContentLoaded
-    // The call in applyTheme includes the initialLoad flag logic.
-
-    if (initialParticleCanvasArea === undefined && window.pJSDom && window.pJSDom[0] && window.pJSDom[0].pJS) {
-        const pJS = window.pJSDom[0].pJS;
-        initialParticleCanvasArea = pJS.canvas.w * pJS.canvas.h;
-    }
-    
-    // Visibility change already sets title based on currentDisplayTitle (implicitly via applyLanguage)
-    // or specific offline messages. Initial title is set by applyLanguage.
-    if (document.hidden) { // Re-check immediately after load for initial state
-        const langForOfflineTitle = localStorage.getItem('language') || 'tr'; // Default to tr
+    if (document.hidden) { 
+        const langForOfflineTitle = localStorage.getItem('language') || 'tr'; 
         document.title = langForOfflineTitle === 'tr' ? 'Sistem Çevrimdışı!' : 'System Offline!';
-    } // Else, applyLanguage has already set the correct title.
+    }
 
-    // Terminal buton işlevselliği
+    // Terminal düğmesi işlevselliği
     const terminalRedBtn = document.getElementById('terminal-btn-red');
     const terminalYellowBtn = document.getElementById('terminal-btn-yellow');
     const terminalGreenBtn = document.getElementById('terminal-btn-green');
 
     if (terminalRedBtn) {
         terminalRedBtn.addEventListener('click', () => {
-            console.log('Kırmızı terminal butonuna tıklandı! (Kapatma simüle ediliyor)');
+            console.log('Kırmızı terminal düğmesine tıklandı! (Kapatma simülasyonu)');
         });
     }
     if (terminalYellowBtn) {
         terminalYellowBtn.addEventListener('click', () => {
-            console.log('Sarı terminal butonuna tıklandı! (Küçültme simüle ediliyor)');
+            console.log('Sarı terminal düğmesine tıklandı! (Küçültme simülasyonu)');
         });
     }
     if (terminalGreenBtn) {
         terminalGreenBtn.addEventListener('click', () => {
-            console.log('Yeşil terminal butonuna tıklandı! (Tam ekran simüle ediliyor)');
+            console.log('Yeşil terminal düğmesine tıklandı! (Tam ekran simülasyonu)');
         });
     }
 
-    // Footer'daki yıl bilgisini güncelle (eğer elementi varsa)
+    // Altbilgideki geçerli yıl bilgisini güncelle
     const currentYearElement = document.getElementById('current-year');
     if (currentYearElement) {
         currentYearElement.textContent = new Date().getFullYear();
     }
 
-    // Session ID kopyalama butonu için olay dinleyicisi (varsa)
+    // Oturum Kimliği kopyalama düğmesi işlevselliği
     const sessionCopyBtn = document.querySelector('.session-btn');
     if (sessionCopyBtn) {
         sessionCopyBtn.addEventListener('click', copySessionID);
     }
 
-    // copySessionID fonksiyonu (daha önce script tag içinde tanımlanmıştı, buraya taşıdım)
+    /**
+     * Önceden tanımlanmış bir oturum kimliğini panoya kopyalar ve bir onay mesajı gösterir.
+     */
     function copySessionID() {
-        const sessionID = '05e7b2c1d2a3f4e5c6b7a8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9'; // Your Session ID here
+        const sessionID = '05e7b2c1d2a3f4e5c6b7a8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9'; 
         navigator.clipboard.writeText(sessionID).then(function() {
             const el = document.getElementById('session-copied');
             if (el) {
@@ -427,7 +502,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => { el.style.display = 'none'; }, 2000);
             }
         }).catch(function(err) {
-            console.error('Could not copy Session ID: ', err);
+            console.error('Oturum Kimliği kopyalanamadı: ', err);
         });
     }
 });
