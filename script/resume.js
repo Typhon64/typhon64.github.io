@@ -1,17 +1,17 @@
-// Particle.js configuration and related functions
+// Particle.js configuration and related functions (İyi ve aynı parçacık tasarımı için güncellendi)
 // Defines the base configuration for the particles.js background animation.
 const particleConfigBase = {
     particles: {
-        number: { value: 150, density: { enable: true, value_area: 800 } }, // Varsayılan parçacık sayısı (dinamik olarak ayarlanacak)
+        number: { value: 200, density: { enable: true, value_area: 800 } }, // Genel parçacık sayısı artırıldı
         shape: { type: 'circle' }, // Parçacıkların şekli
-        opacity: { 
-            value: 0.4,
-            random: true, 
+        opacity: {
+            value: 0.7, // Opaklık biraz daha artırıldı (önceki 0.65'ten 0.7'ye)
+            random: true,
             anim: { enable: true, speed: 0.5, opacity_min: 0.1, sync: false }
         },
-        size: { value: 2.5, random: true }, // Parçacıkların boyutu (dinamik olarak ayarlanacak)
-        line_linked: { enable: true, distance: 120, opacity: 0.2, width: 1 }, // Parçacıkları birbirine bağlayan çizgiler (dinamik olarak ayarlanacak)
-        move: { enable: true, speed: 1.5, direction: 'none', random: true } // Parçacıkların hareketi
+        size: { value: 2.5, random: true }, // Büyük yuvarlak uçlar için boyut korundu
+        line_linked: { enable: true, distance: 120, opacity: 0.45, width: 1 }, // Çizgi opaklığı biraz daha artırıldı (önceki 0.4'ten 0.45'e)
+        move: { enable: true, speed: 1.5, direction: 'none', random: true } // Hareket tipi korundu
     },
     interactivity: {
         detect_on: 'window', // Tüm pencerede etkileşimi algıla
@@ -21,7 +21,7 @@ const particleConfigBase = {
             resize: true // Particles.js pencere yeniden boyutlandırmaya tepki vermeli
         },
         modes: {
-            grab: { distance: 70, line_linked: { opacity: 0.6 } }, // Grab modu özel ayarları, performans için mesafe azaltıldı
+            grab: { distance: 70, line_linked: { opacity: 0.7 } }, // Grab modu çizgi opaklığı eşleştirildi
             push: { particles_nb: 1 } // Tıklamayla oluşturulacak parçacık sayısı (Kullanıcı isteği üzerine 1 olarak ayarlandı)
         }
     },
@@ -47,68 +47,74 @@ function initializeParticles(particleColor) {
         // Parçacık ve çizgi rengini güncelle
         pJSInstance.particles.color.value = particleColor;
         if (pJSInstance.particles.line_linked) {
-            pJSInstance.particles.line_linked.color = particleColor; 
+            pJSInstance.particles.line_linked.color = particleColor;
         }
 
         // --- Mevcut örnek için Etkileşim Ayarlarını Güncelle ---
         pJSInstance.interactivity.events.onclick.enable = particleConfigBase.interactivity.events.onclick.enable;
-        pJSInstance.interactivity.modes.push.particles_nb = particleConfigBase.interactivity.modes.push.particles_nb; 
+        pJSInstance.interactivity.modes.push.particles_nb = particleConfigBase.interactivity.modes.push.particles_nb;
         pJSInstance.interactivity.events.onhover.enable = particleConfigBase.interactivity.events.onhover.enable;
         pJSInstance.interactivity.modes.grab.distance = particleConfigBase.interactivity.modes.grab.distance;
         pJSInstance.interactivity.modes.grab.line_linked.opacity = particleConfigBase.interactivity.modes.grab.line_linked.opacity;
 
+        // Kullanıcının istediği opaklık artışını burada uygula
+        pJSInstance.particles.opacity.value = particleConfigBase.particles.opacity.value;
+        if (pJSInstance.particles.line_linked) {
+            pJSInstance.particles.line_linked.opacity = particleConfigBase.particles.line_linked.opacity;
+        }
+
         let targetParticleCount = 0;
-        let targetParticleSize = 2.5; // Varsayılan boyut resume.js'ye özel
-        let targetLineDistance = 120; // Varsayılan çizgi mesafesi resume.js'ye özel
+        let targetParticleSize = particleConfigBase.particles.size.value; // Base config'den alınsın
+        let targetLineDistance = particleConfigBase.particles.line_linked.distance; // Base config'den alınsın
 
         // Ekran boyutuna göre parçacık sayısı, boyutu ve çizgi mesafesini dinamik olarak ayarla
         const screenWidth = window.innerWidth;
         if (screenWidth >= 1920) {
-            targetParticleCount = 150; // Resume.js'nin orijinal maksimumu
+            targetParticleCount = 200; // Artırıldı
             targetParticleSize = 2.5;
-            targetLineDistance = 100; // Daha yakın bağlantılar için düşürüldü
+            targetLineDistance = 120;
         } else if (screenWidth >= 1440) {
-            targetParticleCount = 120;
+            targetParticleCount = 170; // Artırıldı
             targetParticleSize = 2.5;
-            targetLineDistance = 90;
+            targetLineDistance = 110;
         } else if (screenWidth >= 1024) {
-            targetParticleCount = 80;
-            targetParticleSize = 2;
-            targetLineDistance = 80;
+            targetParticleCount = 120; // Artırıldı
+            targetParticleSize = 2.0;
+            targetLineDistance = 90;
         } else if (screenWidth >= 768) {
-            targetParticleCount = 60; // Arttırıldı
-            targetParticleSize = 2;
-            targetLineDistance = 70;
+            targetParticleCount = 100; // Artırıldı
+            targetParticleSize = 1.8;
+            targetLineDistance = 80;
         } else if (screenWidth >= 480) {
-            targetParticleCount = 50; // Arttırıldı
-            targetParticleSize = 1.8; // Hafifçe küçültüldü
-            targetLineDistance = 60;
-        } else if (screenWidth >= 320) {
-            targetParticleCount = 30; // Arttırıldı
+            targetParticleCount = 80; // Artırıldı (Mobil için önemli)
             targetParticleSize = 1.5;
-            targetLineDistance = 50;
-        } else { // Çok küçük mobil cihazlar (örn. iPhone SE gibi)
-            targetParticleCount = 15; // Arttırıldı
+            targetLineDistance = 70;
+        } else if (screenWidth >= 320) {
+            targetParticleCount = 60; // Artırıldı (Mobil için önemli)
             targetParticleSize = 1.2;
-            targetLineDistance = 40;
+            targetLineDistance = 60;
+        } else { // Çok küçük mobil cihazlar (örn. iPhone SE gibi)
+            targetParticleCount = 30; // Artırıldı (Mobil için önemli)
+            targetParticleSize = 1.0;
+            targetLineDistance = 50;
         }
 
         // Donanım performansına göre daha da azaltma
-        if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) { 
+        if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) {
             targetParticleCount = Math.floor(targetParticleCount * 0.8); // %20 azalt
         }
-        if (navigator.deviceMemory && navigator.deviceMemory < 2) { 
+        if (navigator.deviceMemory && navigator.deviceMemory < 2) {
              targetParticleCount = Math.floor(targetParticleCount * 0.8); // %20 azalt
         }
 
         // Minimum parçacık sayısı garantisi (eğer tamamen kapatılmıyorsa)
-        if (targetParticleCount > 0 && targetParticleCount < 10) { 
-            targetParticleCount = 10; 
+        if (targetParticleCount > 0 && targetParticleCount < 10) {
+            targetParticleCount = 10;
         }
 
         // Eğer çok düşük performanslı bir cihazsa, parçacıkları tamamen kapat
         if (targetParticleCount > 0 && ((navigator.hardwareConcurrency && navigator.hardwareConcurrency < 2) || (navigator.deviceMemory && navigator.deviceMemory < 1))) {
-            targetParticleCount = 0; 
+            targetParticleCount = 0;
         }
 
         // Parçacık sayısı, boyutu veya çizgi mesafesi değiştiyse güncelle
@@ -120,14 +126,7 @@ function initializeParticles(particleColor) {
             pJSInstance.particles.number.value = targetParticleCount;
             pJSInstance.particles.size.value = targetParticleSize;
             pJSInstance.particles.line_linked.distance = targetLineDistance;
-
-            // Eğer sayı değiştiyse veya ciddi bir görsel değişim varsa yeniden oluştur
-            if (numChanged) {
-                pJSInstance.fn.particlesEmpty(); 
-                pJSInstance.fn.particlesCreate(); 
-            } else {
-                pJSInstance.fn.particlesRefresh(); // Sadece yenileme
-            }
+            pJSInstance.fn.particlesRefresh(); // Sadece yenileme veya yeniden oluşturma
         } else {
             pJSInstance.fn.particlesRefresh(); // Diğer durumlar için yenileme
         }
@@ -142,7 +141,7 @@ function initializeParticles(particleColor) {
         if (currentParticleCanvasArea > 0) {
             const baseDensityArea = particleConfigBase.particles.number.density.value_area;
             let calculatedDensityArea = baseDensityArea * (currentParticleCanvasArea / initialParticleCanvasArea);
-            
+
             calculatedDensityArea = Math.max(calculatedDensityArea, 200); // Minimum yoğunluk alanı
             calculatedDensityArea = Math.min(calculatedDensityArea, 5000); // Maksimum yoğunluk alanı
 
@@ -151,7 +150,7 @@ function initializeParticles(particleColor) {
                 pJSInstance.fn.particlesRefresh();
             }
         } else {
-            pJSInstance.fn.particlesRefresh(); 
+            pJSInstance.fn.particlesRefresh();
         }
         return;
     }
@@ -159,78 +158,79 @@ function initializeParticles(particleColor) {
     // particles.js'in ilk kez başlatılması
     let currentParticleConfig = JSON.parse(JSON.stringify(particleConfigBase));
     currentParticleConfig.particles.color = { value: particleColor };
-    currentParticleConfig.particles.line_linked.color = particleColor; 
+    currentParticleConfig.particles.line_linked.color = particleColor;
 
-    // Etkileşim Ayarlarını Başlangıçta Uygula (Tıklama ile 1 parçacık!)
-    currentParticleConfig.interactivity.modes.push.particles_nb = particleConfigBase.interactivity.modes.push.particles_nb; 
+    // Kullanıcının istediği opaklık artışını burada uygula
+    currentParticleConfig.particles.opacity.value = particleConfigBase.particles.opacity.value;
+    currentParticleConfig.particles.line_linked.opacity = particleConfigBase.particles.line_linked.opacity;
 
     // İlk yüklemede ekran boyutuna ve donanıma göre başlangıç parçacık sayısı, boyutu ve çizgi mesafesi
     let initialParticleCount = 0;
-    let initialParticleSize = 2.5;
-    let initialLineDistance = 120;
+    let initialParticleSize = particleConfigBase.particles.size.value;
+    let initialLineDistance = particleConfigBase.particles.line_linked.distance;
 
     const screenWidth = window.innerWidth;
     if (screenWidth >= 1920) {
-        initialParticleCount = 150;
+        initialParticleCount = 200;
         initialParticleSize = 2.5;
-        initialLineDistance = 100;
+        initialLineDistance = 120;
     } else if (screenWidth >= 1440) {
-        initialParticleCount = 120;
+        initialParticleCount = 170;
         initialParticleSize = 2.5;
-        initialLineDistance = 90;
+        initialLineDistance = 110;
     } else if (screenWidth >= 1024) {
-        initialParticleCount = 80;
-        initialParticleSize = 2;
-        initialLineDistance = 80;
+        initialParticleCount = 120;
+        initialParticleSize = 2.0;
+        initialLineDistance = 90;
     } else if (screenWidth >= 768) {
-        initialParticleCount = 60;
-        initialParticleSize = 2;
-        initialLineDistance = 70;
-    } else if (screenWidth >= 480) {
-        initialParticleCount = 50; 
+        initialParticleCount = 100;
         initialParticleSize = 1.8;
-        initialLineDistance = 60;
-    } else if (screenWidth >= 320) {
-        initialParticleCount = 30; 
+        initialLineDistance = 80;
+    } else if (screenWidth >= 480) {
+        initialParticleCount = 80;
         initialParticleSize = 1.5;
-        initialLineDistance = 50;
-    } else {
-        initialParticleCount = 15; 
+        initialLineDistance = 70;
+    } else if (screenWidth >= 320) {
+        initialParticleCount = 60;
         initialParticleSize = 1.2;
-        initialLineDistance = 40;
+        initialLineDistance = 60;
+    } else {
+        initialParticleCount = 30;
+        initialParticleSize = 1.0;
+        initialLineDistance = 50;
     }
 
     if (initialParticleCount > 0 && ((navigator.hardwareConcurrency && navigator.hardwareConcurrency < 2) || (navigator.deviceMemory && navigator.deviceMemory < 1))) {
-        initialParticleCount = 0; 
+        initialParticleCount = 0;
     }
-    
+
     // Minimum parçacık sayısı garantisi (eğer tamamen kapatılmıyorsa)
-    if (initialParticleCount > 0 && initialParticleCount < 10) { 
-        initialParticleCount = 10; 
+    if (initialParticleCount > 0 && initialParticleCount < 10) {
+        initialParticleCount = 10;
     }
 
     currentParticleConfig.particles.number.value = initialParticleCount;
     currentParticleConfig.particles.size.value = initialParticleSize;
     currentParticleConfig.particles.line_linked.distance = initialLineDistance;
-    currentParticleConfig.particles.number.density.enable = true; 
+    currentParticleConfig.particles.number.density.enable = true;
 
     // particlesJS'i başlat
-    particlesJS('particles-js', currentParticleConfig); 
+    particlesJS('particles-js', currentParticleConfig);
 
     // Başlatmadan sonra, fare etkileşimlerini engellememek için canvas'a pointer-events ve z-index uygula
     if (window.pJSDom && window.pJSDom[0] && window.pJSDom[0].pJS) {
         pJSInstance = window.pJSDom[0].pJS;
-        
+
         // Dinamik yoğunluk hesaplamaları için başlangıç canvas alanını yakala
-        if (pJSInstance && initialParticleCanvasArea === undefined) { 
+        if (pJSInstance && initialParticleCanvasArea === undefined) {
             initialParticleCanvasArea = pJSInstance.canvas.w * pJSInstance.canvas.h;
         }
 
         const particlesJSElement = document.getElementById('particles-js');
         if (particlesJSElement && particlesJSElement.style) {
-            particlesJSElement.style.pointerEvents = 'none'; 
-            particlesJSElement.style.zIndex = '-1'; 
-            particlesJSElement.style.position = 'fixed'; 
+            particlesJSElement.style.pointerEvents = 'none';
+            particlesJSElement.style.zIndex = '-1';
+            particlesJSElement.style.position = 'fixed';
             particlesJSElement.style.top = '0';
             particlesJSElement.style.left = '0';
             particlesJSElement.style.width = '100%';
@@ -270,8 +270,8 @@ const handleResize = debounce(function() {
     const particleColor = getComputedStyle(body).getPropertyValue(
         currentTheme === 'light' ? '--particle-color-light' : '--particle-color-dark'
     ).trim().replace(/'/g, '');
-    initializeParticles(particleColor); 
-}, 150); 
+    initializeParticles(particleColor);
+}, 150);
 
 // Yeniden boyutlandırma olay dinleyicisi ekle
 window.addEventListener('resize', handleResize);
@@ -313,11 +313,11 @@ function applyTheme(theme, isInitialLoad = false) {
             theme === 'light' ? '--particle-color-light' : '--particle-color-dark'
         ).trim().replace(/\'/g, '');
          if (particleColor) {
-            initializeParticles(particleColor); 
+            initializeParticles(particleColor);
         } else {
-            initializeParticles(theme === 'light' ? '#A0522D' : '#c4b5fd'); 
+            initializeParticles(theme === 'light' ? '#A0522D' : '#c4b5fd');
         }
-    }, 0); 
+    }, 0);
 }
 
 // Tema değiştirme düğmesi için olay dinleyicisi
@@ -353,7 +353,7 @@ function applyLanguage(lang) {
             }
         }
     });
-    
+
     // Update title attributes for elements with data-tr-title/data-en-title
     titleElementsToTranslate.forEach(el => {
         const newTitle = el.getAttribute(`data-${lang}-title`);
@@ -393,9 +393,9 @@ window.addEventListener('storage', (e) => {
 
 // Sayfa görünürlüğü değişikliklerini yönet (örn. sekme değiştirme)
 document.addEventListener('visibilitychange', () => {
-    const lang = localStorage.getItem('language') || 'tr'; 
+    const lang = localStorage.getItem('language') || 'tr';
     const offlineTitle = lang === 'tr' ? 'Sistem Çevrimdışı!' : 'System Offline!';
-    document.title = document.hidden ? offlineTitle : originalPageTitle; 
+    document.title = document.hidden ? offlineTitle : originalPageTitle;
 });
 
 // DOMContentLoaded - Main Initialization when the DOM is fully loaded
@@ -426,13 +426,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof gsap !== 'undefined') {
         gsap.from('.header', { y: -30, opacity: 0, duration: 0.8, ease: 'power2.out', delay: 0.1 });
         gsap.from('.resume-sidebar', { x: -50, opacity: 0, duration: 0.8, ease: 'power2.out', delay: 0.3 });
-        gsap.from('.resume-main-content > *', { 
-            opacity: 0, 
-            y: 30, 
-            duration: 0.7, 
-            ease: 'power2.out', 
-            stagger: 0.1, 
-            delay: 0.5 
+        gsap.from('.resume-main-content > *', {
+            opacity: 0,
+            y: 30,
+            duration: 0.7,
+            ease: 'power2.out',
+            stagger: 0.1,
+            delay: 0.5
         });
     } else {
         console.error("GSAP could not be loaded. Ensure the GSAP library is linked correctly in your HTML.");
@@ -490,7 +490,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (hash && sectionIds.includes(hash)) {
             initialSectionId = hash;
         }
-        
+
         if (initialSectionId) {
             showSection(initialSectionId); // Display the initial section
         }
@@ -510,14 +510,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
     updateCurrentDate(); // Call on DOMContentLoaded
-    
+
     // Accordion functionality for collapsible sections
     const accordionHeaders = document.querySelectorAll('.accordion-header');
     accordionHeaders.forEach(header => {
         header.addEventListener('click', () => {
             const accordionItem = header.parentElement;
             const accordionContent = header.nextElementSibling;
-            
+
             // Close other open accordion items
             accordionHeaders.forEach(otherHeader => {
                 if (otherHeader !== header && otherHeader.classList.contains('active')) {
