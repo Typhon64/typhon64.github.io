@@ -1,15 +1,38 @@
 <!DOCTYPE html>
 <html lang="en" translate="no">
 <head>
+    <!-- Cache Control -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
     <!-- Basic Meta Tags: SEO and Compatibility -->
     <meta charset="UTF-8">
     <meta name="google-site-verification" content="2m6hNAoGoyNpD6vOxUivIMyW-LyeFz5w7zI_xInx4Kk" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0">
     <meta name="description" content="Typhon64 - Exploring Cyber Threat Intelligence. Documenting projects and learning in OSINT, threat analysis, and security research.">
     <meta name="keywords" content="Typhon64, cyber threat intelligence, OSINT, threat analysis, security research, cybersecurity">
     <meta name="author" content="Typhon64">
     <meta name="robots" content="index, follow">
     <meta name="color-scheme" content="dark light">
+    
+    <!-- Normalize CSS for cross-browser consistency -->
+    <link rel="stylesheet" href="css/normalize.css?v=1.0.0">
+    
+    <!-- Preload Fonts -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" as="style">
+    <link rel="preload" href="https://fonts.cdnfonts.com/css/sf-mono" as="style">
+    
+    <!-- Font Loading Optimization -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    
+    <!-- Fonts with display swap -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <link href="https://fonts.cdnfonts.com/css/sf-mono" rel="stylesheet" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
     
     <!-- Open Graph /  Meta Tags -->
     <meta property="og:type" content="website">
@@ -30,25 +53,41 @@
     <!-- Favicon -->
     <link rel="icon" href="media/favicon.webp" type="image/webp">
     
-    <!-- Preconnect to External Domains -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-    <link rel="preconnect" href="https://cdn.jsdelivr.net">
-    
-    <!-- Google Fonts: Inter - Main font -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- SF Mono: Terminal feel -->
-    <link href="https://fonts.cdnfonts.com/css/sf-mono" rel="stylesheet">
-    <!-- Font Awesome: Social media icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/style.css?v=1.0.1">
+    <!-- Custom CSS with version -->
+    <link rel="stylesheet" href="css/style.css?v=1.0.2">
     
     <!-- Preload critical JS -->
     <link rel="preload" href="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" as="script">
-    <link rel="preload" href="script/script.js?v=1.0.1" as="script">
+    <link rel="preload" href="script/script.js?v=1.0.2" as="script">
+    
+    <!-- Cache Busting Script -->
+    <script>
+        // Sayfa yüklendiğinde cache'i kontrol et
+        window.addEventListener('load', function() {
+            // CSS ve JS dosyalarını zorla yeniden yükle
+            function forceReload(url) {
+                var link = document.createElement('link');
+                link.href = url + '?v=' + new Date().getTime();
+                link.rel = 'stylesheet';
+                document.head.appendChild(link);
+            }
+            
+            // Tema değişikliklerini localStorage'da sakla
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+            
+            // Sayfalar arası geçişte tema tutarlılığı
+            const themeToggle = document.getElementById('theme-toggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    const currentTheme = document.documentElement.getAttribute('data-theme');
+                    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                    document.documentElement.setAttribute('data-theme', newTheme);
+                    localStorage.setItem('theme', newTheme);
+                });
+            }
+        });
+    </script>
     
     <!-- Structured Data for SEO -->
     <script type="application/ld+json">
@@ -247,7 +286,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
     
     <!-- Custom JS -->
-    <script src="script/script.js?v=1.0.1" defer></script>
+    <script src="script/script.js?v=1.0.2" defer></script>
     
     <!-- Time update script -->
     <script>
