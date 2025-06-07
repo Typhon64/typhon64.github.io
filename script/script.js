@@ -8,20 +8,20 @@ gsap.from(".left-section", { opacity: 0, y: 50, duration: 1.2, ease: "expo.out",
 gsap.from(".right-section", { opacity: 0, y: 50, duration: 1.2, ease: "expo.out", delay: 0.4 });
 gsap.from(".terminal-container", { opacity: 0, y: 50, duration: 1.2, ease: "expo.out", delay: 0.6 });
 
-// Particle.js configuration - Base config
+// Particle.js configuration - Base config (Mobil görünürlük ve opaklık için güncellendi)
 // Particles.js arka plan animasyonu için varsayılan yapılandırmayı tanımlar.
 const particleConfigBase = {
     particles: {
-        number: { value: 260, density: { enable: true, value_area: 800 } }, // Varsayılan parçacık sayısı (dinamik olarak ayarlanacak)
+        number: { value: 200, density: { enable: true, value_area: 800 } }, // Genel parçacık sayısı artırıldı
         shape: { type: 'circle' }, // Parçacıkların şekli
-        opacity: { 
-            value: 0.5,
-            random: true, 
+        opacity: {
+            value: 0.7, // Opaklık biraz daha artırıldı (önceki 0.65'ten 0.7'ye)
+            random: true,
             anim: { enable: true, speed: 0.5, opacity_min: 0.1, sync: false }
         },
-        size: { value: 3, random: true }, // Parçacıkların boyutu (dinamik olarak ayarlanacak)
-        line_linked: { enable: true, distance: 150, opacity: 0.25, width: 1 }, // Parçacıkları birbirine bağlayan çizgiler (dinamik olarak ayarlanacak)
-        move: { enable: true, speed: 1.8, direction: 'none', random: true } // Parçacıkların hareketi
+        size: { value: 2.5, random: true }, // Büyük yuvarlak uçlar için boyut korundu
+        line_linked: { enable: true, distance: 120, opacity: 0.45, width: 1 }, // Çizgi opaklığı biraz daha artırıldı (önceki 0.4'ten 0.45'e)
+        move: { enable: true, speed: 1.5, direction: 'none', random: true } // Hareket tipi korundu
     },
     interactivity: {
         detect_on: 'window', // Tüm pencerede etkileşimi algıla
@@ -31,8 +31,8 @@ const particleConfigBase = {
             resize: true // Particles.js pencere yeniden boyutlandırmaya tepki vermeli
         },
         modes: {
-            grab: { distance: 70, line_linked: { opacity: 0.75 } }, // Grab modu özel ayarları, performans için mesafe azaltıldı
-            push: { particles_nb: 1 } // Tıklamayla oluşturulacak parçacık sayısı (Kullanıcı isteği üzerine 1 olarak ayarlandı)
+            grab: { distance: 70, line_linked: { opacity: 0.7 } }, // Grab modu çizgi opaklığı eşleştirildi
+            push: { particles_nb: 1 } // Tıklamayla oluşturulacak parçacık sayısı
         }
     },
     retina_detect: false, // Yüksek çözünürlüklü ekranlarda potansiyel performans iyileştirmesi için false olarak ayarlandı
@@ -57,68 +57,74 @@ function initializeParticles(particleColor) {
         // Parçacık ve çizgi rengini güncelle
         pJSInstance.particles.color.value = particleColor;
         if (pJSInstance.particles.line_linked) {
-            pJSInstance.particles.line_linked.color = particleColor; 
+            pJSInstance.particles.line_linked.color = particleColor;
         }
 
         // --- Mevcut örnek için Etkileşim Ayarlarını Güncelle ---
         pJSInstance.interactivity.events.onclick.enable = particleConfigBase.interactivity.events.onclick.enable;
-        pJSInstance.interactivity.modes.push.particles_nb = particleConfigBase.interactivity.modes.push.particles_nb; 
+        pJSInstance.interactivity.modes.push.particles_nb = particleConfigBase.interactivity.modes.push.particles_nb;
         pJSInstance.interactivity.events.onhover.enable = particleConfigBase.interactivity.events.onhover.enable;
         pJSInstance.interactivity.modes.grab.distance = particleConfigBase.interactivity.modes.grab.distance;
         pJSInstance.interactivity.modes.grab.line_linked.opacity = particleConfigBase.interactivity.modes.grab.line_linked.opacity;
 
+        // Kullanıcının istediği opaklık artışını burada uygula
+        pJSInstance.particles.opacity.value = particleConfigBase.particles.opacity.value;
+        if (pJSInstance.particles.line_linked) {
+            pJSInstance.particles.line_linked.opacity = particleConfigBase.particles.line_linked.opacity;
+        }
+
         let targetParticleCount = 0;
-        let targetParticleSize = 3; // Varsayılan boyut
-        let targetLineDistance = 150; // Varsayılan çizgi mesafesi
+        let targetParticleSize = particleConfigBase.particles.size.value; // Base config'den alınsın
+        let targetLineDistance = particleConfigBase.particles.line_linked.distance; // Base config'den alınsın
 
         // Ekran boyutuna göre parçacık sayısı, boyutu ve çizgi mesafesini dinamik olarak ayarla
         const screenWidth = window.innerWidth;
         if (screenWidth >= 1920) {
-            targetParticleCount = 260; // Orijinal maksimum
-            targetParticleSize = 3;
-            targetLineDistance = 100; // Daha yakın bağlantılar için düşürüldü
-        } else if (screenWidth >= 1440) {
-            targetParticleCount = 200;
-            targetParticleSize = 2.8;
-            targetLineDistance = 90;
-        } else if (screenWidth >= 1024) {
-            targetParticleCount = 150;
+            targetParticleCount = 200; // Artırıldı
             targetParticleSize = 2.5;
-            targetLineDistance = 80;
+            targetLineDistance = 120;
+        } else if (screenWidth >= 1440) {
+            targetParticleCount = 170; // Artırıldı
+            targetParticleSize = 2.5;
+            targetLineDistance = 110;
+        } else if (screenWidth >= 1024) {
+            targetParticleCount = 120; // Artırıldı
+            targetParticleSize = 2.0;
+            targetLineDistance = 90;
         } else if (screenWidth >= 768) {
-            targetParticleCount = 100;
-            targetParticleSize = 2.2;
-            targetLineDistance = 70;
-        } else if (screenWidth >= 480) {
-            targetParticleCount = 70; // Mobil için arttırıldı
+            targetParticleCount = 100; // Artırıldı
             targetParticleSize = 1.8;
-            targetLineDistance = 60;
-        } else if (screenWidth >= 320) {
-            targetParticleCount = 40; // Mobil için arttırıldı
+            targetLineDistance = 80;
+        } else if (screenWidth >= 480) {
+            targetParticleCount = 80; // Artırıldı (Mobil için önemli)
             targetParticleSize = 1.5;
-            targetLineDistance = 50;
-        } else { // Çok küçük mobil cihazlar (örn. iPhone SE gibi)
-            targetParticleCount = 20; // Mobil için arttırıldı
+            targetLineDistance = 70;
+        } else if (screenWidth >= 320) {
+            targetParticleCount = 60; // Artırıldı (Mobil için önemli)
             targetParticleSize = 1.2;
-            targetLineDistance = 40;
+            targetLineDistance = 60;
+        } else { // Çok küçük mobil cihazlar (örn. iPhone SE gibi)
+            targetParticleCount = 30; // Artırıldı (Mobil için önemli)
+            targetParticleSize = 1.0;
+            targetLineDistance = 50;
         }
 
         // Donanım performansına göre daha da azaltma
-        if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) { 
+        if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) {
             targetParticleCount = Math.floor(targetParticleCount * 0.8); // %20 azalt
         }
-        if (navigator.deviceMemory && navigator.deviceMemory < 2) { 
+        if (navigator.deviceMemory && navigator.deviceMemory < 2) {
              targetParticleCount = Math.floor(targetParticleCount * 0.8); // %20 azalt
         }
 
         // Minimum parçacık sayısı garantisi (eğer tamamen kapatılmıyorsa)
-        if (targetParticleCount > 0 && targetParticleCount < 10) { 
-            targetParticleCount = 10; 
+        if (targetParticleCount > 0 && targetParticleCount < 10) {
+            targetParticleCount = 10;
         }
 
         // Eğer çok düşük performanslı bir cihazsa, parçacıkları tamamen kapat
         if (targetParticleCount > 0 && ((navigator.hardwareConcurrency && navigator.hardwareConcurrency < 2) || (navigator.deviceMemory && navigator.deviceMemory < 1))) {
-            targetParticleCount = 0; 
+            targetParticleCount = 0;
         }
 
         // Parçacık sayısı, boyutu veya çizgi mesafesi değiştiyse güncelle
@@ -130,14 +136,7 @@ function initializeParticles(particleColor) {
             pJSInstance.particles.number.value = targetParticleCount;
             pJSInstance.particles.size.value = targetParticleSize;
             pJSInstance.particles.line_linked.distance = targetLineDistance;
-
-            // Eğer sayı değiştiyse veya ciddi bir görsel değişim varsa yeniden oluştur
-            if (numChanged) {
-                pJSInstance.fn.particlesEmpty(); 
-                pJSInstance.fn.particlesCreate(); 
-            } else {
-                pJSInstance.fn.particlesRefresh(); // Sadece yenileme
-            }
+            pJSInstance.fn.particlesRefresh(); // Sadece yenileme veya yeniden oluşturma
         } else {
             pJSInstance.fn.particlesRefresh(); // Diğer durumlar için yenileme
         }
@@ -152,7 +151,7 @@ function initializeParticles(particleColor) {
         if (currentParticleCanvasArea > 0) {
             const baseDensityArea = particleConfigBase.particles.number.density.value_area;
             let calculatedDensityArea = baseDensityArea * (currentParticleCanvasArea / initialParticleCanvasArea);
-            
+
             calculatedDensityArea = Math.max(calculatedDensityArea, 200); // Minimum yoğunluk alanı
             calculatedDensityArea = Math.min(calculatedDensityArea, 5000); // Maksimum yoğunluk alanı
 
@@ -161,7 +160,7 @@ function initializeParticles(particleColor) {
                 pJSInstance.fn.particlesRefresh();
             }
         } else {
-            pJSInstance.fn.particlesRefresh(); 
+            pJSInstance.fn.particlesRefresh();
         }
         return;
     }
@@ -169,78 +168,79 @@ function initializeParticles(particleColor) {
     // particles.js'in ilk kez başlatılması
     let currentParticleConfig = JSON.parse(JSON.stringify(particleConfigBase));
     currentParticleConfig.particles.color = { value: particleColor };
-    currentParticleConfig.particles.line_linked.color = particleColor; 
+    currentParticleConfig.particles.line_linked.color = particleColor;
 
-    // Etkileşim Ayarlarını Başlangıçta Uygula (Tıklama ile 1 parçacık!)
-    currentParticleConfig.interactivity.modes.push.particles_nb = particleConfigBase.interactivity.modes.push.particles_nb; 
+    // Kullanıcının istediği opaklık artışını burada uygula
+    currentParticleConfig.particles.opacity.value = particleConfigBase.particles.opacity.value;
+    currentParticleConfig.particles.line_linked.opacity = particleConfigBase.particles.line_linked.opacity;
 
     // İlk yüklemede ekran boyutuna ve donanıma göre başlangıç parçacık sayısı, boyutu ve çizgi mesafesi
     let initialParticleCount = 0;
-    let initialParticleSize = 3;
-    let initialLineDistance = 150;
+    let initialParticleSize = particleConfigBase.particles.size.value;
+    let initialLineDistance = particleConfigBase.particles.line_linked.distance;
 
     const screenWidth = window.innerWidth;
     if (screenWidth >= 1920) {
-        initialParticleCount = 260;
-        initialParticleSize = 3;
-        initialLineDistance = 100;
-    } else if (screenWidth >= 1440) {
         initialParticleCount = 200;
-        initialParticleSize = 2.8;
-        initialLineDistance = 90;
-    } else if (screenWidth >= 1024) {
-        initialParticleCount = 150;
         initialParticleSize = 2.5;
-        initialLineDistance = 80;
+        initialLineDistance = 120;
+    } else if (screenWidth >= 1440) {
+        initialParticleCount = 170;
+        initialParticleSize = 2.5;
+        initialLineDistance = 110;
+    } else if (screenWidth >= 1024) {
+        initialParticleCount = 120;
+        initialParticleSize = 2.0;
+        initialLineDistance = 90;
     } else if (screenWidth >= 768) {
         initialParticleCount = 100;
-        initialParticleSize = 2.2;
-        initialLineDistance = 70;
-    } else if (screenWidth >= 480) {
-        initialParticleCount = 70; 
         initialParticleSize = 1.8;
-        initialLineDistance = 60;
-    } else if (screenWidth >= 320) {
-        initialParticleCount = 40; 
+        initialLineDistance = 80;
+    } else if (screenWidth >= 480) {
+        initialParticleCount = 80;
         initialParticleSize = 1.5;
-        initialLineDistance = 50;
-    } else {
-        initialParticleCount = 20; 
+        initialLineDistance = 70;
+    } else if (screenWidth >= 320) {
+        initialParticleCount = 60;
         initialParticleSize = 1.2;
-        initialLineDistance = 40;
+        initialLineDistance = 60;
+    } else {
+        initialParticleCount = 30;
+        initialParticleSize = 1.0;
+        initialLineDistance = 50;
     }
 
     if (initialParticleCount > 0 && ((navigator.hardwareConcurrency && navigator.hardwareConcurrency < 2) || (navigator.deviceMemory && navigator.deviceMemory < 1))) {
-        initialParticleCount = 0; 
+        initialParticleCount = 0;
     }
-    
+
     // Minimum parçacık sayısı garantisi (eğer tamamen kapatılmıyorsa)
-    if (initialParticleCount > 0 && initialParticleCount < 10) { 
-        initialParticleCount = 10; 
+    if (initialParticleCount > 0 && initialParticleCount < 10) {
+        initialParticleCount = 10;
     }
 
     currentParticleConfig.particles.number.value = initialParticleCount;
     currentParticleConfig.particles.size.value = initialParticleSize;
     currentParticleConfig.particles.line_linked.distance = initialLineDistance;
-    currentParticleConfig.particles.number.density.enable = true; 
+    currentParticleConfig.particles.number.density.enable = true;
 
     // particlesJS'i başlat
-    particlesJS('particles-js', currentParticleConfig); 
+    particlesJS('particles-js', currentParticleConfig);
 
     // Başlatmadan sonra, fare etkileşimlerini engellememek için canvas'a pointer-events ve z-index uygula
     if (window.pJSDom && window.pJSDom[0] && window.pJSDom[0].pJS) {
         pJSInstance = window.pJSDom[0].pJS;
-        
+
         // Dinamik yoğunluk hesaplamaları için başlangıç canvas alanını yakala
-        if (pJSInstance && initialParticleCanvasArea === undefined) { 
+        if (pJSInstance && initialParticleCanvasArea === undefined) {
             initialParticleCanvasArea = pJSInstance.canvas.w * pJSInstance.canvas.h;
         }
 
         const particlesJSElement = document.getElementById('particles-js');
         if (particlesJSElement && particlesJSElement.style) {
-            particlesJSElement.style.pointerEvents = 'none'; 
-            particlesJSElement.style.zIndex = '-1'; 
-            particlesJSElement.style.position = 'fixed'; 
+            particlesJSElement.style.pointerEvents = 'none';
+            particlesJSElement.style.zIndex = '-1';
+            particlesJSElement.style.position = 'fixed';
             particlesJSElement.style.top = '0';
             particlesJSElement.style.left = '0';
             particlesJSElement.style.width = '100%';
@@ -270,16 +270,18 @@ function applyTheme(theme, isInitialLoad = false) {
     }
     localStorage.setItem('theme', theme);
 
+    // Particles.js'i temaya uygun renkle yeniden başlat
     setTimeout(() => {
         const particleColor = getComputedStyle(body).getPropertyValue(
             theme === 'light' ? '--particle-color-light' : '--particle-color-dark'
         ).trim().replace(/\'/g, '');
          if (particleColor) {
-            initializeParticles(particleColor); 
+            initializeParticles(particleColor);
         } else {
-            initializeParticles(theme === 'light' ? '#A0522D' : '#c4b5fd'); 
+            // Varsayılan renkler (resume.js'deki gibi)
+            initializeParticles(theme === 'light' ? '#A0522D' : '#c4b5fd');
         }
-    }, 50); 
+    }, 50);
 }
 
 // Tema değiştirme düğmesi için olay dinleyicisi
@@ -295,7 +297,7 @@ const languageToggleButton = document.getElementById('language-toggle-btn');
 const elementsToTranslate = document.querySelectorAll('[data-tr], [data-en]');
 const tooltipElements = document.querySelectorAll('[data-tr-tooltip], [data-en-tooltip]');
 const pageTitleElement = document.querySelector('title');
-let currentDisplayTitle = ""; 
+let currentDisplayTitle = "";
 
 /**
  * Seçilen dili sayfa içeriğine uygular ve öğeleri günceller.
@@ -303,12 +305,12 @@ let currentDisplayTitle = "";
  */
 function applyLanguage(lang) {
     document.documentElement.lang = lang;
-    
+
     if (languageToggleButton) {
         languageToggleButton.setAttribute('data-current-lang', lang);
         let textNode = Array.from(languageToggleButton.childNodes)
             .find(node => node.nodeType === Node.TEXT_NODE);
-        
+
         if (!textNode) {
             const iconElement = languageToggleButton.querySelector('i');
             if (iconElement) {
@@ -327,7 +329,7 @@ function applyLanguage(lang) {
         if (newText !== null) {
             if (el.matches('div.hero-subtext p') || el.matches('.about p') || (el.closest('.card-body') && el.tagName === 'P' && !el.classList.contains('profile-lang'))) {
                  el.innerHTML = newText;
-            } 
+            }
             else if (el.tagName === 'SPAN' || el.tagName === 'A' || el.tagName === 'BUTTON' || el.tagName === 'LI' || el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'H3' || el.tagName === 'P') {
                  if (el.children.length === 0 || !Array.from(el.children).some(child => child.tagName === 'I' || child.tagName === 'SVG' || child.tagName === 'SPAN' || child.tagName === 'BUTTON')) {
                       el.textContent = newText;
@@ -346,19 +348,19 @@ function applyLanguage(lang) {
             el.setAttribute('data-tooltip', tooltipText);
         }
     });
-    
+
     localStorage.setItem('language', lang);
 
     if (pageTitleElement) {
         const titleText = pageTitleElement.getAttribute(`data-${lang}`);
         if (titleText) {
             document.title = titleText;
-            currentDisplayTitle = titleText; 
-        } else if (pageTitleElement.getAttribute('data-en')) { 
+            currentDisplayTitle = titleText;
+        } else if (pageTitleElement.getAttribute('data-en')) {
             const fallbackTitle = pageTitleElement.getAttribute('data-en');
             document.title = fallbackTitle;
             currentDisplayTitle = fallbackTitle;
-        } else { 
+        } else {
             document.title = "Typhon64";
             currentDisplayTitle = "Typhon64";
         }
@@ -367,12 +369,12 @@ function applyLanguage(lang) {
 
 // Dil değiştirme düğmesi için olay dinleyicisi
 document.addEventListener('DOMContentLoaded', function() {
-    const currentLang = localStorage.getItem('language') || 'en';
+    const currentLang = localStorage.getItem('language') || 'tr'; // Default olarak 'tr' ayarlandı
     applyLanguage(currentLang);
-    
+
     if (languageToggleButton) {
         languageToggleButton.addEventListener('click', function() {
-            const currentLang = localStorage.getItem('language') || 'en';
+            const currentLang = localStorage.getItem('language') || 'tr';
             const newLang = currentLang === 'en' ? 'tr' : 'en';
             applyLanguage(newLang);
         });
@@ -382,14 +384,14 @@ document.addEventListener('DOMContentLoaded', function() {
 // localStorage aracılığıyla diğer sekmelerden/pencelerden dil değişikliklerini dinle
 window.addEventListener('storage', function(e) {
     if (e.key === 'language') {
-        const newLang = e.newValue || 'en';
+        const newLang = e.newValue || 'tr'; // Default olarak 'tr' ayarlandı
         applyLanguage(newLang);
     }
 });
 
 // Sayfa görünürlüğü değişikliklerini yönet (örn. sekme değiştirme)
 document.addEventListener('visibilitychange', () => {
-    const currentLang = localStorage.getItem('language') || 'tr'; 
+    const currentLang = localStorage.getItem('language') || 'tr';
     if (document.hidden) {
         document.title = currentLang === 'tr' ? 'Sistem Çevrimdışı!' : 'System Offline!';
     } else {
@@ -397,12 +399,12 @@ document.addEventListener('visibilitychange', () => {
             const titleText = pageTitleElement.getAttribute(`data-${currentLang}`);
             if (titleText) {
                 document.title = titleText;
-            } else if (pageTitleElement.getAttribute('data-tr')) { 
+            } else if (pageTitleElement.getAttribute('data-tr')) {
                  document.title = pageTitleElement.getAttribute('data-tr');
-            } else { 
+            } else {
                 document.title = "Typhon64";
             }
-        } else { 
+        } else {
              document.title = currentLang === 'tr' ? "Typhon64" : "Typhon64";
         }
     }
@@ -436,24 +438,25 @@ const handleResize = debounce(function() {
     const particleColor = getComputedStyle(body).getPropertyValue(
         currentTheme === 'light' ? '--particle-color-light' : '--particle-color-dark'
     ).trim().replace(/'/g, '');
-    initializeParticles(particleColor); 
-}, 150); 
+    initializeParticles(particleColor);
+}, 150);
 
 // Yeniden boyutlandırma olay dinleyicisi ekle
 window.addEventListener('resize', handleResize);
 
 // DOM hazır olduğunda ana başlatma
 document.addEventListener('DOMContentLoaded', () => {
-    initialWindowArea = window.innerWidth * window.innerHeight; 
-    
+    initialWindowArea = window.innerWidth * window.innerHeight;
+
     const savedTheme = localStorage.getItem('theme') || 'dark';
-    applyTheme(savedTheme, true); 
+    applyTheme(savedTheme, true);
 
-    const savedLang = localStorage.getItem('language') || 'tr'; 
-    applyLanguage(savedLang); 
+    // Dilin varsayılan değerini 'tr' olarak ayarlıyoruz, çünkü Türkçe konuşmayı tercih ettiniz.
+    const savedLang = localStorage.getItem('language') || 'tr';
+    applyLanguage(savedLang);
 
-    if (document.hidden) { 
-        const langForOfflineTitle = localStorage.getItem('language') || 'tr'; 
+    if (document.hidden) {
+        const langForOfflineTitle = localStorage.getItem('language') || 'tr';
         document.title = langForOfflineTitle === 'tr' ? 'Sistem Çevrimdışı!' : 'System Offline!';
     }
 
@@ -494,7 +497,7 @@ document.addEventListener('DOMContentLoaded', () => {
      * Önceden tanımlanmış bir oturum kimliğini panoya kopyalar ve bir onay mesajı gösterir.
      */
     function copySessionID() {
-        const sessionID = '05e7b2c1d2a3f4e5c6b7a8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9'; 
+        const sessionID = '05e7b2c1d2a3f4e5c6b7a8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9';
         navigator.clipboard.writeText(sessionID).then(function() {
             const el = document.getElementById('session-copied');
             if (el) {
