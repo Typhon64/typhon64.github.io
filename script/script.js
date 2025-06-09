@@ -96,15 +96,15 @@ function initializeParticles(particleColor) {
             targetParticleSize = 1.8;
             targetLineDistance = 90;
         } else if (screenWidth >= 480) {
-            targetParticleCount = 150; // Büyük mobil cihazlar için artırıldı
+            targetParticleCount = 200; // Büyük mobil cihazlar için artırıldı
             targetParticleSize = 1.8; // Mobil için boyut artırıldı
             targetLineDistance = 80;
         } else if (screenWidth >= 320) {
-            targetParticleCount = 120; // Standart mobil cihazlar için artırıldı
+            targetParticleCount = 180; // Standart mobil cihazlar için artırıldı
             targetParticleSize = 1.5; // Mobil için boyut artırıldı
             targetLineDistance = 70;
         } else { // Çok küçük mobil cihazlar
-            targetParticleCount = 100; // En küçük ekranlar için ayarlandı
+            targetParticleCount = 150; // En küçük ekranlar için ayarlandı
             targetParticleSize = 1.3; // Mobil için boyut artırıldı
             targetLineDistance = 60;
         }
@@ -197,15 +197,15 @@ function initializeParticles(particleColor) {
         initialParticleSize = 1.8;
         initialLineDistance = 90;
     } else if (screenWidth >= 480) {
-        initialParticleCount = 150; // Büyük mobil cihazlar için artırıldı
+        initialParticleCount = 200; // Büyük mobil cihazlar için artırıldı
         initialParticleSize = 1.8; // Mobil için boyut artırıldı
         initialLineDistance = 80;
     } else if (screenWidth >= 320) {
-        initialParticleCount = 120; // Standart mobil cihazlar için artırıldı
+        initialParticleCount = 180; // Standart mobil cihazlar için artırıldı
         initialParticleSize = 1.5; // Mobil için boyut artırıldı
         initialLineDistance = 70;
     } else { // Çok küçük mobil cihazlar
-        initialParticleCount = 100; // En küçük ekranlar için ayarlandı
+        initialParticleCount = 150; // En küçük ekranlar için ayarlandı
         initialParticleSize = 1.3; // Mobil için boyut artırıldı
         initialLineDistance = 60;
     }
