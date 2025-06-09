@@ -529,14 +529,63 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Tech items tooltip yönetimi
     const techItems = document.querySelectorAll('.tech-item');
+    let activeTooltip = null;
+    let touchStartY = 0;
+
+    // Mobil cihaz kontrolü
+    const isTouchDevice = () => {
+        return (('ontouchstart' in window) ||
+                (navigator.maxTouchPoints > 0) ||
+                (navigator.msMaxTouchPoints > 0));
+    };
+
     techItems.forEach(item => {
-        item.addEventListener('click', () => {
-            const tooltip = item.querySelector('::before');
-            if (tooltip) {
-                const isVisible = window.getComputedStyle(tooltip).opacity === '1';
-                tooltip.style.opacity = isVisible ? '0' : '1';
-            }
-        });
+        if (isTouchDevice()) {
+            // Touch cihazlar için
+            item.addEventListener('touchstart', (e) => {
+                touchStartY = e.touches[0].clientY;
+            }, { passive: true });
+
+            item.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                const touchEndY = e.changedTouches[0].clientY;
+                const touchDiff = Math.abs(touchEndY - touchStartY);
+                
+                // Eğer scroll hareketi değilse (10px tolerans)
+                if (touchDiff < 10) {
+                    handleTooltipClick(item);
+                }
+            });
+        } else {
+            // Masaüstü cihazlar için
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                handleTooltipClick(item);
+            });
+        }
     });
+
+    function handleTooltipClick(item) {
+        // Eğer başka bir tooltip açıksa onu kapat
+        if (activeTooltip && activeTooltip !== item) {
+            activeTooltip.classList.remove('tooltip-visible');
+        }
+        
+        // Tıklanan öğenin tooltip'ini aç/kapat
+        item.classList.toggle('tooltip-visible');
+        activeTooltip = item.classList.contains('tooltip-visible') ? item : null;
+    }
+
+    // Sayfa herhangi bir yerine tıklandığında veya dokunulduğunda açık tooltip'i kapat
+    const closeTooltip = () => {
+        if (activeTooltip) {
+            activeTooltip.classList.remove('tooltip-visible');
+            activeTooltip = null;
+        }
+    };
+
+    document.addEventListener('click', closeTooltip);
+    document.addEventListener('touchstart', closeTooltip, { passive: true });
 });
