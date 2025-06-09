@@ -92,19 +92,19 @@ function initializeParticles(particleColor) {
             targetParticleSize = 2.0;
             targetLineDistance = 100;
         } else if (screenWidth >= 768) {
-            targetParticleCount = 150; // Tabletler için artırıldı
+            targetParticleCount = 160; // Tabletler için artırıldı
             targetParticleSize = 1.8;
             targetLineDistance = 90;
         } else if (screenWidth >= 480) {
-            targetParticleCount = 120; // Büyük mobil cihazlar için artırıldı
+            targetParticleCount = 150; // Büyük mobil cihazlar için artırıldı
             targetParticleSize = 1.8; // Mobil için boyut artırıldı
             targetLineDistance = 80;
         } else if (screenWidth >= 320) {
-            targetParticleCount = 90; // Standart mobil cihazlar için artırıldı
+            targetParticleCount = 120; // Standart mobil cihazlar için artırıldı
             targetParticleSize = 1.5; // Mobil için boyut artırıldı
             targetLineDistance = 70;
         } else { // Çok küçük mobil cihazlar
-            targetParticleCount = 70; // En küçük ekranlar için ayarlandı
+            targetParticleCount = 100; // En küçük ekranlar için ayarlandı
             targetParticleSize = 1.3; // Mobil için boyut artırıldı
             targetLineDistance = 60;
         }
@@ -122,9 +122,9 @@ function initializeParticles(particleColor) {
             }
         }
 
-        // Parçacık sayısını istenen min (60) ve maks (260) aralığında sınırla
+        // Parçacık sayısını istenen min (80) ve maks (260) aralığında sınırla
         if (targetParticleCount > 0) {
-            targetParticleCount = Math.max(60, Math.min(targetParticleCount, 260));
+            targetParticleCount = Math.max(80, Math.min(targetParticleCount, 260));
         }
 
         // Parçacık sayısı, boyutu veya çizgi mesafesi değiştiyse güncelle
@@ -193,19 +193,19 @@ function initializeParticles(particleColor) {
         initialParticleSize = 2.0;
         initialLineDistance = 100;
     } else if (screenWidth >= 768) {
-        initialParticleCount = 150; // Tabletler için artırıldı
+        initialParticleCount = 160; // Tabletler için artırıldı
         initialParticleSize = 1.8;
         initialLineDistance = 90;
     } else if (screenWidth >= 480) {
-        initialParticleCount = 120; // Büyük mobil cihazlar için artırıldı
+        initialParticleCount = 150; // Büyük mobil cihazlar için artırıldı
         initialParticleSize = 1.8; // Mobil için boyut artırıldı
         initialLineDistance = 80;
     } else if (screenWidth >= 320) {
-        initialParticleCount = 90; // Standart mobil cihazlar için artırıldı
+        initialParticleCount = 120; // Standart mobil cihazlar için artırıldı
         initialParticleSize = 1.5; // Mobil için boyut artırıldı
         initialLineDistance = 70;
     } else { // Çok küçük mobil cihazlar
-        initialParticleCount = 70; // En küçük ekranlar için ayarlandı
+        initialParticleCount = 100; // En küçük ekranlar için ayarlandı
         initialParticleSize = 1.3; // Mobil için boyut artırıldı
         initialLineDistance = 60;
     }
@@ -223,9 +223,9 @@ function initializeParticles(particleColor) {
         }
     }
     
-    // Parçacık sayısını istenen min (60) ve maks (260) aralığında sınırla
+    // Parçacık sayısını istenen min (80) ve maks (260) aralığında sınırla
     if (initialParticleCount > 0) {
-        initialParticleCount = Math.max(60, Math.min(initialParticleCount, 260));
+        initialParticleCount = Math.max(80, Math.min(initialParticleCount, 260));
     }
 
     currentParticleConfig.particles.number.value = initialParticleCount;
@@ -528,4 +528,15 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Oturum Kimliği kopyalanamadı: ', err);
         });
     }
+
+    const techItems = document.querySelectorAll('.tech-item');
+    techItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const tooltip = item.querySelector('::before');
+            if (tooltip) {
+                const isVisible = window.getComputedStyle(tooltip).opacity === '1';
+                tooltip.style.opacity = isVisible ? '0' : '1';
+            }
+        });
+    });
 });
