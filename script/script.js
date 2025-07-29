@@ -517,7 +517,7 @@ document.addEventListener('DOMContentLoaded', () => {
      * Önceden tanımlanmış bir oturum kimliğini panoya kopyalar ve bir onay mesajı gösterir.
      */
     function copySessionID() {
-        const sessionID = '05e7b2c1d2a3f4e5c6b7a8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9';
+        const sessionID = '0500d49ca2b7d6e4149e53e8eba080f0b3795af952810f19bc21882121a7a4e760';
         navigator.clipboard.writeText(sessionID).then(function() {
             const el = document.getElementById('session-copied');
             if (el) {
@@ -529,41 +529,23 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Tech items tooltip yönetimi
+    // Tech items tooltip yönetimi - Mobilde tek dokunuşla çalışır
     const techItems = document.querySelectorAll('.tech-item');
     let activeTooltip = null;
-    let touchStartY = 0;
-
-    // Mobil cihaz kontrolü
-    const isTouchDevice = () => {
-        return (('ontouchstart' in window) ||
-                (navigator.maxTouchPoints > 0) ||
-                (navigator.msMaxTouchPoints > 0));
-    };
 
     techItems.forEach(item => {
-        if (isTouchDevice()) {
-            // Touch cihazlar için
+        // Tek tıklama/dokunma ile tooltip aç/kapat
+        item.addEventListener('click', (e) => {
+            e.stopPropagation();
+            handleTooltipClick(item);
+        });
+        
+        // Touch event'i sadece mobil için - daha responsive
+        if ('ontouchstart' in window) {
             item.addEventListener('touchstart', (e) => {
-                touchStartY = e.touches[0].clientY;
-            }, { passive: true });
-
-            item.addEventListener('touchend', (e) => {
-                e.preventDefault();
-                const touchEndY = e.changedTouches[0].clientY;
-                const touchDiff = Math.abs(touchEndY - touchStartY);
-                
-                // Eğer scroll hareketi değilse (10px tolerans)
-                if (touchDiff < 10) {
-                    handleTooltipClick(item);
-                }
-            });
-        } else {
-            // Masaüstü cihazlar için
-            item.addEventListener('click', (e) => {
                 e.stopPropagation();
-                handleTooltipClick(item);
-            });
+                // Sadece touch, click event'i de tetiklenecek
+            }, { passive: true });
         }
     });
 
@@ -573,19 +555,30 @@ document.addEventListener('DOMContentLoaded', () => {
             activeTooltip.classList.remove('tooltip-visible');
         }
         
+        // Tooltip'in doğru dilde olduğundan emin ol
+        const currentLang = getCurrentLanguage();
+        const tooltipAttr = currentLang === 'tr' ? 'data-tr-tooltip' : 'data-en-tooltip';
+        const tooltipText = item.getAttribute(tooltipAttr) || item.getAttribute('data-tooltip');
+        item.setAttribute('data-tooltip', tooltipText);
+        
         // Tıklanan öğenin tooltip'ini aç/kapat
         item.classList.toggle('tooltip-visible');
         activeTooltip = item.classList.contains('tooltip-visible') ? item : null;
     }
 
-    // Sayfa herhangi bir yerine tıklandığında veya dokunulduğunda açık tooltip'i kapat
-    const closeTooltip = () => {
-        if (activeTooltip) {
+    // Sayfa başka bir yerine tıklandığında tooltip'leri kapat
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.tech-item') && activeTooltip) {
             activeTooltip.classList.remove('tooltip-visible');
             activeTooltip = null;
         }
-    };
-
-    document.addEventListener('click', closeTooltip);
-    document.addEventListener('touchstart', closeTooltip, { passive: true });
+    });
+    
+    // Touch için de aynı mantık
+    document.addEventListener('touchstart', (e) => {
+        if (!e.target.closest('.tech-item') && activeTooltip) {
+            activeTooltip.classList.remove('tooltip-visible');
+            activeTooltip = null;
+        }
+    }, { passive: true });
 });
