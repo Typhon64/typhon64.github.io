@@ -602,3 +602,31 @@
             border-bottom: none;
             box-shadow: none;
         }
+
+/* Mavi seçim engelleyici - butonlar ve interaktif elementler için */
+.header-btn,
+.back-btn,
+button,
+.contact-btn,
+.tech-item,
+.social-link,
+#lang-toggle-btn,
+#theme-toggle-btn,
+.accordion-header {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+}
+
+/* Buton focus için özel stil */
+.header-btn:focus,
+.back-btn:focus,
+button:focus,
+.accordion-header:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
