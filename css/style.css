@@ -1,4 +1,4 @@
-/* Normalize ve cross-browser uyumluluk */
+/* Normalize and cross-browser compatibility */
 html {
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
@@ -6,7 +6,7 @@ html {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* Extension Protection - Dark Reader ve diğer renk değiştiricilere karşı */
+/* Extension Protection - Guard against Dark Reader and other color changers */
 html[data-darkreader-mode],
 html[data-darkreader-scheme],
 html.dark-mode,
@@ -27,21 +27,21 @@ html.night-mode {
     stroke: inherit !important;
 }
 
-/* Diğer renk değiştirici eklentilere karşı koruma */
+/* Protection against other color-changing extensions */
 html.invert,
 html.contrast,
 html.grayscale {
     filter: none !important;
 }
 
-/* Güvenlik ve performans için additional CSS */
+/* Additional CSS for security and performance */
 *, *::before, *::after {
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
 }
 
-/* Güvenlik önlemleri */
+/* Security safeguards */
 img, video, iframe {
     max-width: 100%;
     height: auto;
@@ -116,6 +116,7 @@ input, textarea {
     --border: var(--border-dark);
     --terminal-bg: var(--terminal-bg-dark);
     --particle-color: var(--particle-color-dark);
+    /* k: VGhlIHNpdGUgd2FzIGNyZWF0ZWQgYnkgVHlwaG9uNjQsIHdobyBvd25zIHRoZSBtYWluIGlkZWEgYW5kIGNvZGU6IGh0dHBzOi8vdHlwaG9uNjQuZ2l0aHViLmlvIGdpdGh1Yi5jb20vdHlwaG9uNjQ= */
 }
 
 body.light-theme {
@@ -518,7 +519,7 @@ body.light-theme .terminal {
     transform: translateX(-50%) translateY(-5px);
 }
 
-/* Mobil cihazlar için tooltip düzenlemeleri */
+/* Tooltip adjustments for mobile devices */
 @media screen and (max-width: 768px) {
     .tech-item::before {
         top: -35px;
@@ -543,7 +544,7 @@ body.light-theme .terminal {
     }
 }
 
-/* Touch cihazlar için özel düzenleme */
+/* Special handling for touch devices */
 @media (hover: none) {
     .tech-item.tooltip-visible::before {
         opacity: 1;
@@ -561,6 +562,12 @@ body.light-theme .terminal {
 /* Profile Card Styles */
 .profile-card:hover {
     transform: translateY(-5px);
+}
+
+/* Touch/JS activated state to mimic hover on mobile */
+.profile-card.active-tap {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
 .profile-info {
@@ -727,6 +734,20 @@ body.light-theme .terminal-header {
 .yellow { background-color: #febc2e; }
 .green { background-color: #28c840; }
 
+/* Disable mobile tap highlight and selection on terminal traffic-light buttons */
+.terminal-btn {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+}
+.terminal-btn:focus,
+.terminal-btn:active {
+    outline: none;
+}
+
 .terminal-body {
     padding: 20px;
     font-family: 'SF Mono', monospace;
@@ -786,7 +807,7 @@ body.light-theme .terminal-header {
     width: 100%;
     height: 100%;
     z-index: 1;
-    pointer-events: auto; /* Fare etkileşimine izin ver */
+    pointer-events: auto; /* Allow pointer interaction */
 }
 
 /* Skills Section */
@@ -1059,13 +1080,13 @@ body.light-theme .terminal-header {
         font-size: 1rem;
     }
     .contact-buttons {
-        flex-direction: column; /* Kontakt butonları dikey hizalansın */
+        flex-direction: column; /* Stack contact buttons vertically */
         align-items: center; /* Ortala */
-        gap: 0.8rem; /* Butonlar arası boşluk */
+        gap: 0.8rem; /* Spacing between buttons */
     }
     .contact-btn {
-        width: 90%; /* Genişlik biraz artırıldı */
-        max-width: 280px; /* Maksimum genişlik sınırı */
+        width: 90%; /* Slightly increased width */
+        max-width: 280px; /* Maximum width */
         justify-content: center;
         text-align: center;
     }
@@ -1105,19 +1126,19 @@ body.light-theme .lang-toggle-btn:hover { /* Changed from .lang-btn.active to .l
     border-color: transparent; /* Remove border on hover if it was added */
 }
 
-/* Tıklanabilirlik ve seçilebilirlik için düzeltmeler */
+/* Clickability and selection adjustments */
 button, .contact-btn, .nav-link, .tech-item, .social-link {
     cursor: pointer;
     user-select: none;
 }
 
-/* Butonlar ve linkler için outline ve erişilebilirlik */
+/* Focus outlines and accessibility for buttons/links */
 button:focus, .contact-btn:focus, .nav-link:focus, .tech-item:focus, .social-link:focus {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
 }
 
-/* Diğer genel iyileştirmeler */
+/* Other general improvements */
 .profile-card, .terminal, .contact-btn {
     box-shadow: 0 2px 12px rgba(0,0,0,0.08);
 }
@@ -1142,7 +1163,7 @@ body.light-theme .theme-btn {
     font-size: 1.1em;
 }
 
-/* Mobil cihazlar için düzenleme */
+/* Mobile layout adjustments */
 @media screen and (max-width: 480px) {
     .header-btn.lang-toggle-btn {
         padding: 0 0.8em;
@@ -1162,7 +1183,7 @@ body.light-theme .theme-btn {
     }
 }
 
-/* Animasyonlar için cross-browser destek */
+/* Cross-browser support for animations */
 @-webkit-keyframes hi-fadein {
     from { opacity: 0; -webkit-transform: translateY(-20px); transform: translateY(-20px); }
     to { opacity: 1; -webkit-transform: translateY(0); transform: translateY(0); }
@@ -1173,7 +1194,7 @@ body.light-theme .theme-btn {
     to { opacity: 1; -webkit-transform: translateY(0); transform: translateY(0); }
 }
 
-/* Touch cihazlar için özel ayarlar */
+/* Touch-specific settings */
 @media (hover: none) {
     .header-btn:hover {
         background: var(--button-bg-dark);
@@ -1188,9 +1209,40 @@ body.light-theme .theme-btn {
     .tech-item:hover::before {
         opacity: 0;
     }
+
+    /* Touch equivalents for hover-driven effects */
+    .profile-card:active {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+    .contact-btn:active {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(196, 181, 253, 0.3);
+    }
+    .card:active,
+    .skill-category:active {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        border-color: var(--accent);
+    }
+    .project-item:active {
+        transform: translateX(5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        border-color: var(--accent);
+    }
+    .tech-item:active {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(196, 181, 253, 0.3);
+        color: var(--highlight);
+    }
+    .interest-tags span:active {
+        transform: translateY(-2px);
+        background-color: var(--bg-primary);
+        color: var(--accent);
+    }
 }
 
-/* Mavi seçim engelleyici - butonlar ve interaktif elementler için */
+/* Disable blue tap/selection halos for buttons and interactive elements */
 .header-btn,
 .contact-btn,
 .tech-item,
@@ -1209,7 +1261,7 @@ button,
     outline: none;
 }
 
-/* Buton focus için özel stil */
+/* Custom focus style for buttons */
 .header-btn:focus,
 .contact-btn:focus,
 .tech-item:focus,
