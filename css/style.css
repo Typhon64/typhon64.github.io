@@ -605,10 +605,37 @@ body.light-theme .terminal {
     font-weight: 600;
 }
 
-.profile-lang {
-    color: var(--text-secondary);
-    font-size: 0.85rem;
+.profile-action {
+    display: flex;
+    justify-content: center;
     margin-bottom: 1.5rem;
+}
+
+.profile-btn {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    color: var(--text-secondary);
+    font-size: 0.7rem;
+    font-weight: 500;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none;
+    font-family: inherit;
+    letter-spacing: 0.3px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 35px;
+    height: 22px;
+}
+
+.profile-btn:hover {
+    background: var(--accent);
+    color: var(--bg-primary);
+    border-color: var(--accent);
+    transform: translateY(-1px);
 }
 
 .divider {
@@ -1196,49 +1223,30 @@ body.light-theme .theme-btn {
 
 /* Touch-specific settings */
 @media (hover: none) {
-    .header-btn:hover {
-        background: var(--button-bg-dark);
-        color: var(--button-text-dark);
-        box-shadow: none;
-    }
-
-    .profile-card:hover {
-        transform: none;
-    }
-
+    /* Disable hover tooltips on touch devices - use click instead */
     .tech-item:hover::before {
         opacity: 0;
+        visibility: hidden;
     }
-
-    /* Touch equivalents for hover-driven effects */
-    .profile-card:active {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    }
-    .contact-btn:active {
-        transform: translateY(-3px);
-        box-shadow: 0 5px 15px rgba(196, 181, 253, 0.3);
-    }
-    .card:active,
-    .skill-category:active {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        border-color: var(--accent);
-    }
-    .project-item:active {
-        transform: translateX(5px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        border-color: var(--accent);
-    }
-    .tech-item:active {
-        transform: translateY(-5px);
-        box-shadow: 0 5px 15px rgba(196, 181, 253, 0.3);
-        color: var(--highlight);
-    }
-    .interest-tags span:active {
-        transform: translateY(-2px);
-        background-color: var(--bg-primary);
+    
+    /* Remove hover styles for tech items on touch */
+    .tech-item:hover {
+        transform: none;
+        box-shadow: none;
         color: var(--accent);
+    }
+    
+    /* Enable click-activated tooltips on touch devices */
+    .tech-item.tooltip-visible::before {
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: translateX(-50%) translateY(-5px) !important;
+    }
+    
+    .tech-item.tooltip-visible {
+        transform: translateY(-5px) !important;
+        box-shadow: 0 5px 15px rgba(196, 181, 253, 0.3) !important;
+        color: var(--highlight) !important;
     }
 }
 
