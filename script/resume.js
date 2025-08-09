@@ -1,4 +1,5 @@
 // Particle.js configuration and related functions (Mobil görünürlük ve opaklık iyileştirildi)
+/* k: VGhlIHNpdGUgd2FzIGNyZWF0ZWQgYnkgVHlwaG9uNjQsIHdobyBvd25zIHRoZSBtYWluIGlkZWEgYW5kIGNvZGU6IGh0dHBzOi8vdHlwaG9uNjQuZ2l0aHViLmlvIGdpdGh1Yi5jb20vdHlwaG9uNjQ= */
 // Defines the base configuration for the particles.js background animation.
 const particleConfigBase = {
     particles: {
@@ -287,13 +288,8 @@ window.addEventListener('resize', handleResize);
 
 // DOM Elements and Global Variables
 const body = document.body;
-const elementsToTranslate = document.querySelectorAll('[data-tr], [data-en]');
-const titleElementsToTranslate = document.querySelectorAll('[data-tr-title], [data-en-title]');
 const pageTitle = document.querySelector('title');
-
-const langToggleBtn = document.getElementById('lang-toggle-btn');
 const themeToggleBtn = document.getElementById('theme-toggle-btn');
-const langBtnText = langToggleBtn ? langToggleBtn.querySelector('.lang-btn-text') : null;
 const moonIcon = themeToggleBtn ? themeToggleBtn.querySelector('.fa-moon') : null;
 const sunIcon = themeToggleBtn ? themeToggleBtn.querySelector('.fa-sun') : null;
 
@@ -337,74 +333,9 @@ if (themeToggleBtn) {
     });
 }
 
-// Dil değiştirme mantığı
-/**
- * Seçilen dili sayfa içeriğine uygular ve öğeleri günceller.
- * @param {string} lang - Uygulanacak dil ('en' veya 'tr').
- */
-function applyLanguage(lang) {
-    document.documentElement.lang = lang; // Set HTML lang attribute
-    if (langBtnText) {
-        langBtnText.textContent = lang.toUpperCase(); // Update language button text
-    }
-
-    // Iterate over elements with data-tr/data-en attributes to update text content
-    elementsToTranslate.forEach(el => {
-        const newText = el.getAttribute(`data-${lang}`);
-        if (newText !== null) {
-            // Use textContent for simple text, innerHTML for content that might contain other tags (e.g., icons)
-            if (el.tagName === 'A' || el.tagName === 'SPAN' || el.tagName === 'LI' || el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'H3' || el.tagName === 'P') {
-                el.textContent = newText;
-            } else if (el.tagName === 'TITLE') { // Special handling for <title> tag text
-                el.textContent = newText;
-            } else {
-                el.innerHTML = newText;
-            }
-        }
-    });
-
-    // Update title attributes for elements with data-tr-title/data-en-title
-    titleElementsToTranslate.forEach(el => {
-        const newTitle = el.getAttribute(`data-${lang}-title`);
-        if (newTitle !== null) {
-            el.setAttribute('title', newTitle);
-        }
-    });
-
-    // Update the main page title (document.title)
-    if (pageTitle) {
-        const newPageTitle = pageTitle.getAttribute(`data-${lang}`);
-        if (newPageTitle) {
-            document.title = newPageTitle;
-            originalPageTitle = newPageTitle; // Update original title for visibility change logic
-        }
-    }
-
-    localStorage.setItem('language', lang); // Save selected language to local storage
-}
-
-// Dil değiştirme düğmesi için olay dinleyicisi
-if (langToggleBtn) {
-    langToggleBtn.addEventListener('click', () => {
-        const currentLang = localStorage.getItem('language') || 'en';
-        const newLang = currentLang === 'en' ? 'tr' : 'en';
-        applyLanguage(newLang);
-    });
-}
-
-// localStorage aracılığıyla diğer sekmelerden/pencelerden dil değişikliklerini dinle
-window.addEventListener('storage', (e) => {
-    if (e.key === 'language') {
-        const newLang = e.newValue || 'en';
-        applyLanguage(newLang);
-    }
-});
-
-// Sayfa görünürlüğü değişikliklerini yönet (örn. sekme değiştirme)
+// Page visibility: static English offline title
 document.addEventListener('visibilitychange', () => {
-    const lang = localStorage.getItem('language') || 'en';
-    const offlineTitle = lang === 'tr' ? 'Sistem Çevrimdışı!' : 'System Offline!';
-    document.title = document.hidden ? offlineTitle : originalPageTitle;
+    document.title = document.hidden ? 'System Offline!' : originalPageTitle;
 });
 
 // DOMContentLoaded - Main Initialization when the DOM is fully loaded
@@ -420,16 +351,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedTheme = localStorage.getItem('theme') || 'dark';
     applyTheme(savedTheme, true); // `true` for isInitialLoad
 
-    // Then apply language from localStorage
-    const savedLang = localStorage.getItem('language') || 'en';
-    applyLanguage(savedLang);
-
     // Set document title based on initial visibility state
-    if (document.hidden) {
-        document.title = savedLang === 'tr' ? 'Sistem Çevrimdışı!' : 'System Offline!';
-    } else {
-        document.title = originalPageTitle;
-    }
+    document.title = document.hidden ? 'System Offline!' : originalPageTitle;
 
     // GSAP Animations (ensure GSAP library is loaded in your HTML)
     if (typeof gsap !== 'undefined') {
@@ -513,9 +436,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const dateElement = document.getElementById('current-date');
       if (dateElement) {
         const today = new Date();
-        const lang = localStorage.getItem('language') || 'en'; // Get language from localStorage
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        dateElement.textContent = today.toLocaleDateString(lang === 'tr' ? 'tr-TR' : 'en-US', options);
+        dateElement.textContent = today.toLocaleDateString('en-US', options);
       }
     }
     updateCurrentDate(); // Call on DOMContentLoaded
