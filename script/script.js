@@ -1,52 +1,53 @@
 // GSAP Animation for header entrance
-// Header'ın yukarıdan yumuşakça içeri girmesini sağlar.
+/* k: VGhlIHNpdGUgd2FzIGNyZWF0ZWQgYnkgVHlwaG9uNjQsIHdobyBvd25zIHRoZSBtYWluIGlkZWEgYW5kIGNvZGU6IGh0dHBzOi8vdHlwaG9uNjQuZ2l0aHViLmlvIGdpdGh1Yi5jb20vdHlwaG9uNjQ= */
+// Smoothly slides the header from the top on load
 gsap.from('.header', { y: -50, opacity: 0, duration: 1, ease: 'expo.out' });
 
 // Entrance animations for main content sections
-// Ana içerik bölümleri için kademeli bir giriş animasyonu oluşturur.
+// Creates staggered entrance animations for main sections
 gsap.from(".left-section", { opacity: 0, y: 50, duration: 1.2, ease: "expo.out", delay: 0.2 });
 gsap.from(".right-section", { opacity: 0, y: 50, duration: 1.2, ease: "expo.out", delay: 0.4 });
 gsap.from(".terminal-container", { opacity: 0, y: 50, duration: 1.2, ease: "expo.out", delay: 0.6 });
 
-// Particle.js configuration - Base config (Mobil görünürlük ve opaklık iyileştirildi)
-// Particles.js arka plan animasyonu için varsayılan yapılandırmayı tanımlar.
+// Particle.js configuration - Base config (Improved visibility and opacity on mobile)
+// Defines the base configuration for the particles.js background animation
 const particleConfigBase = {
     particles: {
-        number: { value: 200, density: { enable: true, value_area: 1000 } }, // Parçacık sayısı ve yoğunluk alanı dengelendi
-        shape: { type: 'circle' }, // Parçacıkların şekli
+        number: { value: 200, density: { enable: true, value_area: 1000 } }, // Balanced particle count and density area
+        shape: { type: 'circle' }, // Particle shape
         opacity: {
-            value: 0.75, // Opaklık artırıldı
+            value: 0.75, // Increased opacity
             random: true,
             anim: { enable: true, speed: 0.5, opacity_min: 0.1, sync: false }
         },
-        size: { value: 2.5, random: true }, // Boyut biraz büyütüldü
-        line_linked: { enable: true, distance: 120, opacity: 0.5, width: 1 }, // Çizgi opaklığı artırıldı
-        move: { enable: true, speed: 1.5, direction: 'none', random: true } // Hareket tipi korundu
+        size: { value: 2.5, random: true }, // Slightly larger size
+        line_linked: { enable: true, distance: 120, opacity: 0.5, width: 1 }, // Increased line opacity
+        move: { enable: true, speed: 1.5, direction: 'none', random: true } // Keep movement settings
     },
     interactivity: {
-        detect_on: 'window', // Tüm pencerede etkileşimi algıla
+        detect_on: 'window', // Detect interactions on the window
         events: {
-            onhover: { enable: true, mode: 'grab' }, // Fare üzerine gelme etkileşim modu
-            onclick: { enable: true, mode: 'push' }, // Fare tıklaması parçacık oluşturur
-            resize: true // Particles.js pencere yeniden boyutlandırmaya tepki vermeli
+            onhover: { enable: true, mode: 'grab' }, // Hover interaction mode
+            onclick: { enable: true, mode: 'push' }, // Click spawns particles
+            resize: true // React to window resize
         },
         modes: {
-            grab: { distance: 70, line_linked: { opacity: 0.7 } }, // Grab modu çizgi opaklığı
-            push: { particles_nb: 1 } // Tıklamayla oluşturulacak parçacık sayısı
+            grab: { distance: 70, line_linked: { opacity: 0.7 } }, // Stronger line opacity on grab
+            push: { particles_nb: 1 } // Spawn 1 particle per click
         }
     },
-    retina_detect: true, // Yüksek çözünürlüklü ekranlarda kalite için etkinleştirildi
-    fps_limit: 30 // Eski cihazlarda daha iyi performans için düşük FPS sınırı
+    retina_detect: true, // Enable for high-DPI screens
+    fps_limit: 30 // Lower FPS cap for older devices
 };
 
 let initialWindowArea; // Yeniden boyutlandırma hesaplamaları için başlangıç pencere alanını depolar
 let initialParticleCanvasArea; // Yoğunluk ölçeklemesi için başlangıç particles.js canvas alanını depolar
 
 /**
- * Verilen renk ile particles.js örneğini başlatır veya günceller ve ekran boyutuna ve cihaz donanımına
- * göre parçacık sayısını, boyutunu ve çizgi mesafesini dinamik olarak ayarlar. Bu fonksiyon ayrıca canvas'ın
- * fare olaylarını engellememesini ve etkileşim ayarlarını doğru şekilde uygulamasını sağlar.
- * @param {string} particleColor - Parçacıklara uygulanacak renk.
+ * Initializes or updates particles.js with the given color.
+ * Dynamically adjusts particle count, size, and line distance based on screen size and device capabilities.
+ * Ensures the canvas does not block pointer events and interaction settings are applied correctly.
+ * @param {string} particleColor - Color value to apply to particles/lines.
  */
 function initializeParticles(particleColor) {
     let pJSInstance;
@@ -54,30 +55,30 @@ function initializeParticles(particleColor) {
     // particles.js zaten başlatıldı mı kontrol et
     if (window.pJSDom && window.pJSDom[0] && window.pJSDom[0].pJS) {
         pJSInstance = window.pJSDom[0].pJS;
-        // Parçacık ve çizgi rengini güncelle
+        // Update particle and line colors
         pJSInstance.particles.color.value = particleColor;
         if (pJSInstance.particles.line_linked) {
             pJSInstance.particles.line_linked.color = particleColor;
         }
 
-        // --- Mevcut örnek için Etkileşim Ayarlarını Güncelle ---
+        // --- Update interaction settings for the existing instance ---
         pJSInstance.interactivity.events.onclick.enable = particleConfigBase.interactivity.events.onclick.enable;
         pJSInstance.interactivity.modes.push.particles_nb = particleConfigBase.interactivity.modes.push.particles_nb;
         pJSInstance.interactivity.events.onhover.enable = particleConfigBase.interactivity.events.onhover.enable;
         pJSInstance.interactivity.modes.grab.distance = particleConfigBase.interactivity.modes.grab.distance;
         pJSInstance.interactivity.modes.grab.line_linked.opacity = particleConfigBase.interactivity.modes.grab.line_linked.opacity;
 
-        // Kullanıcının istediği opaklık artışını burada uygula
+        // Apply desired opacity values
         pJSInstance.particles.opacity.value = particleConfigBase.particles.opacity.value;
         if (pJSInstance.particles.line_linked) {
             pJSInstance.particles.line_linked.opacity = particleConfigBase.particles.line_linked.opacity;
         }
 
         let targetParticleCount = 0;
-        let targetParticleSize = particleConfigBase.particles.size.value; // Base config'den alınsın
-        let targetLineDistance = particleConfigBase.particles.line_linked.distance; // Base config'den alınsın
+        let targetParticleSize = particleConfigBase.particles.size.value; // From base config
+        let targetLineDistance = particleConfigBase.particles.line_linked.distance; // From base config
 
-        // Ekran boyutuna ve donanıma göre parçacık sayısı, boyutu ve çizgi mesafesini dinamik olarak ayarla
+        // Adjust particle count/size/line distance based on screen size and device
         const screenWidth = window.innerWidth;
         if (screenWidth >= 1920) {
             targetParticleCount = 260; // Üst limit olarak ayarlandı
@@ -103,21 +104,21 @@ function initializeParticles(particleColor) {
             targetParticleCount = 180; // Standart mobil cihazlar için artırıldı
             targetParticleSize = 1.5; // Mobil için boyut artırıldı
             targetLineDistance = 70;
-        } else { // Çok küçük mobil cihazlar
-            targetParticleCount = 150; // En küçük ekranlar için ayarlandı
-            targetParticleSize = 1.3; // Mobil için boyut artırıldı
+        } else { // Very small mobile screens
+            targetParticleCount = 150; // For the smallest screens
+            targetParticleSize = 1.3; // Slightly larger on mobile
             targetLineDistance = 60;
         }
 
-        // Donanım performansına göre parçacık sayısını ayarla (daha az agresif)
+        // Adjust particle count by hardware performance (less aggressive)
         const cores = navigator.hardwareConcurrency;
         const memory = navigator.deviceMemory;
-        if (cores && memory) { // Sadece her iki bilgi de mevcutsa ayarla
+        if (cores && memory) { // Only adjust if both are available
             if (cores < 2 && memory < 2) {
-                // Çok düşük seviye cihazlar için %40 azaltma
+                // 40% reduction for very low-end devices
                 targetParticleCount = Math.floor(targetParticleCount * 0.6);
             } else if (cores < 4 || memory < 4) {
-                // Düşük-orta seviye cihazlar için %20 azaltma
+                // 20% reduction for low-mid devices
                 targetParticleCount = Math.floor(targetParticleCount * 0.8);
             }
         }
@@ -141,19 +142,19 @@ function initializeParticles(particleColor) {
             pJSInstance.fn.particlesRefresh(); // Diğer durumlar için yenileme
         }
 
-        // --- Yakınlaştırma/Yeniden Boyutlandırma için Dinamik Yoğunluk Ayarı ---
+        // --- Dynamic density adjustment for zoom/resize ---
         const currentParticleCanvasArea = pJSInstance.canvas.w * pJSInstance.canvas.h;
         if (initialParticleCanvasArea === undefined || initialParticleCanvasArea === 0) {
             initialParticleCanvasArea = currentParticleCanvasArea;
-            if (initialParticleCanvasArea === 0) initialParticleCanvasArea = 1; // Sıfıra bölünmeyi önle
+            if (initialParticleCanvasArea === 0) initialParticleCanvasArea = 1; // prevent division by zero
         }
 
         if (currentParticleCanvasArea > 0) {
             const baseDensityArea = particleConfigBase.particles.number.density.value_area;
             let calculatedDensityArea = baseDensityArea * (currentParticleCanvasArea / initialParticleCanvasArea);
 
-            calculatedDensityArea = Math.max(calculatedDensityArea, 200); // Minimum yoğunluk alanı
-            calculatedDensityArea = Math.min(calculatedDensityArea, 5000); // Maksimum yoğunluk alanı
+            calculatedDensityArea = Math.max(calculatedDensityArea, 200); // Minimum density area
+            calculatedDensityArea = Math.min(calculatedDensityArea, 5000); // Maximum density area
 
             if (pJSInstance.particles.number.density.value_area !== calculatedDensityArea) {
                 pJSInstance.particles.number.density.value_area = calculatedDensityArea;
@@ -165,16 +166,16 @@ function initializeParticles(particleColor) {
         return;
     }
 
-    // particles.js'in ilk kez başlatılması
+    // First-time initialization of particles.js
     let currentParticleConfig = JSON.parse(JSON.stringify(particleConfigBase));
     currentParticleConfig.particles.color = { value: particleColor };
     currentParticleConfig.particles.line_linked.color = particleColor;
 
-    // Kullanıcının istediği opaklık artışını burada uygula
+    // Apply desired opacity values
     currentParticleConfig.particles.opacity.value = particleConfigBase.particles.opacity.value;
     currentParticleConfig.particles.line_linked.opacity = particleConfigBase.particles.line_linked.opacity;
 
-    // İlk yüklemede ekran boyutuna ve donanıma göre başlangıç parçacık sayısı, boyutu ve çizgi mesafesi
+    // Initial particle count/size/line distance based on screen and device
     let initialParticleCount = 0;
     let initialParticleSize = particleConfigBase.particles.size.value;
     let initialLineDistance = particleConfigBase.particles.line_linked.distance;
@@ -204,13 +205,13 @@ function initializeParticles(particleColor) {
         initialParticleCount = 180; // Standart mobil cihazlar için artırıldı
         initialParticleSize = 1.5; // Mobil için boyut artırıldı
         initialLineDistance = 70;
-    } else { // Çok küçük mobil cihazlar
-        initialParticleCount = 150; // En küçük ekranlar için ayarlandı
-        initialParticleSize = 1.3; // Mobil için boyut artırıldı
+    } else { // Very small mobile screens
+        initialParticleCount = 150; // For the smallest screens
+        initialParticleSize = 1.3; // Slightly larger on mobile
         initialLineDistance = 60;
     }
 
-    // Donanım performansına göre parçacık sayısını ayarla (daha az agresif)
+    // Adjust particle count by hardware performance (less aggressive)
     const cores = navigator.hardwareConcurrency;
     const memory = navigator.deviceMemory;
     if (cores && memory) { // Sadece her iki bilgi de mevcutsa ayarla
@@ -233,14 +234,14 @@ function initializeParticles(particleColor) {
     currentParticleConfig.particles.line_linked.distance = initialLineDistance;
     currentParticleConfig.particles.number.density.enable = true;
 
-    // particlesJS'i başlat
+    // Initialize particlesJS
     particlesJS('particles-js', currentParticleConfig);
 
-    // Başlatmadan sonra, fare etkileşimlerini engellememek için canvas'a pointer-events ve z-index uygula
+    // After init, ensure canvas does not block interactions (pointer-events) and sits behind content
     if (window.pJSDom && window.pJSDom[0] && window.pJSDom[0].pJS) {
         pJSInstance = window.pJSDom[0].pJS;
 
-        // Dinamik yoğunluk hesaplamaları için başlangıç canvas alanını yakala
+        // Capture initial canvas area for dynamic density calculations
         if (pJSInstance && initialParticleCanvasArea === undefined) {
             initialParticleCanvasArea = pJSInstance.canvas.w * pJSInstance.canvas.h;
         }
@@ -256,7 +257,7 @@ function initializeParticles(particleColor) {
             particlesJSElement.style.height = '100%';
         }
     } else {
-        console.error("particles.js başlatılamadı!");
+        console.error("particles.js could not be initialized!");
     }
 }
 
@@ -301,141 +302,17 @@ if (themeToggleButton) {
     });
 }
 
-// Dil değiştirme mantığı
-const languageToggleButton = document.getElementById('language-toggle-btn');
-const elementsToTranslate = document.querySelectorAll('[data-tr], [data-en]');
-const tooltipElements = document.querySelectorAll('[data-tr-tooltip], [data-en-tooltip]');
-const pageTitleElement = document.querySelector('title');
-let currentDisplayTitle = "";
-
-/**
- * Seçilen dili sayfa içeriğine uygular ve öğeleri günceller.
- * Ayrıca "Typhon64" metnini "Typhon" olarak değiştirir ve tema uyumlu renklendirir.
- * @param {string} lang - Uygulanacak dil ('en' veya 'tr').
- */
-function applyLanguage(lang) {
-    document.documentElement.lang = lang;
-
-    if (languageToggleButton) {
-        languageToggleButton.setAttribute('data-current-lang', lang);
-        let textNode = Array.from(languageToggleButton.childNodes)
-            .find(node => node.nodeType === Node.TEXT_NODE);
-
-        if (!textNode) {
-            const iconElement = languageToggleButton.querySelector('i');
-            if (iconElement) {
-                textNode = document.createTextNode('');
-                iconElement.after(textNode);
-            } else {
-                textNode = document.createTextNode('');
-                languageToggleButton.appendChild(textNode);
-            }
-        }
-        textNode.textContent = lang.toUpperCase();
-    }
-
-    elementsToTranslate.forEach(el => {
-        const newText = el.getAttribute(`data-${lang}`);
-        if (newText !== null) {
-            if (el.matches('div.hero-subtext p') || el.matches('.about p') || (el.closest('.card-body') && el.tagName === 'P' && !el.classList.contains('profile-lang'))) {
-                 // "Typhon64" metnini "Typhon" olarak değiştir ve tema uyumlu span ekle
-                 let processedText = newText;
-                 if (processedText.includes('Typhon64')) {
-                     processedText = processedText.replace('Typhon64', '<span class="themed-brand-name">Typhon</span>');
-                 }
-                 el.innerHTML = processedText;
-            }
-            else if (el.tagName === 'SPAN' || el.tagName === 'A' || el.tagName === 'BUTTON' || el.tagName === 'LI' || el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'H3' || el.tagName === 'P') {
-                 if (el.children.length === 0 || !Array.from(el.children).some(child => child.tagName === 'I' || child.tagName === 'SVG' || child.tagName === 'SPAN' || child.tagName === 'BUTTON')) {
-                      // "Typhon64" metnini "Typhon" olarak değiştir ve tema uyumlu span ekle (eğer zaten iç HTML yoksa)
-                      let processedText = newText;
-                      if (processedText.includes('Typhon64')) {
-                          processedText = processedText.replace('Typhon64', '<span class="themed-brand-name">Typhon</span>');
-                      }
-                      el.innerHTML = processedText; // textContent yerine innerHTML kullanıldı, span'in işlenmesi için
-                 } else {
-                       el.innerHTML = newText;
-                 }
-            } else {
-                el.textContent = newText;
-            }
-        }
-    });
-
-    tooltipElements.forEach(el => {
-        const tooltipText = el.getAttribute(`data-${lang}-tooltip`);
-        if (tooltipText !== null) {
-            el.setAttribute('data-tooltip', tooltipText);
-        }
-    });
-
-    localStorage.setItem('language', lang);
-
-    if (pageTitleElement) {
-        const titleText = pageTitleElement.getAttribute(`data-${lang}`);
-        if (titleText) {
-            document.title = titleText;
-            currentDisplayTitle = titleText;
-        } else if (pageTitleElement.getAttribute('data-en')) {
-            const fallbackTitle = pageTitleElement.getAttribute('data-en');
-            document.title = fallbackTitle;
-            currentDisplayTitle = fallbackTitle;
-        } else {
-            document.title = "Typhon64";
-            currentDisplayTitle = "Typhon64";
-        }
-    }
-}
-
-// Dil değiştirme düğmesi için olay dinleyicisi
-document.addEventListener('DOMContentLoaded', function() {
-    const currentLang = localStorage.getItem('language') || 'en'; // Default olarak 'en' ayarlandı
-    applyLanguage(currentLang);
-
-    if (languageToggleButton) {
-        languageToggleButton.addEventListener('click', function() {
-            const currentLang = localStorage.getItem('language') || 'en';
-            const newLang = currentLang === 'en' ? 'tr' : 'en';
-            applyLanguage(newLang);
-        });
-    }
-});
-
-// localStorage aracılığıyla diğer sekmelerden/pencelerden dil değişikliklerini dinle
-window.addEventListener('storage', function(e) {
-    if (e.key === 'language') {
-        const newLang = e.newValue || 'en'; // Default olarak 'en' ayarlandı
-        applyLanguage(newLang);
-    }
-});
-
-// Sayfa görünürlüğü değişikliklerini yönet (örn. sekme değiştirme)
+// Page visibility: static English offline title
 document.addEventListener('visibilitychange', () => {
-    const currentLang = localStorage.getItem('language') || 'tr';
-    if (document.hidden) {
-        document.title = currentLang === 'tr' ? 'Sistem Çevrimdışı!' : 'System Offline!';
-    } else {
-        if (pageTitleElement) {
-            const titleText = pageTitleElement.getAttribute(`data-${currentLang}`);
-            if (titleText) {
-                document.title = titleText;
-            } else if (pageTitleElement.getAttribute('data-tr')) {
-                 document.title = pageTitleElement.getAttribute('data-tr');
-            } else {
-                document.title = "Typhon64";
-            }
-        } else {
-             document.title = currentLang === 'tr' ? "Typhon64" : "Typhon64";
-        }
-    }
+    document.title = document.hidden ? 'System Offline!' : 'Typhon64';
 });
 
 /**
- * Bir fonksiyonun ne sıklıkta çağrıldığını sınırlamak için debounce fonksiyonu.
- * @param {function} func - Debounce edilecek fonksiyon.
- * @param {number} wait - Beklenecek milisaniye sayısı.
- * @param {boolean} immediate - True ise, fonksiyonu ön kenarda tetikle.
- * @returns {function} - Debounce edilmiş fonksiyon.
+ * Debounce helper to limit how often a function can run.
+ * @param {function} func
+ * @param {number} wait
+ * @param {boolean} immediate
+ * @returns {function}
  */
 function debounce(func, wait, immediate) {
     var timeout;
@@ -452,7 +329,7 @@ function debounce(func, wait, immediate) {
     };
 };
 
-// Parçacık güncellemelerini optimize etmek için debounce edilmiş yeniden boyutlandırma olay işleyici
+// Debounced resize handler to optimize particle updates
 const handleResize = debounce(function() {
     const currentTheme = localStorage.getItem('theme') || 'dark';
     const particleColor = getComputedStyle(body).getPropertyValue(
@@ -461,7 +338,7 @@ const handleResize = debounce(function() {
     initializeParticles(particleColor);
 }, 150);
 
-// Yeniden boyutlandırma olay dinleyicisi ekle
+// Add resize listener
 window.addEventListener('resize', handleResize);
 
 // DOM hazır olduğunda ana başlatma
@@ -471,33 +348,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedTheme = localStorage.getItem('theme') || 'dark';
     applyTheme(savedTheme, true);
 
-    // Dilin varsayılan değerini 'en' olarak ayarlıyoruz.
-    const savedLang = localStorage.getItem('language') || 'en';
-    applyLanguage(savedLang);
-
+    // Set offline title if hidden
     if (document.hidden) {
-        const langForOfflineTitle = localStorage.getItem('language') || 'en';
-        document.title = langForOfflineTitle === 'tr' ? 'Sistem Çevrimdışı!' : 'System Offline!';
+        document.title = 'System Offline!';
     }
 
-    // Terminal düğmesi işlevselliği
+    // Terminal buttons mock functionality
     const terminalRedBtn = document.getElementById('terminal-btn-red');
     const terminalYellowBtn = document.getElementById('terminal-btn-yellow');
     const terminalGreenBtn = document.getElementById('terminal-btn-green');
 
     if (terminalRedBtn) {
         terminalRedBtn.addEventListener('click', () => {
-            console.log('Kırmızı terminal düğmesine tıklandı! (Kapatma simülasyonu)');
+            console.log('Clicked red terminal button (close simulation)');
         });
     }
     if (terminalYellowBtn) {
         terminalYellowBtn.addEventListener('click', () => {
-            console.log('Sarı terminal düğmesine tıklandı! (Küçültme simülasyonu)');
+            console.log('Clicked yellow terminal button (minimize simulation)');
         });
     }
     if (terminalGreenBtn) {
         terminalGreenBtn.addEventListener('click', () => {
-            console.log('Yeşil terminal düğmesine tıklandı! (Tam ekran simülasyonu)');
+            console.log('Clicked green terminal button (fullscreen simulation)');
         });
     }
 
@@ -507,14 +380,14 @@ document.addEventListener('DOMContentLoaded', () => {
         currentYearElement.textContent = new Date().getFullYear();
     }
 
-    // Oturum Kimliği kopyalama düğmesi işlevselliği
+    // Session ID copy button behavior
     const sessionCopyBtn = document.querySelector('.session-btn');
     if (sessionCopyBtn) {
         sessionCopyBtn.addEventListener('click', copySessionID);
     }
 
     /**
-     * Önceden tanımlanmış bir oturum kimliğini panoya kopyalar ve bir onay mesajı gösterir.
+     * Copies a predefined Session ID to clipboard and shows a brief confirmation.
      */
     function copySessionID() {
         const sessionID = '0500d49ca2b7d6e4149e53e8eba080f0b3795af952810f19bc21882121a7a4e760';
@@ -525,18 +398,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => { el.style.display = 'none'; }, 2000);
             }
         }).catch(function(err) {
-            console.error('Oturum Kimliği kopyalanamadı: ', err);
+            console.error('Failed to copy Session ID: ', err);
         });
     }
 
-    // Tech items tooltip yönetimi - Mobilde tek dokunuşla çalışır
+    // Tech items tooltip logic - single tap on mobile
     const techItems = document.querySelectorAll('.tech-item');
     let activeTooltip = null;
+    let lastTechTouchTime = 0;
 
     techItems.forEach(item => {
         // Tek tıklama/dokunma ile tooltip aç/kapat
         item.addEventListener('click', (e) => {
             e.stopPropagation();
+            if (Date.now() - lastTechTouchTime < 500) {
+                return; // suppress synthetic click after touch
+            }
             handleTooltipClick(item);
         });
         
@@ -544,7 +421,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if ('ontouchstart' in window) {
             item.addEventListener('touchstart', (e) => {
                 e.stopPropagation();
-                // Sadece touch, click event'i de tetiklenecek
+                lastTechTouchTime = Date.now();
+                handleTooltipClick(item);
             }, { passive: true });
         }
     });
@@ -555,10 +433,8 @@ document.addEventListener('DOMContentLoaded', () => {
             activeTooltip.classList.remove('tooltip-visible');
         }
         
-        // Tooltip'in doğru dilde olduğundan emin ol
-        const currentLang = getCurrentLanguage();
-        const tooltipAttr = currentLang === 'tr' ? 'data-tr-tooltip' : 'data-en-tooltip';
-        const tooltipText = item.getAttribute(tooltipAttr) || item.getAttribute('data-tooltip');
+        // Ensure tooltip uses static English text
+        const tooltipText = item.getAttribute('data-tooltip') || '';
         item.setAttribute('data-tooltip', tooltipText);
         
         // Tıklanan öğenin tooltip'ini aç/kapat
@@ -581,4 +457,21 @@ document.addEventListener('DOMContentLoaded', () => {
             activeTooltip = null;
         }
     }, { passive: true });
+
+    // Mobile tap feedback for profile/interactive cards to mimic hover
+    const interactiveTapSelectors = ['.profile-card', '.card', '.skill-category', '.project-item', '.tech-item', '.contact-btn'];
+    const interactiveTapElements = document.querySelectorAll(interactiveTapSelectors.join(','));
+
+    interactiveTapElements.forEach((el) => {
+        // Add active class on touchstart/click
+        const addActive = () => el.classList.add('active-tap');
+        const removeActive = () => el.classList.remove('active-tap');
+
+        el.addEventListener('touchstart', addActive, { passive: true });
+        el.addEventListener('touchend', removeActive, { passive: true });
+        el.addEventListener('touchcancel', removeActive, { passive: true });
+        el.addEventListener('mousedown', addActive);
+        el.addEventListener('mouseup', removeActive);
+        el.addEventListener('mouseleave', removeActive);
+    });
 });
