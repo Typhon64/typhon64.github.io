@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" translate="no">
+<html lang="en">
 <head>
     
     <!-- Basic Meta Tags: SEO and Compatibility -->
@@ -55,7 +55,7 @@
     <meta name="twitter:description" content="Typhon64">
     <meta property="twitter:image" content="https://typhon64.github.io/media/pfp.jpg">
     
-    <title data-en="Typhon64" data-tr="Typhon64">Typhon64</title>
+    <title>Typhon64</title>
 
     <!-- Favicon -->
     <link rel="icon" href="media/favicon.webp" type="image/webp">
@@ -108,7 +108,7 @@
     <header class="header">
         <div class="header-inner">
             <div class="header-left">
-                <span class="header-logo">
+                <span class="header-logo" translate="no">
                   <span class="network-icon" aria-hidden="true" style="display:inline-block;width:1.2em;height:1.2em;vertical-align:middle;margin-right:0.5em;">
                     <svg viewBox="0 0 24 24" width="1.2em" height="1.2em" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <circle cx="5" cy="12" r="2" stroke="var(--accent)" stroke-width="2"/>
@@ -124,15 +124,12 @@
                   Typhon64
                 </span>
                 <div class="header-btn-group">
-                    <button onclick="window.open('https://typhon64.gitbook.io/notes', '_blank')" class="header-btn" title="Notes" rel="noopener noreferrer" data-tr="Notlar" data-en="Notes">Notes</button>
-                    <button onclick="window.location.href='resume.html'" class="header-btn" title="Resume" data-tr="Özgeçmiş" data-en="Resume">Resume</button>
+                    <button onclick="window.open('https://typhon64.gitbook.io/notes', '_blank')" class="header-btn" title="Notes" rel="noopener noreferrer">Notes</button>
+                    <button onclick="window.location.href='resume.html'" class="header-btn" title="Resume">Resume</button>
                 </div>
             </div>
             <div class="header-right">
-                <div class="header-btn-group">
-                    <button id="language-toggle-btn" class="header-btn lang-toggle-btn" title="Change Language" data-tr-title="Dili Değiştir" data-en-title="Change Language" data-current-lang="en"><i class="fas fa-language" aria-hidden="true"></i> EN</button>
-                </div>
-                <button id="theme-toggle" class="header-btn theme-btn" title="Toggle Theme" data-tr-title="Temayı Değiştir" data-en-title="Toggle Theme" aria-label="Toggle theme" aria-pressed="false">
+                <button id="theme-toggle" class="header-btn theme-btn" title="Toggle Theme" aria-label="Toggle theme" aria-pressed="false">
                     <i class="fas fa-moon" aria-hidden="true"></i>
                     <i class="fas fa-sun" aria-hidden="true"></i>
                 </button>
@@ -146,54 +143,53 @@
             <div class="content">
                 <div class="left-section">
                     <div class="about">
-                        <h1 class="glitch" data-text="Typhon" translate="no" data-tr="Typhon" data-en="Typhon">Typhon</h1>
+                        <h1 class="glitch" data-text="Typhon" translate="no">Typhon</h1>
                         <div class="hero-subtext">
                             <span class="line"></span>
-                            <p data-tr="öğreniyorum, öğrenecek çok şey var." data-en="learning there's a lot to learn.">learning there's a lot to learn.</p>
+                            <p>learning there's a lot to learn.</p>
                         </div>
-                        <div class="hi-text" data-tr="Merhaba." data-en="Hey.">Hey.</div>
+                        <div class="hi-text">Hey.</div>
                         <div style="height: 1.5rem;"></div>
-                        <p data-tr="Oldukça meraklı bir araştırmacıyım, Siber güvenlik ekosistemine katkıda bulunmak için çalışıyorum. ve bilgisayarları seviyorum benim ile E-Mail, Session ve Signal üzerinden iletişime geçebilirsiniz özgeçmişim için üsteki Resume buttonuna gidin ve bloglarıma göz atmayı unutmayın resumede daha detaylı hakkımda yer alıyor.<br><span class='highlight'>İçeriklerim sadece eğitim amaçlıdır kötüye kullanımda sorumluluk size aittir</span>" 
-                           data-en="I am a very curious researcher, working to contribute to the cybersecurity ecosystem. I love computers. You can contact me via email, Session, and Signal. For my resume, click on the Resume button above and don't forget to check out my blogs. My resume contains more detailed information about me.<br><span class='highlight'>My content is for educational purposes only. You are responsible for any misuse.</span>">
+                        <p>
                             I am a very curious researcher, working to contribute to the cybersecurity ecosystem. I love computers. You can contact me via email, Session, and Signal. For my resume, click on the Resume button above and don't forget to check out my blogs. My resume contains more detailed information about me.<br><span class="highlight">My content is for educational purposes only. You are responsible for any misuse.</span>
                         </p>
                         
                         <div class="tech-stack" aria-label="Technical skills">
-                            <div class="tech-item" data-tooltip="Research" data-tr-tooltip="Araştırma" data-en-tooltip="Research" aria-label="Research">
+                            <div class="tech-item" data-tooltip="Research" aria-label="Research">
                                 <i class="fas fa-search" aria-hidden="true"></i>
                             </div>
-                            <div class="tech-item" data-tooltip="Tehdit İstihbaratı" data-tr-tooltip="Threat Intel" data-en-tooltip="Threat Intel" aria-label="Threat Intel">
+                            <div class="tech-item" data-tooltip="Osint" aria-label="Osint">
                                 <i class="fas fa-user-secret" aria-hidden="true"></i>
                             </div>
-                            <div class="tech-item" data-tooltip="OPSEC" data-tr-tooltip="OPSEC" data-en-tooltip="OPSEC" aria-label="OPSEC">
+                            <div class="tech-item" data-tooltip="Opsec" aria-label="Opsec">
                                 <i class="fas fa-user-shield" aria-hidden="true"></i>
                             </div>
-                            <div class="tech-item" data-tooltip="Reverse Engineering" data-tr-tooltip="Tersine Mühendislik" data-en-tooltip="Reverse Engineering" aria-label="Reverse Engineering">
+                            <div class="tech-item" data-tooltip="Reverse Engineering" aria-label="Reverse Engineering">
                                 <i class="fas fa-sync-alt" aria-hidden="true"></i>
                             </div>
-                            <div class="tech-item" data-tooltip="Computer Science" data-tr-tooltip="Bilgisayar Bilimi" data-en-tooltip="Computer Science" aria-label="Computer Science">
+                            <div class="tech-item" data-tooltip="Computer Science" aria-label="Computer Science">
                                 <i class="fas fa-microchip" aria-hidden="true"></i>
                             </div>
                         </div>
 
-                        <div class="contact-buttons">
-                            <a href="mailto:contact@typhon64.dev" class="contact-btn">
+                        <div class="contact-buttons" translate="no">
+                            <a href="mailto:contact@typhon64.dev" class="contact-btn" translate="no">
                                 <i class="fas fa-envelope" aria-hidden="true"></i>
-                                <span data-tr="İletişime Geç" data-en="Contact Me">Contact Me</span>
+                                <span>Contact Me</span>
                             </a>
-                            <button type="button" class="contact-btn session-btn" onclick="copySessionID()">
+                            <button type="button" class="contact-btn session-btn" onclick="copySessionID()" translate="no">
                                 <span class="session-icon" aria-hidden="true" style="display:inline-block;width:1.2em;height:1.2em;vertical-align:middle;margin-right:0.5em;">
                                     <svg viewBox="0 0 24 24" width="1.2em" height="1.2em" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10Z" stroke="var(--text-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                     </svg>
                                 </span>
-                                <span data-tr="Session" data-en="Session">Session</span>
+                                <span>Session</span>
                             </button>
-                            <a href="https://signal.me/#eu/R63tAv-MupKPHyEg2sjfwTXqhRLCA65pW3RroI1U9aA055lYC49NUZ0CwJTus7Gc" target="_blank" rel="noopener noreferrer" class="contact-btn">
+                            <a href="https://signal.me/#eu/R63tAv-MupKPHyEg2sjfwTXqhRLCA65pW3RroI1U9aA055lYC49NUZ0CwJTus7Gc" target="_blank" rel="noopener noreferrer" class="contact-btn" translate="no">
                                 <i class="fas fa-comment-dots" aria-hidden="true"></i>
-                                <span data-tr="Signal" data-en="Signal">Signal</span>
+                                <span>Signal</span>
                             </a>
-                            <span id="session-copied" style="display:none;margin-left:10px;color:var(--accent);font-size:0.95rem;" data-tr="Kopyalandı!" data-en="Copied!">Copied!</span>
+                            <span id="session-copied" style="display:none;margin-left:10px;color:var(--accent);font-size:0.95rem;">Copied!</span>
                         </div>
                     </div>
                 </div>
@@ -205,22 +201,23 @@
                         </div>
                         <div class="card-body">
                             <div class="profile-info">
-                                <h2>Typhon</h2>
+                                <h2 translate="no">Typhon</h2>
                                 <div class="profile-meta">
-                                    <span class="badge" data-tr="Araştırmacı" data-en="Researcher">Researcher</span>
+                                    <span class="badge">Researcher</span>
                                     <span id="current-time" class="time-badge" aria-label="Current time">14:04</span>
                                 </div>
-                                <p class="profile-lang" data-tr="Diller: Türkçe, İngilizce" data-en="Languages: Turkish, English">Languages: Turkish, English</p>
+                                <p class="profile-lang">Languages: Turkish, English</p>
                             </div>
                             
                             <div class="divider" aria-hidden="true"></div>
                             
-                            <div class="interests">
-                                <h3 data-tr="İlgi Alanları" data-en="Interests">Interests</h3>
+                            <div class="interests" translate="no">
+                                <h3>Interests</h3>
                                 <div class="interest-tags">
-                                    <span data-tr="Siber Güvenlik" data-en="Cyber Security">Cyber Security</span>
-                                    <span data-tr="Bilgisayar Bilimi" data-en="Computer Science">Computer Science</span>
-                                    <span data-tr="Tehdit İstihbaratı" data-en="Threat Intel">Threat Intel</span>
+                                    <span translate="no">Security Researcher</span>
+                                    <span translate="no">Cyber Security</span>
+                                    <span translate="no">Computer Science</span>
+                                 
 
 
                                 </div>
@@ -247,19 +244,16 @@
                         <span id="terminal-btn-green" class="terminal-btn green" aria-hidden="true"></span>
                     </div>
                     <div class="terminal-body">
-                        <p class="terminal-text"><span class="prompt">Typhon64@system:~$</span> <span class="command">whoami</span></p>
-                        <p class="terminal-output" data-tr="Tanımak için incele" data-en="Examine to find out">Examine to find out</p>
-                        <p class="terminal-text"><span class="prompt">Typhon64@system:~$</span> <span class="command">date</span></p>
+                        <p class="terminal-text"><span class="prompt" translate="no">Typhon64@system:~$</span> <span class="command">whoami</span></p>
+                        <p class="terminal-output">Examine to find out</p>
+                        <p class="terminal-text"><span class="prompt" translate="no">Typhon64@system:~$</span> <span class="command">date</span></p>
                         <p class="terminal-output" id="current-date">2024-03-19 14:04:00</p>
                         <p class="terminal-text"><span class="prompt">Typhon64@system:~$</span> <span class="cursor"></span></p>
                     </div>
                 </div>
             </div>
 
-            <div class="lang-switcher" style="display:none;">
-                <button data-lang="tr">TR</button>
-                <button data-lang="en">EN</button>
-            </div>
+            
         </div>
     </main>
 
@@ -340,5 +334,7 @@
     </script>
 
 
+</div>
+    <i hidden aria-hidden="true" data-k="VGhlIHNpdGUgd2FzIGNyZWF0ZWQgYnkgVHlwaG9uNjQsIHdobyBvd25zIHRoZSBtYWluIGlkZWEgYW5kIGNvZGU6IGh0dHBzOi8vdHlwaG9uNjQuZ2l0aHViLmlvIGdpdGh1Yi5jb20vdHlwaG9uNjQ="></i>
 </body>
 </html>
