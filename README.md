@@ -22,15 +22,6 @@ A direct and accessible link to the original source (e.g., repository or officia
 
 ---
 
-2. 404 Page Credit
-
-If the included 404 page is used, the following credit must be visibly retained:
-
-> “404 page developed by vmfunc – https://vmfunc.gg • https://github.com/vmfunc”
-
-
----
-
 License: Apache License 2.0
 Author & Theme Creator: Typhon64
 Contact (secure & anonymous): Session ID 0500d49ca2b7d6e4149e53e8eba080f0b3795af952810f19bc21882121a7a4e760
