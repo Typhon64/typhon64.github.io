@@ -405,26 +405,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Tech items tooltip logic - single tap on mobile
     const techItems = document.querySelectorAll('.tech-item');
     let activeTooltip = null;
-    let lastTechTouchTime = 0;
 
+    // Tek tıklama/dokunma ile tooltip aç/kapat
     techItems.forEach(item => {
-        // Tek tıklama/dokunma ile tooltip aç/kapat
         item.addEventListener('click', (e) => {
             e.stopPropagation();
-            if (Date.now() - lastTechTouchTime < 500) {
-                return; // suppress synthetic click after touch
-            }
             handleTooltipClick(item);
         });
-        
-        // Touch event'i sadece mobil için - daha responsive
-        if ('ontouchstart' in window) {
-            item.addEventListener('touchstart', (e) => {
-                e.stopPropagation();
-                lastTechTouchTime = Date.now();
-                handleTooltipClick(item);
-            }, { passive: true });
-        }
     });
 
     function handleTooltipClick(item) {
@@ -458,20 +445,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, { passive: true });
 
-    // Mobile tap feedback for profile/interactive cards to mimic hover
-    const interactiveTapSelectors = ['.profile-card', '.card', '.skill-category', '.project-item', '.tech-item', '.contact-btn'];
+    // Mobile tap feedback for profile/interactive cards to mimic hover - click to momentary lift
+    // Profile-card HARİÇ diğer elementler için tıklama animasyonu
+    const interactiveTapSelectors = ['.card', '.skill-category', '.project-item', '.contact-btn'];
     const interactiveTapElements = document.querySelectorAll(interactiveTapSelectors.join(','));
 
     interactiveTapElements.forEach((el) => {
-        // Add active class on touchstart/click
-        const addActive = () => el.classList.add('active-tap');
-        const removeActive = () => el.classList.remove('active-tap');
-
-        el.addEventListener('touchstart', addActive, { passive: true });
-        el.addEventListener('touchend', removeActive, { passive: true });
-        el.addEventListener('touchcancel', removeActive, { passive: true });
-        el.addEventListener('mousedown', addActive);
-        el.addEventListener('mouseup', removeActive);
-        el.addEventListener('mouseleave', removeActive);
+        el.addEventListener('click', () => {
+            el.classList.add('active-tap');
+            setTimeout(() => el.classList.remove('active-tap'), 300); // 300ms momentary animation
+        });
     });
 });
